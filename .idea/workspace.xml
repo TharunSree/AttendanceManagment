@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="Add initial Django app structure with models, views, and tests" />
+    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="Add initial Django app structure with models, views, and tests">
+      <change afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AttendanceManagement/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/urls.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -113,7 +117,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1748253616080</updated>
-      <workItem from="1748253617283" duration="2386000" />
+      <workItem from="1748253617283" duration="3135000" />
     </task>
     <task id="LOCAL-00001" summary="Add initial project configuration files and user profile signal handling">
       <option name="closed" value="true" />
@@ -131,7 +135,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748255623602</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Add initial Django app structure with models, views, and tests">
+      <option name="closed" value="true" />
+      <created>1748256375261</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1748256375261</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
