@@ -4,472 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/AttendanceManagement.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/signals.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.bluenavy.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.bluenavy.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.blueolympic.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.blueolympic.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.blueyale.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.blueyale.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.greenlime.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.greenlime.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.greenmoss.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.greenmoss.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.greysteel.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.greysteel.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.orangecarrot.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.orangecarrot.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.purplemonster.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.purplemonster.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.redruby.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.redruby.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.yellowgranola.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.dark.yellowgranola.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.bluenavy.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.bluenavy.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.blueolympic.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.blueolympic.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.blueyale.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.blueyale.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.greenlime.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.greenlime.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.greenmoss.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.greenmoss.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.greysteel.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.greysteel.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.orangecarrot.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.orangecarrot.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.purplemonster.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.purplemonster.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.redruby.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.redruby.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.yellowgranola.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/dore.light.yellowgranola.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/main.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/_dore.style.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/_mixins.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.dark.bluenavy.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.dark.blueolympic.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.dark.blueyale.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.dark.greenlime.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.dark.greenmoss.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.dark.greysteel.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.dark.orangecarrot.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.dark.purplemonster.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.dark.redruby.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.dark.yellowgranola.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.light.bluenavy.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.light.blueolympic.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.light.blueyale.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.light.greenlime.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.light.greenmoss.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.light.greysteel.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.light.orangecarrot.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.light.purplemonster.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.light.redruby.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/sass/themes/dore.light.yellowgranola.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/baguetteBox.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/bootstrap-datepicker3.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/bootstrap-float-label.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/bootstrap-stars.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/bootstrap-tagsinput.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/bootstrap.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/bootstrap.rtl.only.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/component-custom-switch.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/cropper.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/dataTables.bootstrap4.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/datatables.responsive.bootstrap4.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/dropzone.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/fullcalendar.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/glide.core.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/jquery.contextMenu.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/jquery.dataTables.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/nouislider.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/nunito.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/owl.carousel.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/perfect-scrollbar.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/quill.bubble.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/quill.snow.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/select2-bootstrap.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/select2.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/slick.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/smart_wizard.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/vendor/video-js.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/README.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/css/animation.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/css/iconsminds-codes.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/css/iconsminds-embedded.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/css/iconsminds-ie7-codes.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/css/iconsminds-ie7.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/css/iconsminds.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/demo.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/font/iconsminds.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/font/iconsminds.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/font/iconsminds.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/font/iconsminds.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/iconsmind-s/font/iconsminds.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-300.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-300.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-300.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-300.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-300.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-600.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-600.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-600.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-600.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-600.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-700.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-700.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-700.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-700.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-700.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-italic.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-italic.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-italic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-italic.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-italic.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-regular.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-regular.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-regular.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/nunito/nunito-regular.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/simple-line-icons/LICENSE.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/simple-line-icons/css/simple-line-icons.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/simple-line-icons/fonts/Simple-Line-Icons.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/simple-line-icons/fonts/Simple-Line-Icons.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/simple-line-icons/fonts/Simple-Line-Icons.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/simple-line-icons/fonts/Simple-Line-Icons.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/font/simple-line-icons/fonts/Simple-Line-Icons.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/cards/thumb-1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/cards/thumb-2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/cards/thumb-3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/cards/thumb-4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/carousels/1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/carousels/2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/carousels/3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/carousels/thumb-1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/carousels/thumb-2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/carousels/thumb-3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/carousels/thumb-4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/5.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/small-1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/small-2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/small-3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/small-4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/small-5.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/small-6.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/small-7.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/details/small-8.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/applications/chat.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/applications/library.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/applications/survey.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/applications/todo.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/components.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/features/extra-responsive.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/features/layouts-for-the-job.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/features/plesant-design.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/features/smart-menu.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/features/superfine-charts.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/home-hero-mobile.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/home-hero.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/authentication.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/data-list-app-menu-hidden.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/data-list.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/details.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/image-list.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/menu-default.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/menu-hidden.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/menu-subhidden.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/search-result.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/spa.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/tabs.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/landing-page/layouts/thumb-list.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/login/balloon-lg.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/login/balloon.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/login/plane.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/notifications/1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/notifications/2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/notifications/3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/bebinca-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/cheesecake-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/chocolate-cake-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/coconut-cake.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/cremeschnitte-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/fat-rascal-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/financier-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/fruitcake-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/fruitcake.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/genoise-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/gingerbread-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/goose-breast-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/magdalena-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/magdalena.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/marble-cake-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/marble-cake.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/merveilleux-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/napoleonshat-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/napoleonshat.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/parkin-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/parkin.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/petit-gateau-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/salzburger-nockerl-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/souffle-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/streuselkuchen-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/tea-loaf-thumb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/products/tea-loaf.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/l-1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/l-10.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/l-11.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/l-2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/l-3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/l-4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/l-5.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/l-6.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/l-7.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/l-8.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/profiles/l-9.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/social/header.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/video/big-buck-bunny-poster.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/img/video/subpage-video-poster.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/dore-plugins/select.from.library.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/dore.script.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/dore.scripts.landingpage.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/scripts.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/scripts.single.theme.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/Chart.bundle.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/Sortable.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/baguetteBox.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/bootstrap-datepicker.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/bootstrap-notify.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/bootstrap-tagsinput.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/bootstrap.bundle.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/chartjs-plugin-datalabels.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/LICENSE.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/ckeditor.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/ckeditor.js.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/ar.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/ast.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/bg.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/ca.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/cs.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/da.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/de.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/el.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/en-au.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/eo.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/es.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/et.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/eu.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/fa.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/fi.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/fr.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/gl.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/gu.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/hr.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/hu.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/it.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/ja.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/km.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/kn.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/ko.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/ku.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/nb.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/ne.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/nl.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/no.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/oc.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/pl.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/pt-br.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/pt.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/ro.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/ru.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/si.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/sk.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/sq.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/sv.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/tr.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/tt.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/ug.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/uk.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/zh-cn.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/ckeditor5-build-classic/translations/zh.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/countdown.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/cropper.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/datatables.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/dropzone.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/fullcalendar.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/glide.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery-3.3.1.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.autoellipsis.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.barrating.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.contextMenu.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.smartWizard.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/additional-methods.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/additional-methods.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/jquery.validate.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/jquery.validate.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ar.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ar.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_az.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_az.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_bg.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_bg.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_bn_BD.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_bn_BD.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ca.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ca.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_cs.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_cs.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_da.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_da.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_de.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_de.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_el.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_el.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_es.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_es.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_es_AR.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_es_AR.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_es_PE.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_es_PE.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_et.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_et.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_eu.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_eu.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_fa.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_fa.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_fi.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_fi.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_fr.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_fr.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ge.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ge.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_gl.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_gl.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_he.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_he.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_hr.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_hr.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_hu.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_hu.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_hy_AM.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_hy_AM.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_id.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_id.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_is.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_is.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_it.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_it.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ja.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ja.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ka.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ka.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_kk.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_kk.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ko.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ko.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_lt.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_lt.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_lv.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_lv.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_mk.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_mk.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_my.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_my.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_nl.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_nl.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_no.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_no.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_pl.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_pl.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_pt_BR.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_pt_BR.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_pt_PT.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_pt_PT.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ro.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ro.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ru.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ru.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sd.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sd.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_si.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_si.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sk.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sk.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sl.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sl.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sr.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sr.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sr_lat.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sr_lat.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sv.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_sv.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_th.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_th.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_tj.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_tj.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_tr.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_tr.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_uk.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_uk.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ur.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_ur.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_vi.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_vi.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_zh.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_zh.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_zh_TW.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/messages_zh_TW.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_de.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_de.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_es_CL.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_es_CL.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_fi.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_fi.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_it.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_it.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_nl.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_nl.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_pt.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/jquery.validate/localization/methods_pt.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/landing-page/headroom.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/landing-page/jQuery.headroom.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/landing-page/jquery.autoellipsis.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/landing-page/jquery.scrollTo.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/moment.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/mousetrap.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/mousetrap.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/nouislider.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/owl.carousel.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/perfect-scrollbar.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/progressbar.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/quill.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/select2.full.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/slick.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/typeahead.bundle.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/video.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/vendor/videojs-youtube.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/logos/black.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/logos/mobile.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/logos/white-full.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/logos/white.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/Auth/ForgotPassword.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/Auth/Login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/Auth/Register.html" afterDir="false" />
-    </list>
+    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="Add initial Django app structure with models, views, and tests" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -488,6 +23,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "TharunSree"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/TharunSree/AttendanceManagment.git",
+    "accountId": "90ddfdf0-88d2-44aa-bf6e-417c105b628f"
+  }
+}]]></component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 3
 }]]></component>
@@ -566,11 +113,33 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1748253616080</updated>
-      <workItem from="1748253617283" duration="1703000" />
+      <workItem from="1748253617283" duration="2386000" />
     </task>
+    <task id="LOCAL-00001" summary="Add initial project configuration files and user profile signal handling">
+      <option name="closed" value="true" />
+      <created>1748255530421</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1748255530421</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Add initial Django app structure with models, views, and tests">
+      <option name="closed" value="true" />
+      <created>1748255623602</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1748255623602</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add initial project configuration files and user profile signal handling" />
+    <MESSAGE value="Add initial Django app structure with models, views, and tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add initial Django app structure with models, views, and tests" />
   </component>
 </project>
