@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -128,3 +128,16 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND_SETTING', 'django.core.mail.backends.console.EmailBackend')
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  # Standard port for TLS
+EMAIL_USE_TLS = True  # Use Transport Layer Security
+EMAIL_HOST_USER = os.environ.get('MY_EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('MY_EMAIL_APP_PASSWORD') # This should be your 16-digit App Password
+
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+SERVER_EMAIL = os.environ.get('SERVER_EMAIL', EMAIL_HOST_USER)
+ADMINS = [('Admin', os.environ.get('ADMIN_EMAIL', 'admin@example.com'))]
+
