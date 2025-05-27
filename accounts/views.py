@@ -3,9 +3,15 @@ from django.contrib.auth import authenticate, login as auth_login # Renaming to 
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib import messages
 
+
+class CustomAuthenticationForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password'].widget.attrs.update({'class': 'form-control'})
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
@@ -31,7 +37,7 @@ def login_view(request):
         else:
             messages.error(request, "Invalid username or password.")
     else:
-        form = AuthenticationForm()
+        form = CustomAuthenticationForm()
     # In AttendanceManagment/accounts/views.py, inside login_view function
     return render(request, 'accounts/Login.html', {'form': form})
 
