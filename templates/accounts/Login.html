@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dore jQuery - Login</title> <!-- Changed title slightly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="{% static 'font/iconsmind-s/css/iconsminds.css'%}" />
+    <link rel="stylesheet" href="{% static 'font/simple-line-icons/css/simple-line-icons.css'%}" />
+
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.min.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.rtl.only.min.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap-float-label.min.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/main.css'%}" />
+</head>
+
+<body class="background show-spinner no-footer">
+    <div class="fixed-background"></div>
+    <main>
+        <div class="container">
+            <div class="row h-100">
+                <div class="col-12 col-md-10 mx-auto my-auto">
+                    <div class="card auth-card">
+                        <div class="position-relative image-side ">
+                            <p class=" text-white h2">MAGIC IS IN THE DETAILS</p>
+                            <p class="white mb-0">
+                                Please use your credentials to login.
+                                <br>If you are not a member, please
+                                <a href="{% url 'register' %}" class="white">register</a>. <!-- Updated link -->
+                            </p>
+                        </div>
+                        <div class="form-side">
+                            <a href="/"> <!-- Link to home or dashboard -->
+                                <span class="logo-single"></span>
+                            </a>
+                            <h6 class="mb-4">Login</h6>
+
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger" role="alert">
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <form method="post" action="{% url 'login' %}">
+                                {% csrf_token %}
+
+                                <label class="form-group has-float-label mb-4">
+                                    {{ form.username }}
+                                    <span>{{ form.username.label_tag }}</span>
+                                    {% if form.username.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.username.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </label>
+
+                                <label class="form-group has-float-label mb-4">
+                                    {{ form.password }}
+                                    <span>{{ form.password.label_tag }}</span>
+                                     {% if form.password.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.password.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </label>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'password_reset' %}">Forget password?</a> <!-- Updated link -->
+                                    <button class="btn btn-primary btn-lg btn-shadow" type="submit">LOGIN</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="{% static 'js/vendor/jquery-3.3.1.min.js'%}"></script>
+    <script src="{% static 'js/vendor/bootstrap.bundle.min.js'%}"></script> <!-- Needed for alert dismissal -->
+    <script src="{% static 'js/dore.script.js'%}"></script>
+    <script src="{% static 'js/scripts.js'%}"></script>
+</body>
+
+</html>
