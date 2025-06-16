@@ -1,9 +1,14 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.db import transaction
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login  # Renaming to avoid conflict
 from django.contrib.auth.forms import AuthenticationForm  # Django's default login form
 from django.contrib import messages
 
+from accounts.decorators import admin_required
+from accounts.forms import AddTeacherForm
 
 
 # This is your custom form that you use in the view.
@@ -61,3 +66,52 @@ def logout_view(request):
 
 def home(request):
     return HttpResponse("Hello, world!")
+
+@login_required
+@admin_required
+def teacher_list_view(request):
+    # Get all users who have a profile with the role 'faculty'
+    teachers = User.objects.filter(profile__role='faculty')
+    return render(request, 'accounts/teacher_list.html', {'teachers': teachers})
+
+
+@login_required
+@admin_required
+@transaction.atomic
+def teacher_create_view(request):
+    if request.method == 'POST':
+        form = AddTeacherForm(request.POST)
+        if form.is_valid():
+            # The User is created first.
+            user = User.objects.create_user(
+                username=form.cleaned_data['username'],
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password'],
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name']
+            )
+            # The signal automatically creates a Profile. Now we update it.
+            user.profile.role = 'faculty'  # Set the role to faculty
+            user.profile.contact_number = form.cleaned_data['contact_number']
+            user.profile.save()
+
+            messages.success(request, 'Faculty member created successfully.')
+            return redirect('teacher_list')
+    else:
+        form = AddTeacherForm()
+
+    return render(request, 'accounts/teacher_form.html', {'form': form})
+
+
+@login_required
+@admin_required
+def teacher_delete_view(request, pk):
+    teacher = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        # The user's profile will be deleted automatically because of the CASCADE setting
+        teacher.delete()
+        messages.success(request, 'Faculty member has been deleted.')
+        return redirect('accounts:teacher_list')
+
+    # We can reuse the generic confirm delete template
+    return render(request, 'academics/confirm_delete.html', {'item': teacher, 'type': 'Faculty Member'})

@@ -15,11 +15,12 @@
 
     <link rel="stylesheet" href="{% static 'font/iconsmind-s/css/iconsminds.css' %}" />
     <link rel="stylesheet" href="{% static 'font/simple-line-icons/css/simple-line-icons.css' %}" />
-
+    {% block vendor_styles %}{% endblock vendor_styles %}
     <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.rtl.only.min.css' %}" /> {# If using RTL #}
     <link rel="stylesheet" href="{% static 'css/vendor/component-custom-switch.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/vendor/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
 
     {# Add other common vendor CSS files your theme uses on most pages #}
     {# For example, if datepicker is common: #}
@@ -65,13 +66,13 @@
     <script src="{% static 'js/vendor/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/vendor/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/vendor/perfect-scrollbar.min.js' %}"></script>
-    <script src="{% static 'js/vendor/mousetrap.min.js' %}"></script> {# If used globally #}
 
-    {# Add other common vendor JS files #}
-    {# e.g. <script src="{% static 'js/vendor/bootstrap-datepicker.js' %}"></script> #}
+    {# BLOCK for page-specific libraries like datatables.min.js #}
+    {% block vendor_scripts %}{% endblock vendor_scripts %}
 
-    <script src="{% static 'js/dore.script.js' %}"></script> {# Main theme script #}
-    <script src="{% static 'js/scripts.js' %}"></script> {# Custom global scripts or theme init #}
+    <script src="{% static 'js/dore.script.js' %}"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+
 
     {% block page_scripts %}{% endblock page_scripts %} {# For page-specific JS #}
 

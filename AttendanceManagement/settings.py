@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts'
+    'accounts',
+    'academics'
 ]
 
 MIDDLEWARE = [
@@ -79,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'sihm_attendance',
         'USER': 'root',
-        'PASSWORD': '570224',
+        'PASSWORD': '24022005',
         'HOST': 'localhost',
         'PORT': '3306',
     }

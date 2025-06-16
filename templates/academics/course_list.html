@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_title %}Courses{% endblock page_title %}
+{% block main_page_title %}Manage Courses{% endblock main_page_title %}
+
+{% block content %}
+{# ... Messages block ... #}
+<div class="row">
+    <div class="col-12">
+        <div class="mb-2 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">All Available Courses</h5>
+            {% if courses %}<div class="top-right-button-container"><a href="{% url 'academics:course_create' %}" class="btn btn-primary btn-lg top-right-button">ADD NEW COURSE</a></div>{% endif %}
+        </div>
+        <div class="separator mb-5"></div>
+
+        <div class="row icon-cards-row">
+            {% for course in courses %}
+            <div class="col-xl-3 col-lg-4 col-sm-6 col-12 mb-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <a href="{% url 'academics:course_update' course.pk %}">
+                            <i class="iconsminds-books"></i>
+                            <p class="card-text font-weight-semibold mb-0 mt-2">{{ course.name }}</p>
+                            <p class="text-muted text-small mb-0">{{ course.get_course_type_display }}</p>
+                        </a>
+                        <div class="mt-2">
+                             <a href="{% url 'academics:course_delete' course.pk %}" class="btn btn-outline-danger btn-xs">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="alert alert-secondary p-5">
+                    <h4 class="alert-heading">No Courses Found!</h4>
+                    <p class="mb-4">Please add a course to get started.</p>
+                    <a href="{% url 'academics:course_create' %}" class="btn btn-primary btn-lg">Add Your First Course</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

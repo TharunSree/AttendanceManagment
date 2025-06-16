@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}Attendance Details - {{ student.get_full_name|default:student.username }}{% endblock page_title %}
+
+{% block vendor_styles %}
+    {# This page needs Chart.js CSS if your base.html doesn't have it #}
+{% endblock vendor_styles %}
+
+{% block main_page_title %}Attendance Details{% endblock main_page_title %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'academics:admin_select_class' %}">Select Class</a></li>
+    {% if student_group %}
+    <li class="breadcrumb-item"><a href="{% url 'academics:admin_student_list' student_group.pk %}">{{ student_group.name }}</a></li>
+    {% endif %}
+    <li class="breadcrumb-item active" aria-current="page">{{ student.get_full_name|default:student.username }}</li>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    {# Student Info Card #}
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h4>{{ student.get_full_name|default:student.username }}</h4>
+                <p class="text-muted mb-1">Student ID: {{ student.profile.student_id_number|default:"N/A" }}</p>
+                <p class="text-muted mb-0">Class: {% if student_group %} {{ student_group.name }} {% else %} Not Assigned {% endif %}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Subject-wise Attendance Charts #}
+<div class="row">
+    {% for item in subject_attendance_data %}
+    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.subject_name }}</h5>
+                <p class="text-muted text-small">Total Classes: {{ item.total_classes }}</p>
+                <div class="chart-container" style="height: 250px;">
+                    {# Each canvas needs a unique ID #}
+                    <canvas id="polarChart{{ item.subject_pk }}"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12"><div class="alert alert-info"><p class="mb-0">No subjects found for this student's course.</p></div></div>
+    {% endfor %}
+</div>
+{% endblock content %}
+
+{% block vendor_scripts %}
+    <script src="{% static 'js/vendor/Chart.bundle.min.js' %}"></script>
+    <script src="{% static 'js/vendor/chartjs-plugin-datalabels.js' %}"></script>
+{% endblock vendor_scripts %}
+
+{% block page_scripts %}
+<script>
+    $(document).ready(function() {
+        try {
+            // Get the dynamic JSON data passed from the Django view
+            const subjectAttendanceData = JSON.parse('{{ subject_attendance_data_json|safe }}');
+
+            // Loop through each subject's data and create a chart
+            subjectAttendanceData.forEach(item => {
+                const ctx = document.getElementById('polarChart' + item.subject_pk);
+                if (ctx) {
+                    new Chart(ctx, {
+                        type: 'polarArea',
+                        data: {
+                            labels: ['Present', 'Absent'],
+                            datasets: [{
+                                data: [
+                                    item.attended_classes,
+                                    item.total_classes - item.attended_classes // Calculate absent
+                                ],
+                                backgroundColor: [
+                                    'rgba(75, 192, 192, 0.6)', // Green tint for Present
+                                    'rgba(255, 99, 132, 0.6)'  // Red tint for Absent
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                            },
+                            plugins: {
+                                datalabels: {
+                                    color: '#fff',
+                                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                    borderRadius: 4,
+                                    font: { weight: 'bold' },
+                                    formatter: (value) => { return value; }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        } catch (error) {
+            console.error("Could not parse chart data or render charts:", error);
+        }
+    });
+</script>
+{% endblock page_scripts %}

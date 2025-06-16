@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block page_title %}{{ form_title }}{% endblock %}
+{% block main_page_title %}{{ form_title }}{% endblock %}
+
+{% block content %}
+<div class="row"><div class="col-12"><div class="card"><div class="card-body">
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group"><label>{{ form.name.label_tag }}</label>{{ form.name }}</div>
+        <div class="form-group"><label>{{ form.code.label_tag }}</label>{{ form.code }}</div>
+        <hr>
+        <a href="{% url 'academics:subject_list' %}" class="btn btn-outline-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Save Subject</button>
+    </form>
+</div></div></div></div>
+{% endblock %}

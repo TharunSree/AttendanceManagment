@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}{{ form_title }}{% endblock page_title %}
+
+{% block main_page_title %}{{ form_title }}{% endblock main_page_title %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'academics:admin_select_class' %}">Select Class</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Class</li>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Class Details</h5>
+                <hr>
+                <form method="post">
+                    {% csrf_token %}
+
+                    {# --- THIS IS THE MISSING NAME FIELD --- #}
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">{{ form.name.label }}</span>
+                            </div>
+                            {{ form.name }}
+                        </div>
+                        {% if form.name.help_text %}<small class="form-text text-muted">{{ form.name.help_text|safe }}</small>{% endif %}
+                        {% for error in form.name.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    {# Course Selection with input-group style #}
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">{{ form.course.label }}</span>
+                            </div>
+                            {{ form.course }}
+                        </div>
+                        {% for error in form.course.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    {# Start and Passout Year in the same row, with prepended text #}
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">{{ form.start_year.label }}</span>
+                                </div>
+                                {{ form.start_year }}
+                            </div>
+                             {% for error in form.start_year.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">{{ form.passout_year.label }}</span>
+                                </div>
+                                {{ form.passout_year }}
+                            </div>
+                             {% for error in form.passout_year.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+
+                    <hr>
+                    <a href="{% url 'academics:admin_select_class' %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Class</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

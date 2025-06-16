@@ -7,15 +7,15 @@
                 <li class="{% if request.resolver_match.url_name == 'admin_dashboard' or request.resolver_match.url_name == 'faculty_dashboard' or request.resolver_match.url_name == 'student_dashboard' %}active{% endif %}">
                     {% if user.is_authenticated %}
                         {% if user.profile.role == 'admin' %}
-                            <a href="{% url 'admin_dashboard_placeholder' %}"> {# Replace with actual admin dashboard URL name #}
+                            <a href="#"> {# Replace with actual admin dashboard URL name #}
                                 <i class="iconsminds-shop-4"></i> <span>Admin Dashboard</span>
                             </a>
                         {% elif user.profile.role == 'faculty' %}
-                             <a href="{% url 'faculty_dashboard_placeholder' %}"> {# Replace #}
+                             <a href="#"> {# Replace #}
                                 <i class="iconsminds-digital-drawing"></i> <span>Faculty Dashboard</span>
                             </a>
                         {% elif user.profile.role == 'student' %}
-                             <a href="{% url 'student_dashboard_placeholder' %}"> {# Replace #}
+                             <a href="#"> {# Replace #}
                                 <i class="iconsminds-air-balloon-1"></i> <span>Student Dashboard</span>
                             </a>
                         {% else %}

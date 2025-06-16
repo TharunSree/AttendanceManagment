@@ -1,19 +1,29 @@
 from django.contrib import admin
-from .models import Profile  # Import your Profile model
+from .models import Profile
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
 
-# Register your models here.
+# Define an inline admin descriptor for Profile model
+# which acts a bit like a singleton
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    can_delete = False
+    verbose_name_plural = 'profile'
 
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'role', 'get_username', 'get_email')  # Fields to display in the admin list
-    search_fields = ('user__username', 'user__email', 'role')    # Fields to search by
-    list_filter = ('role',)  # Fields to filter by in the sidebar
+# Define a new User admin
+class UserAdmin(BaseUserAdmin):
+    inlines = (ProfileInline,)
 
-    @admin.display(ordering='user__username', description='Username')
-    def get_username(self, obj):
-        return obj.user.username
+# Re-register UserAdmin
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 
-    @admin.display(ordering='user__email', description='Email')
-    def get_email(self, obj):
-        return obj.user.email
+# We are un-registering the standalone Profile admin because it is now
+# managed 'inline' with the User admin, which is a more intuitive workflow.
+# You can uncomment the below if you want to manage Profiles separately.
 
-admin.site.register(Profile, ProfileAdmin)
+# @admin.register(Profile)
+# class ProfileAdmin(admin.ModelAdmin):
+#     list_display = ('user', 'role', 'student_id_number', 'contact_number')
+#     search_fields = ('user__username', 'user__email', 'role')
+#     list_filter = ('role',)

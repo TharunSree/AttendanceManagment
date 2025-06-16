@@ -137,7 +137,7 @@ function loadStyle(href, callback) {
   $(".radius-radio[data-radius='" + radius + "']").attr("checked", true);
   $("#switchDark").attr("checked", theme.indexOf("dark") > 0 ? true : false);
 
-  var STATIC_URL = "{% static '' %}";
+
 
   loadStyle(STATIC_URL + "css/" + theme, onStyleComplete);
   function onStyleComplete() {

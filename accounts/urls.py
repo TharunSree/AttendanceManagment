@@ -32,4 +32,7 @@ urlpatterns = [
              template_name='accounts/password_reset_complete.html'
          ),
          name='password_reset_complete'),
+    path('teachers/', views.teacher_list_view, name='teacher_list'),
+    path('teachers/create/', views.teacher_create_view, name='teacher_create'),
+    path('teachers/<int:pk>/delete/', views.teacher_delete_view, name='teacher_delete'),
 ]

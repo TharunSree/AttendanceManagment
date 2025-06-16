@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}Student List - {{ student_group.name }}{% endblock page_title %}
+
+{% block vendor_styles %}
+    {# These are the required CSS files for the styled datatable #}
+    <link rel="stylesheet" href="{% static 'css/vendor/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/vendor/datatables.responsive.bootstrap4.min.css' %}"/>
+{% endblock vendor_styles %}
+
+{% block main_page_title %}Students in {{ student_group.name }}{% endblock main_page_title %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'academics:admin_select_class' %}">Select Class</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Student List</li>
+{% endblock breadcrumbs %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">{{ student_group.course.name }} | {{ student_group.start_year }}
+                            - {{ student_group.passout_year }}</h5>
+                        <a href="{% url 'academics:student_create' student_group.id %}" class="btn btn-primary">Add
+                            Student</a>
+                    </div>
+
+                    {# --- LOW ATTENDANCE FILTER CHECKBOX --- #}
+                    <form method="get" class="mb-3">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="low_attendance_filter"
+                                   name="low_attendance_filter" {% if show_low_attendance_only %}checked{% endif %}
+                                   onchange="this.form.submit()">
+                            <label class="custom-control-label" for="low_attendance_filter">Show only students with
+                                attendance below {{ required_percentage }}%</label>
+                        </div>
+                    </form>
+                    <hr/>
+
+                    {# This class enables all the features: search, pagination, etc. #}
+                    <table class="data-table data-table-scrollable responsive nowrap">
+                        <thead>
+                        <tr>
+                            {# Added text-center class to all headers #}
+                            <th class="text-center">Student ID</th>
+                            <th class="text-center">Full Name</th>
+                            <th class="text-center">Mobile No.</th>
+                            <th class="text-center">Overall Attendance</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in students_with_attendance %}
+                            <tr>
+                                {# Added text-center class to all data cells #}
+                                <td class="text-center">{{ item.student.profile.student_id_number|default:"N/A" }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'academics:admin_student_attendance_detail' item.student.pk %}">
+                                        {{ item.student.get_full_name|default:item.student.username }}
+                                    </a>
+                                </td>
+                                <td class="text-center">{{ item.student.profile.contact_number|default:"N/A" }}</td>
+                                <td class="text-center">
+                                    {% if item.attendance_percentage is not None %}
+                                        <span class="badge badge-pill badge-{% if item.attendance_percentage < required_percentage %}danger{% else %}success{% endif %}">
+                        {{ item.attendance_percentage|floatformat:2 }}%
+                    </span>
+                                    {% else %}
+                                        <span class="text-muted">No Data</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{% url 'academics:student_delete' item.student.pk %}"
+                                       class="btn btn-outline-danger btn-xs">Delete</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No students found for this class or
+                                    matching the filter.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block vendor_scripts %}
+    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
+{% endblock vendor_scripts %}

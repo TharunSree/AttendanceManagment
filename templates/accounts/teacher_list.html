@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_title %}Teachers{% endblock %}
+{% block vendor_styles %}
+    {# These are the required CSS files for the styled datatable #}
+    <link rel="stylesheet" href="{% static 'css/vendor/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/vendor/datatables.responsive.bootstrap4.min.css' %}"/>
+{% endblock vendor_styles %}
+{% block main_page_title %}Manage Teachers{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">All Faculty Members</h5>
+                        <a href="{% url 'teacher_create' %}" class="btn btn-primary">Add New
+                            Teacher</a>
+                    </div>
+
+                    <table class="data-table data-table-scrollable responsive nowrap">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Contact No.</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for teacher in teachers %}
+                            <tr>
+                                <td>{{ teacher.get_full_name|default:"N/A" }}</td>
+                                <td>{{ teacher.username }}</td>
+                                <td>{{ teacher.email|default:"N/A" }}</td>
+                                <td>{{ teacher.profile.contact_number|default:"N/A" }}</td>
+                                <td>
+                                    {# Add an edit link here later #}
+                                    <a href="{% url 'teacher_delete' teacher.pk %}"
+                                       class="btn btn-sm btn-outline-danger">Delete</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No teachers found.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content%}
+
+{% block vendor_scripts %}
+    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
+{% endblock vendor_scripts %}

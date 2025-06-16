@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}{{ form_title }}{% endblock page_title %}
+
+{% block vendor_styles %}
+    {# Add Select2 CSS for the multi-select dropdown #}
+    <link rel="stylesheet" href="{% static 'css/vendor/select2.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/vendor/select2-bootstrap.min.css' %}" />
+{% endblock vendor_styles %}
+
+{% block main_page_title %}{{ form_title }}{% endblock main_page_title %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'academics:course_list' %}">Courses</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% if form.instance.pk %}Edit{% else %}Create{% endif %}</li>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Course Details</h5>
+                <hr>
+                <form method="post">
+                    {% csrf_token %}
+
+                    {# Display any non-field errors at the top #}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label>{{ form.name.label_tag }}</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend"><span class="input-group-text">Name</span></div>
+                            {{ form.name }}
+                        </div>
+                        {% for error in form.name.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.course_type.label_tag }}</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend"><span class="input-group-text">Type</span></div>
+                            {{ form.course_type }}
+                        </div>
+                        {% for error in form.course_type.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>{{ form.duration_years.label_tag }}</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend"><span class="input-group-text">Duration (Yrs)</span></div>
+                                {{ form.duration_years }}
+                            </div>
+                             {% for error in form.duration_years.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="form-group col-md-6">
+                             <label>{{ form.required_hours_per_semester.label_tag }}</label>
+                             <div class="input-group mb-3">
+                                <div class="input-group-prepend"><span class="input-group-text">Hours/Sem</span></div>
+                                {{ form.required_hours_per_semester }}
+                            </div>
+                             {% for error in form.required_hours_per_semester.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.description.label_tag }}</label>
+                        {{ form.description }}
+                        {% for error in form.description.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.subjects.label_tag }}</label>
+                        {{ form.subjects }}
+                         <small class="form-text text-muted">Hold down "Control", or "Command" on a Mac, to select more than one.</small>
+                        {% for error in form.subjects.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    <hr>
+                    <a href="{% url 'academics:course_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Course</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block vendor_scripts %}
+    {# Add Select2 JS for the multi-select dropdowns #}
+    <script src="{% static 'js/vendor/select2.full.js' %}"></script>
+{% endblock vendor_scripts %}
