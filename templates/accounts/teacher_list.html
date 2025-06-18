@@ -22,29 +22,44 @@
                     <table class="data-table data-table-scrollable responsive nowrap">
                         <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Contact No.</th>
-                            <th>Actions</th>
+                            <th class="text-center">Name</th>
+                            <th class="text-center">Username</th>
+                            <th class="text-center">Email</th>
+                            <th class="text-center">Contact No.</th>
+                            <th class="text-center">Subjects Taught</th>
+                            <th class="text-center">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for teacher in teachers %}
                             <tr>
-                                <td>{{ teacher.get_full_name|default:"N/A" }}</td>
-                                <td>{{ teacher.username }}</td>
-                                <td>{{ teacher.email|default:"N/A" }}</td>
-                                <td>{{ teacher.profile.contact_number|default:"N/A" }}</td>
-                                <td>
-                                    {# Add an edit link here later #}
-                                    <a href="{% url 'teacher_delete' teacher.pk %}"
-                                       class="btn btn-sm btn-outline-danger">Delete</a>
+                                <td class="text-center">{{ teacher.get_full_name|default:"N/A" }}</td>
+                                <td class="text-center">{{ teacher.username }}</td>
+                                <td class="text-center">{{ teacher.email|default:"N/A" }}</td>
+                                <td class="text-center">{{ teacher.profile.contact_number|default:"N/A" }}</td>
+                                <td class="text-center">
+                                    {% for subject in teacher.profile.field_of_expertise.all %}
+                                        {% if subject.subject_type == 'Theory' %}
+                                            <span class="badge badge-pill badge-outline-primary">Theory</span>
+                                        {% else %}
+                                            <span class="badge badge-pill badge-outline-warning">Practical</span>
+                                        {% endif %}
+                                    {% empty %}
+                                        <span class="text-muted">Not Assigned</span>
+                                    {% endfor %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'teacher_update' teacher.pk %}"
+                                           class="btn btn-outline-primary btn-xs">Edit</a>
+                                        <a href="{% url 'teacher_delete' teacher.pk %}"
+                                           class="btn btn-outline-danger btn-xs">Delete</a>
+                                    </div>
                                 </td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="5" class="text-center">No teachers found.</td>
+                                <td colspan="6" class="text-center">No teachers found.</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -53,7 +68,7 @@
             </div>
         </div>
     </div>
-{% endblock content%}
+{% endblock content %}
 
 {% block vendor_scripts %}
     <script src="{% static 'js/vendor/datatables.min.js' %}"></script>

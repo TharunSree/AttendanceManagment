@@ -33,13 +33,20 @@ class Department(models.Model):
         ordering = ['name']
 
 
-# New and updated models based on your meeting
 class Subject(models.Model):
-    name = models.CharField(max_length=200)
+    SUBJECT_TYPE_CHOICES = [
+        ('theory', 'Theory'),
+        ('practical', 'Practical'),
+    ]
+    
+    name = models.CharField(max_length=100)
     code = models.CharField(max_length=20, unique=True)
+    subject_type = models.CharField(max_length=20, choices=SUBJECT_TYPE_CHOICES, default='theory')
+    description = models.TextField(blank=True)
+    required_hours = models.IntegerField(default=40, help_text="Default required hours for this subject")
 
     def __str__(self):
-        return self.name
+        return f"{self.code} - {self.name}"
 
     class Meta:
         ordering = ['name']
@@ -69,6 +76,9 @@ class CourseSubject(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     required_hours = models.PositiveIntegerField(default=40,
                                                  help_text="Total hours required for this subject in this course.")
+    semester = models.PositiveIntegerField(
+        help_text="e.g., 1, 2, 3 for the semester number."
+    )
 
     class Meta:
         unique_together = ('course', 'subject')  # A subject can only be in a course once
@@ -78,21 +88,11 @@ class CourseSubject(models.Model):
 
 
 class StudentGroup(models.Model):
-    """ Represents a 'class' or 'batch' of students for a specific course. """
-    # --- ADD THIS FIELD FOR THE CLASS NAME ---
+    """ Represents a 'class' or 'batch' of students. """
     name = models.CharField(max_length=100, help_text="e.g., 'BCA Section A'")
-
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='student_groups')
     start_year = models.PositiveIntegerField()
     passout_year = models.PositiveIntegerField()
-
-    # --- THIS FIELD WAS MISSING ---
-    students = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        related_name='student_groups',
-        blank=True,  # A class can be created before students are assigned
-        limit_choices_to={'profile__role': 'student'}
-    )
 
     def __str__(self):
         # Now it uses the dedicated name field

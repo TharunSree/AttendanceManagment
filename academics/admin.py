@@ -22,11 +22,18 @@ class AcademicSessionAdmin(admin.ModelAdmin):
     ordering = ('-start_year',)
 
 
+class CourseSubjectInline(admin.TabularInline):
+    model = CourseSubject
+    extra = 1  # How many empty rows to show
+
+
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('name', 'course_type', 'duration_years')
     search_fields = ('name',)
-    filter_horizontal = ('subjects',)  # Provides a nice interface for ManyToManyFields
+
+    # This will now display a table on the course page to add/edit subjects by semester
+    inlines = [CourseSubjectInline]
 
 
 @admin.register(Subject)
@@ -40,7 +47,7 @@ class StudentGroupAdmin(admin.ModelAdmin):
     list_display = ('name', 'course', 'start_year', 'passout_year')
     search_fields = ('name', 'course__name')
     list_filter = ('course',)
-    filter_horizontal = ('students',)  # Makes adding students easier
+      # Makes adding students easier
 
 
 @admin.register(AttendanceSettings)

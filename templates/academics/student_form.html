@@ -1,66 +1,89 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block page_title %}{{ form_title }}{% endblock %}
-
-{% block main_page_title %}{{ form_title }}{% endblock %}
+{% block page_title %}{{ form_title }}{% endblock page_title %}
+{% block main_page_title %}{{ form_title }}{% endblock main_page_title %}
 
 {% block breadcrumbs %}
     {{ block.super }}
     <li class="breadcrumb-item"><a href="{% url 'academics:admin_student_list' student_group.id %}">{{ student_group.name }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Add Student</li>
+    <li class="breadcrumb-item active" aria-current="page">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Student</li>
 {% endblock breadcrumbs %}
-
 
 {% block content %}
 <div class="row">
     <div class="col-12">
-        {# General message display for success/error messages from the view #}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            {% endfor %}
-        {% endif %}
-
         <div class="card">
             <div class="card-body">
                 <form method="post" novalidate>
                     {% csrf_token %}
 
-                    {# This displays errors that are not tied to a specific field, like "Username already exists" #}
                     {% if form.non_field_errors %}
                         <div class="alert alert-danger">
-                            {% for error in form.non_field_errors %}
-                                <p class="mb-0">{{ error }}</p>
-                            {% endfor %}
+                            {% for error in form.non_field_errors %}<p class="mb-0">{{ error }}</p>{% endfor %}
                         </div>
                     {% endif %}
 
-                    {# This loop displays each field AND any errors associated with it #}
-                    {% for field in form %}
-                        <div class="form-group">
-                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            {{ field }}
-                            {% if field.help_text %}
-                                <small class="form-text text-muted">{{ field.help_text|safe }}</small>
-                            {% endif %}
-                            {% for error in field.errors %}
-                                <div class="alert alert-danger mt-1 p-1" role="alert">
-                                    {{ error }}
-                                </div>
-                            {% endfor %}
+                    {# Username Field - Only shown for 'AddStudentForm' #}
+                    {% if form.username %}
+                    <div class="form-group">
+                        <label>{{ form.username.label_tag }}</label>
+                        {{ form.username }}
+                        {% for error in form.username.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>{{ form.first_name.label_tag }}</label>
+                            {{ form.first_name }}
+                            {% for error in form.first_name.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
                         </div>
-                    {% endfor %}
+                        <div class="form-group col-md-6">
+                            <label>{{ form.last_name.label_tag }}</label>
+                            {{ form.last_name }}
+                             {% for error in form.last_name.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.email.label_tag }}</label>
+                        {{ form.email }}
+                        {% for error in form.email.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    {# Password Field - Only shown for 'AddStudentForm' #}
+                    {% if form.password %}
+                     <div class="form-group">
+                        <label>{{ form.password.label_tag }}</label>
+                        {{ form.password }}
+                        {% for error in form.password.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <hr>
+                    <h5 class="card-title mt-4">Profile Details</h5>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>{{ form.student_id_number.label_tag }}</label>
+                            {{ form.student_id_number }}
+                            {% for error in form.student_id_number.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>{{ form.contact_number.label_tag }}</label>
+                            {{ form.contact_number }}
+                            {% for error in form.contact_number.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
 
                     <hr>
                     <a href="{% url 'academics:admin_student_list' student_group.id %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" name="_addanother" class="btn btn-secondary">Save and add another</button>
                     <button type="submit" class="btn btn-primary">Save Student</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}

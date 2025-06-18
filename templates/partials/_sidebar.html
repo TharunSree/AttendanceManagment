@@ -3,140 +3,94 @@
     <div class="main-menu">
         <div class="scroll">
             <ul class="list-unstyled">
-                {# Example: Dashboard Link #}
-                <li class="{% if request.resolver_match.url_name == 'admin_dashboard' or request.resolver_match.url_name == 'faculty_dashboard' or request.resolver_match.url_name == 'student_dashboard' %}active{% endif %}">
-                    {% if user.is_authenticated %}
-                        {% if user.profile.role == 'admin' %}
-                            <a href="#"> {# Replace with actual admin dashboard URL name #}
-                                <i class="iconsminds-shop-4"></i> <span>Admin Dashboard</span>
-                            </a>
-                        {% elif user.profile.role == 'faculty' %}
-                             <a href="#"> {# Replace #}
-                                <i class="iconsminds-digital-drawing"></i> <span>Faculty Dashboard</span>
-                            </a>
-                        {% elif user.profile.role == 'student' %}
-                             <a href="#"> {# Replace #}
-                                <i class="iconsminds-air-balloon-1"></i> <span>Student Dashboard</span>
-                            </a>
-                        {% else %}
-                             <a href="{% url 'home' %}"> {# Fallback #}
-                                <i class="iconsminds-shop-4"></i> <span>Dashboard</span>
-                            </a>
-                        {% endif %}
-                    {% else %}
-                        <a href="{% url 'login' %}">
-                             <i class="iconsminds-shop-4"></i> <span>Login</span>
-                        </a>
-                    {% endif %}
+                {# --- Dashboard Link (for everyone) --- #}
+                <li>
+                    <a href="{% url 'home' %}">
+                        <i class="iconsminds-shop-4"></i> <span>Dashboard</span>
+                    </a>
                 </li>
 
+                {# --- ADMIN SECTION --- #}
                 {% if user.is_authenticated and user.profile.role == 'admin' %}
-                <li>
-                    <a href="#usermanagement"> {# Data-target for submenu #}
-                        <i class="iconsminds-conference"></i> <span>User Management</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#coursetimetable">
-                        <i class="iconsminds-books"></i> <span>Courses & Timetable</span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="#admin_management">
+                            <i class="iconsminds-gears"></i> <span>Admin Management</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#attendance_views">
+                            <i class="iconsminds-pie-chart-3"></i> <span>Attendance</span>
+                        </a>
+                    </li>
                 {% endif %}
 
+                {# --- FACULTY SECTION --- #}
                 {% if user.is_authenticated and user.profile.role == 'faculty' %}
-                <li>
-                    <a href="#markattendance">
-                        <i class="iconsminds-check"></i> <span>Mark Attendance</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#viewreportsfaculty">
-                        <i class="iconsminds-pie-chart-3"></i> <span>View Reports</span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="#markattendance">
+                            <i class="iconsminds-check"></i> <span>Mark Attendance</span>
+                        </a>
+                    </li>
                 {% endif %}
 
-                 {% if user.is_authenticated and user.profile.role == 'student' %}
-                <li>
-                    <a href="#viewattendancestudent">
-                        <i class="iconsminds-line-chart-1"></i> <span>View My Attendance</span>
-                    </a>
-                </li>
+                {# --- STUDENT SECTION (Placeholder) --- #}
+                {% if user.is_authenticated and user.profile.role == 'student' %}
+                    <li>
+                        <a href="#">
+                            <i class="iconsminds-line-chart-1"></i> <span>My Attendance</span>
+                        </a>
+                    </li>
                 {% endif %}
-                {# Add other main menu items based on roles or general access #}
+
+                {# --- Logout (for everyone) --- #}
                 <li>
                     <a href="{% url 'logout' %}">
-                        <i class="simple-icon-logout"></i> Sign Out
+                        <i class="simple-icon-logout"></i> <span>Sign Out</span>
                     </a>
                 </li>
-
             </ul>
         </div>
     </div>
 
-    {# Submenu structure - this will need to be populated based on your actual app structure #}
-    {# This is just an example for the admin user management submenu #}
+    {# --- SUB MENUS --- #}
     <div class="sub-menu">
         <div class="scroll">
             {% if user.is_authenticated and user.profile.role == 'admin' %}
-            <ul class="list-unstyled" data-link="usermanagement">
-                <li>
-                    <a href="#"> {# {% url 'admin_view_users' %} #}
-                        <i class="simple-icon-people"></i> <span class="d-inline-block">View Users</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#"> {# {% url 'admin_create_user' %} #}
-                        <i class="simple-icon-user-follow"></i> <span class="d-inline-block">Create User</span>
-                    </a>
-                </li>
-            </ul>
-            <ul class="list-unstyled" data-link="coursetimetable">
-                 <li>
-                    <a href="#"> {# {% url 'admin_manage_courses' %} #}
-                        <i class="iconsminds-books"></i> <span class="d-inline-block">Manage Courses</span>
-                    </a>
-                </li>
-                 <li>
-                    <a href="#"> {# {% url 'admin_manage_subjects' %} #}
-                        <i class="iconsminds-book"></i> <span class="d-inline-block">Manage Subjects</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#"> {# {% url 'admin_manage_timetable' %} #}
-                        <i class="iconsminds-calendar-1"></i> <span class="d-inline-block">Manage Timetable</span>
-                    </a>
-                </li>
-            </ul>
+                <ul class="list-unstyled" data-link="admin_management">
+                    <li>
+                        <a href="{% url 'academics:course_list' %}">
+                            <i class="iconsminds-books"></i> <span class="d-inline-block">Manage Courses</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'academics:subject_list' %}">
+                            <i class="iconsminds-book"></i> <span class="d-inline-block">Manage Subjects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'teacher_list' %}">
+                             <i class="simple-icon-people"></i> <span class="d-inline-block">Manage Teachers</span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="list-unstyled" data-link="attendance_views">
+                    <li>
+                        <a href="{% url 'academics:admin_select_class' %}">
+                            <i class="simple-icon-eye"></i> <span class="d-inline-block">View Class Attendance</span>
+                        </a>
+                    </li>
+                </ul>
             {% endif %}
 
             {% if user.is_authenticated and user.profile.role == 'faculty' %}
-            <ul class="list-unstyled" data-link="markattendance">
-                <li>
-                    <a href="#"> {# {% url 'faculty_mark_attendance' %} #}
-                        <i class="simple-icon-check"></i> <span class="d-inline-block">Daily Attendance</span>
-                    </a>
-                </li>
-            </ul>
-             <ul class="list-unstyled" data-link="viewreportsfaculty">
-                <li>
-                    <a href="#"> {# {% url 'faculty_view_reports' %} #}
-                        <i class="simple-icon-graph"></i> <span class="d-inline-block">Attendance Reports</span>
-                    </a>
-                </li>
-            </ul>
+                <ul class="list-unstyled" data-link="markattendance">
+                    <li>
+                        <a href="{% url 'academics:faculty_schedule' %}">
+                            <i class="simple-icon-check"></i> <span class="d-inline-block">Daily Schedule</span>
+                        </a>
+                    </li>
+                </ul>
             {% endif %}
-
-            {% if user.is_authenticated and user.profile.role == 'student' %}
-             <ul class="list-unstyled" data-link="viewattendancestudent">
-                <li>
-                    <a href="#"> {# {% url 'student_view_attendance' %} #}
-                        <i class="simple-icon-eye"></i> <span class="d-inline-block">My Reports</span>
-                    </a>
-                </li>
-            </ul>
-            {% endif %}
-            {# Add other sub-menu ULs with data-link matching the href of main menu items #}
         </div>
     </div>
 </div>

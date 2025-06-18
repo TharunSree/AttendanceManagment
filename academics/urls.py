@@ -29,7 +29,7 @@ urlpatterns = [
     path('subjects/create/', views.subject_create_view, name='subject_create'),
     path('subjects/<int:pk>/update/', views.subject_update_view, name='subject_update'),
     path('subjects/<int:pk>/delete/', views.subject_delete_view, name='subject_delete'),
-
+    path('student/<int:pk>/update/', views.student_update_view, name='student_update'),
 
     # --- Academic Session Management URLs ---
 

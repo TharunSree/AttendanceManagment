@@ -82,7 +82,7 @@
                     <div class="form-group">
                         <label>{{ form.subjects.label_tag }}</label>
                         {{ form.subjects }}
-                         <small class="form-text text-muted">Hold down "Control", or "Command" on a Mac, to select more than one.</small>
+                         <small class="form-text text-muted">Hold down "Control", or "Command" on a Mac, to select more than one. Each subject will use its own default required hours.</small>
                         {% for error in form.subjects.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
                     </div>
 

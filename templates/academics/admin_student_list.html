@@ -22,71 +22,87 @@
         <div class="col-12">
             <div class="card mb-4">
                 <div class="card-body">
+
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="card-title mb-0">{{ student_group.course.name }} | {{ student_group.start_year }}
+                        <h5 class="card-title mb-0">{{ student_group.name }} ({{ total_students }} Total)
+                            | {{ student_group.start_year }}
                             - {{ student_group.passout_year }}</h5>
-                        <a href="{% url 'academics:student_create' student_group.id %}" class="btn btn-primary">Add
-                            Student</a>
+                        {% if students_with_attendance %}
+                            <a href="{% url 'academics:student_create' student_group.id %}" class="btn btn-primary">Add
+                                Student</a>
+                        {% endif %}
                     </div>
 
                     {# --- LOW ATTENDANCE FILTER CHECKBOX --- #}
-                    <form method="get" class="mb-3">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="low_attendance_filter"
-                                   name="low_attendance_filter" {% if show_low_attendance_only %}checked{% endif %}
-                                   onchange="this.form.submit()">
-                            <label class="custom-control-label" for="low_attendance_filter">Show only students with
-                                attendance below {{ required_percentage }}%</label>
-                        </div>
-                    </form>
-                    <hr/>
+                    {% if students_with_attendance %}
+                        <form method="get" class="mb-3">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="low_attendance_filter"
+                                       name="low_attendance_filter" {% if show_low_attendance_only %}checked{% endif %}
+                                       onchange="this.form.submit()">
+                                <label class="custom-control-label" for="low_attendance_filter">Show only students with
+                                    attendance below {{ required_percentage }}%</label>
+                            </div>
+                        </form>
+                        <hr/>
+                    {% endif %}
 
                     {# This class enables all the features: search, pagination, etc. #}
-                    <table class="data-table data-table-scrollable responsive nowrap">
-                        <thead>
-                        <tr>
-                            {# Added text-center class to all headers #}
-                            <th class="text-center">Student ID</th>
-                            <th class="text-center">Full Name</th>
-                            <th class="text-center">Mobile No.</th>
-                            <th class="text-center">Overall Attendance</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for item in students_with_attendance %}
+                    {% if students_with_attendance %}
+                        <table class="data-table data-table-scrollable responsive nowrap">
+                            <thead>
                             <tr>
-                                {# Added text-center class to all data cells #}
-                                <td class="text-center">{{ item.student.profile.student_id_number|default:"N/A" }}</td>
-                                <td class="text-center">
-                                    <a href="{% url 'academics:admin_student_attendance_detail' item.student.pk %}">
-                                        {{ item.student.get_full_name|default:item.student.username }}
-                                    </a>
-                                </td>
-                                <td class="text-center">{{ item.student.profile.contact_number|default:"N/A" }}</td>
-                                <td class="text-center">
-                                    {% if item.attendance_percentage is not None %}
-                                        <span class="badge badge-pill badge-{% if item.attendance_percentage < required_percentage %}danger{% else %}success{% endif %}">
+                                {# Added text-center class to all headers #}
+                                <th class="text-center">Student ID</th>
+                                <th class="text-center">Full Name</th>
+                                <th class="text-center">Mobile No.</th>
+                                <th class="text-center">Overall Attendance</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in students_with_attendance %}
+                                <tr>
+                                    {# Added text-center class to all data cells #}
+                                    <td class="text-center">{{ item.student.profile.student_id_number|default:"N/A" }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'academics:admin_student_attendance_detail' item.student.pk %}">
+                                            {{ item.student.get_full_name|default:item.student.username }}
+                                        </a>
+                                    </td>
+                                    <td class="text-center">{{ item.student.profile.contact_number|default:"N/A" }}</td>
+                                    <td class="text-center">
+                                        {% if item.attendance_percentage is not None %}
+                                            <span class="badge badge-pill badge-{% if item.attendance_percentage < required_percentage %}danger{% else %}success{% endif %}">
                         {{ item.attendance_percentage|floatformat:2 }}%
                     </span>
-                                    {% else %}
-                                        <span class="text-muted">No Data</span>
-                                    {% endif %}
-                                </td>
-                                <td class="text-center">
-                                    <a href="{% url 'academics:student_delete' item.student.pk %}"
-                                       class="btn btn-outline-danger btn-xs">Delete</a>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="5" class="text-center text-muted">No students found for this class or
-                                    matching the filter.
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                                        {% else %}
+                                            <span class="text-muted">No Data</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'academics:student_update' item.student.pk %}"
+                                               class="btn btn-outline-primary btn-xs">Edit</a>
+                                            <a href="{% url 'academics:student_delete' item.student.pk %}"
+                                               class="btn btn-outline-danger btn-xs">Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="col-12 text-center">
+                            <div class="alert alert-secondary p-5">
+                                <h4 class="alert-heading">No Students Found!</h4>
+                                <p class="mb-4">Please add a student to get started.</p>
+                                <a href="{% url 'academics:student_create' student_group.id %}"
+                                   class="btn btn-primary btn-lg">Add Your
+                                    First Student</a>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

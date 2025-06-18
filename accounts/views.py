@@ -8,7 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm  # Django's default log
 from django.contrib import messages
 
 from accounts.decorators import admin_required
-from accounts.forms import AddTeacherForm
+from accounts.forms import AddTeacherForm, EditTeacherForm
 
 
 # This is your custom form that you use in the view.
@@ -71,7 +71,7 @@ def home(request):
 @admin_required
 def teacher_list_view(request):
     # Get all users who have a profile with the role 'faculty'
-    teachers = User.objects.filter(profile__role='faculty')
+    teachers = User.objects.filter(profile__role='faculty').prefetch_related('profile__field_of_expertise')
     return render(request, 'accounts/teacher_list.html', {'teachers': teachers})
 
 
@@ -95,6 +95,8 @@ def teacher_create_view(request):
             user.profile.contact_number = form.cleaned_data['contact_number']
             user.profile.save()
 
+            user.profile.field_of_expertise.set(form.cleaned_data['field_of_expertise'])
+
             messages.success(request, 'Faculty member created successfully.')
             return redirect('teacher_list')
     else:
@@ -115,3 +117,40 @@ def teacher_delete_view(request, pk):
 
     # We can reuse the generic confirm delete template
     return render(request, 'academics/confirm_delete.html', {'item': teacher, 'type': 'Faculty Member'})
+
+
+@login_required
+@admin_required
+def teacher_update_view(request, pk):
+    teacher_user = get_object_or_404(User, pk=pk, profile__role='faculty')
+
+    if request.method == 'POST':
+        # We pass the 'instance' to pre-fill the Profile part of the form
+        form = EditTeacherForm(request.POST, instance=teacher_user.profile)
+        if form.is_valid():
+            # Save the Profile part
+            profile = form.save()
+
+            # Manually update and save the User part
+            teacher_user.first_name = form.cleaned_data['first_name']
+            teacher_user.last_name = form.cleaned_data['last_name']
+            teacher_user.email = form.cleaned_data['email']
+            teacher_user.save()
+
+            messages.success(request, f'Details for {teacher_user.get_full_name()} updated successfully.')
+            return redirect('teacher_list')
+    else:
+        # Pre-fill the form with the teacher's existing data
+        form = EditTeacherForm(instance=teacher_user.profile,
+                               initial={
+                                   'first_name': teacher_user.first_name,
+                                   'last_name': teacher_user.last_name,
+                                   'email': teacher_user.email
+                               })
+
+    context = {
+        'form': form,
+        'form_title': f'Edit Teacher: {teacher_user.get_full_name()}',
+        'teacher': teacher_user
+    }
+    return render(request, 'accounts/teacher_form.html', context)

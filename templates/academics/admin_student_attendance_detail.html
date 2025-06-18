@@ -41,8 +41,7 @@
                 <h5 class="card-title">{{ item.subject_name }}</h5>
                 <p class="text-muted text-small">Total Classes: {{ item.total_classes }}</p>
                 <div class="chart-container" style="height: 250px;">
-                    {# Each canvas needs a unique ID #}
-                    <canvas id="polarChart{{ item.subject_pk }}"></canvas>
+                    <canvas id="doughnutChart{{ item.subject_pk }}"></canvas>
                 </div>
             </div>
         </div>
@@ -56,58 +55,273 @@
 {% block vendor_scripts %}
     <script src="{% static 'js/vendor/Chart.bundle.min.js' %}"></script>
     <script src="{% static 'js/vendor/chartjs-plugin-datalabels.js' %}"></script>
+
+    <script src="{% static 'js/dore.script.js' %}"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
 {% endblock vendor_scripts %}
 
 {% block page_scripts %}
 <script>
     $(document).ready(function() {
-        try {
-            // Get the dynamic JSON data passed from the Django view
-            const subjectAttendanceData = JSON.parse('{{ subject_attendance_data_json|safe }}');
+        // --- START: Global Chart.js configuration and Custom Plugin Definitions ---
 
-            // Loop through each subject's data and create a chart
-            subjectAttendanceData.forEach(item => {
-                const ctx = document.getElementById('polarChart' + item.subject_pk);
-                if (ctx) {
-                    new Chart(ctx, {
-                        type: 'polarArea',
+        // 03.01. Getting Colors from CSS (Copied from dore.script.js to ensure local scope and availability)
+        var rootStyle = getComputedStyle(document.body);
+        var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
+        var foregroundColor = rootStyle.getPropertyValue("--foreground-color").trim();
+        var separatorColor = rootStyle.getPropertyValue("--separator-color").trim();
+
+        // Chart Tooltip (Copied from dore.script.js for consistency)
+        var chartTooltip = {
+            backgroundColor: foregroundColor,
+            titleFontColor: primaryColor,
+            borderColor: separatorColor,
+            borderWidth: 0.5,
+            bodyFontColor: primaryColor,
+            bodySpacing: 10,
+            xPadding: 15,
+            yPadding: 15,
+            cornerRadius: 0.15,
+            displayColors: false
+        };
+
+        // --- IMPORTANT: Redefine DoughnutWithShadow here ---
+        // This ensures the custom chart type is available BEFORE any chart is created in this script.
+        if (typeof Chart !== "undefined") {
+            Chart.defaults.global.defaultFontFamily = "'JetBrains Mono', sans-serif"; // Ensure font is set globally here too
+
+            Chart.defaults.DoughnutWithShadow = Chart.defaults.doughnut;
+            Chart.controllers.DoughnutWithShadow = Chart.controllers.doughnut.extend({
+                draw: function (ease) {
+                    Chart.controllers.doughnut.prototype.draw.call(this, ease);
+                    let ctx = this.chart.chart.ctx;
+                    ctx.save();
+                    ctx.shadowColor = "rgba(0,0,0,0.15)";
+                    ctx.shadowBlur = 10;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 10;
+                    ctx.responsive = true;
+                    Chart.controllers.doughnut.prototype.draw.apply(this, arguments);
+                    ctx.restore();
+                }
+            });
+            // You might want to copy other custom chart types here if you use them elsewhere in this block,
+            // e.g., LineWithShadow, PieWithShadow, etc.
+        }
+        // --- END IMPORTANT REDEFINITION ---
+
+
+        // Copy of centerTextPlugin from dore.script.js, adapted for robust use here
+        var centerTextPlugin = {
+        afterDatasetsUpdate: function (chart) { },
+        beforeDraw: function (chart) {
+          var width = chart.chartArea.right;
+          var height = chart.chartArea.bottom;
+          var ctx = chart.chart.ctx;
+          ctx.restore();
+
+          var activeLabel = chart.data.labels[0];
+          var activeValue = chart.data.datasets[0].data[0];
+          var dataset = chart.data.datasets[0];
+          var meta = dataset._meta[Object.keys(dataset._meta)[0]];
+          var total = meta.total;
+
+          var activePercentage = parseFloat(
+            ((activeValue / total) * 100).toFixed(1)
+          );
+          activePercentage = chart.legend.legendItems[0].hidden
+            ? 0
+            : activePercentage;
+
+          if (chart.pointAvailable) {
+            activeLabel = chart.data.labels[chart.pointIndex];
+            activeValue =
+              chart.data.datasets[chart.pointDataIndex].data[chart.pointIndex];
+
+            dataset = chart.data.datasets[chart.pointDataIndex];
+            meta = dataset._meta[Object.keys(dataset._meta)[0]];
+            total = meta.total;
+            activePercentage = parseFloat(
+              ((activeValue / total) * 100).toFixed(1)
+            );
+            activePercentage = chart.legend.legendItems[chart.pointIndex].hidden
+              ? 0
+              : activePercentage;
+          }
+
+          ctx.font = "28px" + " Nunito, sans-serif";
+          ctx.fillStyle = primaryColor;
+          ctx.textBaseline = "top";
+
+          var text = activePercentage + "%",
+            textX = Math.round((width - ctx.measureText(text).width) / 2),
+            textY = height / 2;
+          ctx.fillText(text, textX, textY);
+
+          ctx.font = "14px" + " Nunito, sans-serif";
+          ctx.textBaseline = "middle";
+
+          var text2 = activeLabel,
+            textX = Math.round((width - ctx.measureText(text2).width) / 2),
+            textY = height / 2 - 30;
+          ctx.fillText(text2, textX, textY);
+
+          ctx.save();
+        },
+        beforeEvent: function (chart, event, options) {
+          var firstPoint = chart.getElementAtEvent(event)[0];
+
+          if (firstPoint) {
+            chart.pointIndex = firstPoint._index;
+            chart.pointDataIndex = firstPoint._datasetIndex;
+            chart.pointAvailable = true;
+          }
+        }
+      };
+
+        // --- END: Global Chart.js configuration and Custom Plugin Definitions ---
+
+        // We'll use a named function for initialization to call it more reliably
+        function initializeDoughnutCharts() {
+            try {
+                const subjectAttendanceData = JSON.parse('{{ subject_attendance_data_json|safe }}');
+
+                // Destroy any existing Chart instances on these canvases to prevent conflicts
+                document.querySelectorAll('[id^="doughnutChart"]').forEach(canvas => {
+                    if (canvas.chart) {
+                        canvas.chart.destroy();
+                        canvas.chart = null;
+                    }
+                });
+
+                document.querySelectorAll('[id^="doughnutChart"]').forEach(canvasElement => {
+                    const subject_pk_match = canvasElement.id.match(/doughnutChart(\d+)/);
+                    if (!subject_pk_match) {
+                        console.warn(`Skipping canvas with invalid ID pattern: ${canvasElement.id}`);
+                        return;
+                    }
+
+                    const subject_pk = parseInt(subject_pk_match[1]);
+                    const item = subjectAttendanceData.find(dataItem => dataItem.subject_pk === subject_pk);
+
+                    if (!item) {
+                        console.warn(`No matching data found for canvas ID: ${canvasElement.id}. Data might be missing from Django context.`);
+                        return;
+                    }
+
+                    const ctx = canvasElement.getContext('2d');
+                    if (!ctx) {
+                        console.error(`ERROR: Could not get 2D context for canvas ID: ${canvasElement.id}. Canvas might be invalid or not rendered.`);
+                        return;
+                    }
+
+                    let attendedClasses = item.attended_classes;
+                    let absentClasses = item.total_classes - item.attended_classes;
+                    const totalClassesOverall = item.total_classes;
+
+                    let labels = ['Present', 'Absent'];
+                    let data = [attendedClasses, absentClasses];
+                    let backgroundColors = ["rgba(40, 212, 69, 0.2)", "rgba(250, 4, 27, 0.2)"];
+                    let borderColors = ["rgba(40, 212, 69, 0.75)", "rgba(250, 4, 27, 0.75)"];
+
+                    if (totalClassesOverall === 0) {
+                        labels = ['No Data'];
+                        data = [1];
+                        backgroundColors = ["rgba(150, 150, 150, 0.2)"];
+                        borderColors = ["rgba(150, 150, 150, 0.75)"];
+                    }
+
+                    const newChart = new Chart(ctx, {
+                        type: 'DoughnutWithShadow',
                         data: {
-                            labels: ['Present', 'Absent'],
+                            labels: labels,
                             datasets: [{
-                                data: [
-                                    item.attended_classes,
-                                    item.total_classes - item.attended_classes // Calculate absent
-                                ],
-                                backgroundColor: [
-                                    'rgba(75, 192, 192, 0.6)', // Green tint for Present
-                                    'rgba(255, 99, 132, 0.6)'  // Red tint for Absent
-                                ],
-                                borderWidth: 1
+                                data: data,
+                                backgroundColor: backgroundColors,
+                                borderColor: borderColors,
+                                borderWidth: 2
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
+                            cutoutPercentage: 80,
+                            animation: {
+                                animateRotate: true,
+                                animateScale: true
+                            },
                             legend: {
                                 display: true,
                                 position: 'bottom',
+                                labels: {
+                                    padding: 30,
+                                    usePointStyle: true,
+                                    fontSize: 12,
+                                    generateLabels: function(chart) {
+                                        const chartData = chart.data;
+                                        if (chartData.labels.length && chartData.datasets.length) {
+                                            return chartData.labels.map(function(label, i) {
+                                                const dataset = chartData.datasets[0];
+                                                const value = dataset.data[i];
+                                                const backgroundColor = dataset.backgroundColor[i];
+                                                const borderColor = dataset.borderColor[i];
+                                                const meta = chart.getDatasetMeta(0);
+
+                                                return {
+                                                    text: label + ' - ' + value,
+                                                    fillStyle: backgroundColor,
+                                                    strokeStyle: borderColor,
+                                                    lineWidth: dataset.borderWidth,
+                                                    hidden: (meta.data[i] && meta.data[i].hidden) || isNaN(value),
+                                                    index: i,
+                                                    datasetIndex: 0
+                                                };
+                                            });
+                                        }
+                                        return [];
+                                    }
+                                }
                             },
                             plugins: {
                                 datalabels: {
-                                    color: '#fff',
-                                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                                    borderRadius: 4,
-                                    font: { weight: 'bold' },
-                                    formatter: (value) => { return value; }
+                                    display: false
                                 }
-                            }
-                        }
+                            },
+                            tooltips: chartTooltip
+                        },
+                        plugins: [centerTextPlugin]
                     });
-                }
-            });
-        } catch (error) {
-            console.error("Could not parse chart data or render charts:", error);
+
+                    canvasElement.chart = newChart; // Store chart instance
+                });
+
+            } catch (error) {
+                console.error("An error occurred during chart initialization:", error);
+            }
         }
+
+        // --- FINAL ATTEMPT AT ROBUST INITIALIZATION TIMING ---
+        // We'll combine document.ready with an even more explicit check.
+        // It's possible dore.script.js or others are interfering heavily.
+        // If this still doesn't work, consider reducing the number of scripts loaded or
+        // debugging scripts.js / dore.script.js for global Chart.js interference.
+
+        const checkAndInitCharts = () => {
+            const canvasElements = document.querySelectorAll('[id^="doughnutChart"]');
+            // Check if all canvas elements from the data are present in the DOM
+            // (You might need to adjust this check if subject_attendance_data can be very large)
+            const subjectAttendanceData = JSON.parse('{{ subject_attendance_data_json|safe }}');
+            if (canvasElements.length === subjectAttendanceData.length) {
+                 // All canvases are likely rendered, proceed with initialization
+                initializeDoughnutCharts();
+            } else {
+                // Not all canvases rendered yet, try again after a short delay
+                setTimeout(checkAndInitCharts, 100); // Increased from 50
+            }
+        };
+
+        checkAndInitCharts(); // Start the checking loop
+
     });
 </script>
 {% endblock page_scripts %}

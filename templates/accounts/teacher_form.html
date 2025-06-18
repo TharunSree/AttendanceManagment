@@ -1,20 +1,103 @@
 {% extends "base.html" %}
-{% block page_title %}Add New Teacher{% endblock %}
-{% block main_page_title %}Add New Teacher{% endblock %}
+{% load static %}
+
+{% block page_title %}{{ form_title }}{% endblock page_title %}
+
+{% block vendor_styles %}
+    {# These are for the 'Field of Expertise' multi-select dropdown #}
+    <link rel="stylesheet" href="{% static 'css/vendor/select2.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/vendor/select2-bootstrap.min.css' %}" />
+{% endblock vendor_styles %}
+
+{% block main_page_title %}{{ form_title }}{% endblock main_page_title %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'accounts:teacher_list' %}">Teachers</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% if form.instance.pk %}Edit{% else %}Add{% endif %}</li>
+{% endblock breadcrumbs %}
+
 {% block content %}
-<div class="row"><div class="col-12"><div class="card"><div class="card-body">
-    <h5 class="card-title">New Faculty Details</h5><hr>
-    <form method="post">
-        {% csrf_token %}
-        {% if form.non_field_errors %}
-            <div class="alert alert-danger">
-                {% for error in form.non_field_errors %}<p class="mb-0">{{ error }}</p>{% endfor %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}<p class="mb-0">{{ error }}</p>{% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <h5 class="card-title">Account Details</h5>
+
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>First Name</label>
+                            <div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="simple-icon-user"></i></span></div>{{ form.first_name }}</div>
+                            {% for error in form.first_name.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Last Name</label>
+                            <div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="simple-icon-user"></i></span></div>{{ form.last_name }}</div>
+                             {% for error in form.last_name.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+
+                    {% if form.username %}
+                    <div class="form-group">
+                        <label>Username</label>
+                        <div class="input-group"><div class="input-group-prepend"><span class="input-group-text">@</span></div>{{ form.username }}</div>
+                        {% for error in form.username.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="iconsminds-mail-read"></i></span></div>{{ form.email }}</div>
+                        {% for error in form.email.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    {% if form.password %}
+                     <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="iconsminds-key"></i></span></div>{{ form.password }}</div>
+                        {% for error in form.password.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <h5 class="card-title mt-4">Profile Details</h5>
+
+
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="simple-icon-phone"></i></span></div>{{ form.contact_number }}</div>
+                        {% for error in form.contact_number.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.field_of_expertise.label }}</label>
+                        {{ form.field_of_expertise }}
+                        <small class="form-text text-muted">{{ form.field_of_expertise.help_text }}</small>
+                        {% for error in form.field_of_expertise.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    <hr>
+                    <a href="{% url 'teacher_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    {% if not form.instance.pk %}
+                    <button type="submit" name="_addanother" class="btn btn-secondary">Save and add another</button>
+                    {% endif %}
+                </form>
             </div>
-        {% endif %}
-        {{ form.as_p }}
-        <hr>
-        <a href="{% url 'teacher_list' %}" class="btn btn-outline-secondary">Cancel</a>
-        <button type="submit" class="btn btn-primary">Save Teacher</button>
-    </form>
-</div></div></div></div>
-{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block vendor_scripts %}
+    <script src="{% static 'js/vendor/select2.full.js' %}"></script>
+{% endblock vendor_scripts %}

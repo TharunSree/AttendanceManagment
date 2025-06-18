@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Access Forbidden</title> {# Changed title to be specific for 403 #}
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script>
+        var STATIC_URL = "{% static '' %}";
+    </script>
+
+    {# Stylesheets using static template tag #}
+    <link rel="stylesheet" href="{% static 'font/iconsmind-s/css/iconsminds.css' %}"/>
+    <link rel="stylesheet" href="{% static 'font/simple-line-icons/css/simple-line-icons.css' %}"/>
+
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.rtl.only.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap-float-label.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}"/>
+</head>
+
+<body class="background show-spinner no-footer">
+<div class="fixed-background"></div>
+<main>
+    <div class="container">
+        <div class="row h-100">
+            <div class="col-12 col-md-10 mx-auto my-auto">
+                <div class="card auth-card">
+                    <div class="position-relative image-side ">
+                        <p class="text-white h2">ACCESS DENIED</p> {# Updated heading #}
+                        <p class="text-white mb-0">You don't have permission to view this page.</p>
+                        {# Updated message #}
+                    </div>
+                    <div class="form-side">
+                        <div class="text-center">
+                            <a href="{% url 'home' %}">
+                                <span class="logo-single"></span>
+                            </a>
+
+                            <h6 class="mb-4">You are not authorized to view this resource!</h6> {# Updated message #}
+                            <p class="mb-0 text-muted text-small mb-0">Error code</p>
+                            <p class="display-1 font-weight-bold mb-5">
+                                403
+                            </p>
+                            <a href="{% url 'home' %}" class="btn btn-primary btn-lg btn-shadow">GO BACK HOME</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{# Javascripts using static template tag #}
+<script src="{% static 'js/vendor/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/vendor/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/dore.script.js' %}"></script>
+<script src="{% static 'js/scripts.js' %}"></script>
+</body>
+
+</html>
