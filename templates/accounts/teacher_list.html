@@ -15,7 +15,7 @@
                 <div class="card-body">
                     <div class="mb-2 d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">All Faculty Members</h5>
-                        <a href="{% url 'teacher_create' %}" class="btn btn-primary">Add New
+                        <a href="{% url 'accounts:teacher_create' %}" class="btn btn-primary">Add New
                             Teacher</a>
                     </div>
 
@@ -40,9 +40,9 @@
                                 <td class="text-center">
                                     {% for subject in teacher.profile.field_of_expertise.all %}
                                         {% if subject.subject_type == 'Theory' %}
-                                            <span class="badge badge-pill badge-outline-primary">Theory</span>
+                                            <span class="badge badge-pill badge-outline-primary">{{ subject.name }}</span>
                                         {% else %}
-                                            <span class="badge badge-pill badge-outline-warning">Practical</span>
+                                            <span class="badge badge-pill badge-outline-warning">{{ subject.name }}</span>
                                         {% endif %}
                                     {% empty %}
                                         <span class="text-muted">Not Assigned</span>
@@ -50,9 +50,9 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
-                                        <a href="{% url 'teacher_update' teacher.pk %}"
+                                        <a href="{% url 'accounts:teacher_update' teacher.pk %}"
                                            class="btn btn-outline-primary btn-xs">Edit</a>
-                                        <a href="{% url 'teacher_delete' teacher.pk %}"
+                                        <a href="{% url 'accounts:teacher_delete' teacher.pk %}"
                                            class="btn btn-outline-danger btn-xs">Delete</a>
                                     </div>
                                 </td>

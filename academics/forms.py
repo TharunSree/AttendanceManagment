@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 from accounts.models import Profile
-from .models import Course, StudentGroup, Subject, AttendanceRecord, CourseSubject
+from .models import Course, StudentGroup, Subject, AttendanceRecord, CourseSubject, AttendanceSettings, TimeSlot
 
 
 class StudentGroupForm(forms.ModelForm):
@@ -85,4 +85,24 @@ class EditStudentForm(forms.ModelForm):
         widgets = {
             'student_id_number': forms.TextInput(attrs={'class': 'form-control'}),
             'contact_number': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class TimeSlotForm(forms.ModelForm):
+    class Meta:
+        model = TimeSlot
+        fields = ['start_time', 'end_time', 'label']
+        widgets = {
+            'start_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'end_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "e.g., LUNCH"}),
+        }
+
+class AttendanceSettingsForm(forms.ModelForm):
+    class Meta:
+        model = AttendanceSettings
+        fields = ['required_percentage', 'mark_deadline_days', 'edit_deadline_days']
+        widgets = {
+            'required_percentage': forms.NumberInput(attrs={'class': 'form-control'}),
+            'mark_deadline_days': forms.NumberInput(attrs={'class': 'form-control'}),
+            'edit_deadline_days': forms.NumberInput(attrs={'class': 'form-control'}),
         }

@@ -32,6 +32,35 @@
     </div>
 </div>
 
+{# Semester Filter Card #}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <form method="get" action="">
+                    <div class="form-row align-items-end">
+                        <div class="form-group col-md-4">
+                            <label for="semesterFilter"><strong>Filter by Semester</strong></label>
+                            <select id="semesterFilter" name="semester" class="form-control custom-select">
+                                <option value="">All Semesters</option>
+                                {% for sem in available_semesters %}
+                                    <option value="{{ sem }}" {% if sem == selected_semester %}selected{% endif %}>
+                                        Semester {{ sem }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {# Subject-wise Attendance Charts #}
 <div class="row">
     {% for item in subject_attendance_data %}
@@ -47,7 +76,12 @@
         </div>
     </div>
     {% empty %}
-    <div class="col-12"><div class="alert alert-info"><p class="mb-0">No subjects found for this student's course.</p></div></div>
+    <div class="col-12">
+        <div class="alert alert-warning">
+            <p class="mb-0">No subjects found for the selected semester.</p>
+            <p class="mb-0 text-small">There might be no subjects assigned to this semester for the student's course, or there might be no timetable scheduled yet for these subjects.</p>
+        </div>
+    </div>
     {% endfor %}
 </div>
 {% endblock content %}
@@ -300,27 +334,17 @@
             }
         }
 
-        // --- FINAL ATTEMPT AT ROBUST INITIALIZATION TIMING ---
-        // We'll combine document.ready with an even more explicit check.
-        // It's possible dore.script.js or others are interfering heavily.
-        // If this still doesn't work, consider reducing the number of scripts loaded or
-        // debugging scripts.js / dore.script.js for global Chart.js interference.
-
         const checkAndInitCharts = () => {
             const canvasElements = document.querySelectorAll('[id^="doughnutChart"]');
-            // Check if all canvas elements from the data are present in the DOM
-            // (You might need to adjust this check if subject_attendance_data can be very large)
             const subjectAttendanceData = JSON.parse('{{ subject_attendance_data_json|safe }}');
             if (canvasElements.length === subjectAttendanceData.length) {
-                 // All canvases are likely rendered, proceed with initialization
                 initializeDoughnutCharts();
             } else {
-                // Not all canvases rendered yet, try again after a short delay
-                setTimeout(checkAndInitCharts, 100); // Increased from 50
+                setTimeout(checkAndInitCharts, 100);
             }
         };
 
-        checkAndInitCharts(); // Start the checking loop
+        checkAndInitCharts();
 
     });
 </script>

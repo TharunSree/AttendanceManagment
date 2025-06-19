@@ -30,6 +30,9 @@ urlpatterns = [
     path('subjects/<int:pk>/update/', views.subject_update_view, name='subject_update'),
     path('subjects/<int:pk>/delete/', views.subject_delete_view, name='subject_delete'),
     path('student/<int:pk>/update/', views.student_update_view, name='student_update'),
+    path('coming-soon/', views.faculty_daily_schedule_view, name='coming_soon'),
+    path('settings/', views.admin_settings_view, name='admin_settings'),
+    path('settings/timeslot/<int:pk>/delete/', views.timeslot_delete_view, name='timeslot_delete'),
 
     # --- Academic Session Management URLs ---
 

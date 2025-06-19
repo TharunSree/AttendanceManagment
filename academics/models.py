@@ -107,13 +107,17 @@ class StudentGroup(models.Model):
 class TimeSlot(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
-
-    class Meta:
-        unique_together = ('start_time', 'end_time')
-        ordering = ['start_time']
+    # --- NEW FIELD ---
+    label = models.CharField(max_length=50, blank=True, null=True,
+                             help_text="Optional label to display instead of time (e.g., 'LUNCH').")
 
     def __str__(self):
+        if self.label:
+            return f"{self.label} ({self.start_time.strftime('%H:%M')} - {self.end_time.strftime('%H:%M')})"
         return f"{self.start_time.strftime('%H:%M')} - {self.end_time.strftime('%H:%M')}"
+
+    class Meta:
+        ordering = ['start_time']
 
 
 class Timetable(models.Model):
@@ -137,35 +141,23 @@ class Timetable(models.Model):
 
 
 class AttendanceSettings(models.Model):
-    """
-    A singleton model to store site-wide attendance settings.
-    This ensures there is only ever one row of settings in the database.
-    """
-    # The 'pk' is explicitly set to 1 to ensure it's a singleton
     id = models.PositiveIntegerField(primary_key=True, default=1, editable=False)
-    required_percentage = models.PositiveIntegerField(
-        default=75,
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
-        help_text="Minimum attendance percentage required for students to be eligible."
-    )
+    required_percentage = models.PositiveIntegerField(default=75,
+                                                      validators=[MinValueValidator(0), MaxValueValidator(100)])
 
-    def __str__(self):
-        return "Global Attendance Settings"
-
-    def save(self, *args, **kwargs):
-        # Enforce that this object always has a primary key of 1
-        self.pk = 1
-        super(AttendanceSettings, self).save(*args, **kwargs)
+    # --- NEW FIELDS ---
+    mark_deadline_days = models.PositiveIntegerField(default=1,
+                                                     help_text="Number of days a faculty has to mark attendance.")
+    edit_deadline_days = models.PositiveIntegerField(default=3,
+                                                     help_text="Number of days a faculty has to edit attendance after marking.")
 
     @classmethod
     def load(cls):
-        # A convenient class method to get the settings object,
-        # creating it if it doesn't exist.
         obj, created = cls.objects.get_or_create(pk=1)
         return obj
 
-    class Meta:
-        verbose_name_plural = "Attendance Settings"
+    def __str__(self):
+        return "Global Attendance Settings"
 
 
 class AttendanceRecord(models.Model):

@@ -12,198 +12,213 @@
 {% endblock breadcrumbs %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            {% endfor %}
-        {% endif %}
-
-        <form method="post" id="courseForm">
-            {% csrf_token %}
-            
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Course Details</h5>
-                    <hr>
-
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            {% for error in form.non_field_errors %}
-                                <p class="mb-0">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    <div class="form-group">
-                        <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
-                        {{ form.name }}
-                        {% for error in form.name.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+    <div class="row">
+        <div class="col-12">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-
+                            {% if message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show"
+                         role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
+                {% endfor %}
+            {% endif %}
 
-                    <div class="form-group">
-                        <label for="{{ form.course_type.id_for_label }}">{{ form.course_type.label }}</label>
-                        {{ form.course_type }}
-                        {% for error in form.course_type.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                    </div>
+            <form method="post" id="courseForm">
+                {% csrf_token %}
 
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="{{ form.duration_years.id_for_label }}">{{ form.duration_years.label }}</label>
-                            {{ form.duration_years }}
-                            {% for error in form.duration_years.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Course Details</h5>
+                        <hr>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                            {{ form.name }}
+                            {% for error in form.name.errors %}
+                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="{{ form.required_hours_per_semester.id_for_label }}">{{ form.required_hours_per_semester.label }}</label>
-                            {{ form.required_hours_per_semester }}
-                            {% for error in form.required_hours_per_semester.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                        </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
-                        {{ form.description }}
-                        {% for error in form.description.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        <div class="form-group">
+                            <label for="{{ form.course_type.id_for_label }}">{{ form.course_type.label }}</label>
+                            {{ form.course_type }}
+                            {% for error in form.course_type.errors %}
+                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="{{ form.duration_years.id_for_label }}">{{ form.duration_years.label }}</label>
+                                {{ form.duration_years }}
+                                {% for error in form.duration_years.errors %}
+                                    <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="{{ form.required_hours_per_semester.id_for_label }}">{{ form.required_hours_per_semester.label }}</label>
+                                {{ form.required_hours_per_semester }}
+                                {% for error in form.required_hours_per_semester.errors %}
+                                    <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                            {{ form.description }}
+                            {% for error in form.description.errors %}
+                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Subjects in this Course</h5>
-                    <hr>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Subjects in this Course</h5>
+                        <hr>
 
-                    {% if formset.non_form_errors %}
-                        <div class="alert alert-danger">
-                            {% for error in formset.non_form_errors %}
-                                <p class="mb-0">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                        {% if formset.non_form_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in formset.non_form_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
-                    {{ formset.management_form }}
+                        {{ formset.management_form }}
 
-                    <div class="table-responsive">
-                        <table class="table" id="subjectsTable">
-                            <thead>
+                        <div class="table-responsive">
+                            <table class="table" id="subjectsTable">
+                                <thead>
                                 <tr>
                                     <th>Subject</th>
                                     <th>Semester</th>
                                     <th class="text-center">Delete?</th>
                                 </tr>
-                            </thead>
-                            <tbody id="formset-container">
-                            {% for subform in formset %}
-                                <tr class="formset-row {% if subform.DELETE.value %}table-danger{% endif %}">
-                                    <td>
-                                        {{ subform.subject }}
-                                        {% if subform.subject.errors %}
-                                            {% for error in subform.subject.errors %}
-                                                <div class="text-danger small">{{ error }}</div>
-                                            {% endfor %}
-                                        {% endif %}
-                                        {% for hidden in subform.hidden_fields %}{{ hidden }}{% endfor %}
-                                    </td>
-                                    <td>
-                                        {{ subform.semester }}
-                                        {% if subform.semester.errors %}
-                                            {% for error in subform.semester.errors %}
-                                                <div class="text-danger small">{{ error }}</div>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">
-                                        {% if subform.instance.pk %}
-                                            <div class="form-check text-center">
-                                                {{ subform.DELETE }}
-                                                <label class="badge badge-outline-danger ml-2" for="{{ subform.DELETE.id_for_label }}" >
-                                                    Remove
-                                                </label>
-                                            </div>
-                                        {% else %}
-                                            <div class="mr-2 d-inline-block">
-                                                {{ subform.DELETE }}</div>   <span class="badge badge-outline-secondary ">New</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody id="formset-container">
+                                {% for subform in formset %}
+                                    <tr class="formset-row {% if subform.DELETE.value %}table-danger{% endif %}">
+                                        <td>
+                                            {{ subform.subject }}
+                                            {% if subform.subject.errors %}
+                                                {% for error in subform.subject.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            {% endif %}
+                                            {% for hidden in subform.hidden_fields %}{{ hidden }}{% endfor %}
+                                        </td>
+                                        <td>
+                                            {{ subform.semester }}
+                                            {% if subform.semester.errors %}
+                                                {% for error in subform.semester.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center"
+                                            style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                                            {% if subform.instance.pk %}
+                                                <div class="form-check text-center">
+                                                    {{ subform.DELETE }}
+                                                    <label class="badge badge-outline-danger ml-2"
+                                                           for="{{ subform.DELETE.id_for_label }}">
+                                                        Remove
+                                                    </label>
+                                                </div>
+                                            {% else %}
+                                                <div>
+                                                    <div class="mr-2 d-inline-block">
+                                                        {{ subform.DELETE }}
+                                                    </div>
+                                                    <span class="badge badge-outline-secondary">New</span>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <button type="button" id="add-subject-btn" class="btn btn-outline-secondary mt-3">
-                        Add Another Subject
-                    </button>
-
-                    <hr class="mt-4">
-                    <div class="form-group mb-0 text-right">
-                        <a href="{% url 'academics:course_list' %}" class="btn btn-outline-secondary mr-2">
-                            Cancel
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            Save Course and Subjects
+                        <button type="button" id="add-subject-btn" class="btn btn-outline-secondary mt-3">
+                            Add Another Subject
                         </button>
+
+                        <hr class="mt-4">
+                        <div class="form-group mb-0 text-right">
+                            <a href="{% url 'academics:course_list' %}" class="btn btn-outline-secondary mr-2">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                Save Course and Subjects
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- Template for new rows -->
-<script type="text/template" id="empty-form-template">
-    <tr class="formset-row">
-        <td>
-            <select name="form-__prefix__-subject" id="id_form-__prefix__-subject" class="form-control">
-                <option value="">---------</option>
-                {% for subject in subjects_json %}
-                <option value="{{ subject.id }}">{{ subject.code }} - {{ subject.name }}</option>
-                {% endfor %}
-            </select>
-            <input type="hidden" name="form-__prefix__-id" id="id_form-__prefix__-id">
-        </td>
-        <td>
-            <input type="number" name="form-__prefix__-semester" id="id_form-__prefix__-semester" class="form-control" min="1" max="10">
-        </td>
-        <td class="text-center">
-            <span class="badge badge-secondary">New</span>
-            <input type="checkbox" name="form-__prefix__-DELETE" id="id_form-__prefix__-DELETE" style="display: none;">
-        </td>
-    </tr>
-</script>
+    <!-- Template for new rows -->
+    <script type="text/template" id="empty-form-template">
+        <tr class="formset-row">
+            <td>
+                <select name="form-__prefix__-subject" id="id_form-__prefix__-subject" class="form-control">
+                    <option value="">---------</option>
+                    {% for subject in subjects_json %}
+                        <option value="{{ subject.id }}">{{ subject.code }} - {{ subject.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="hidden" name="form-__prefix__-id" id="id_form-__prefix__-id">
+            </td>
+            <td>
+                <input type="number" name="form-__prefix__-semester" id="id_form-__prefix__-semester"
+                       class="form-control" min="1" max="10">
+            </td>
+            <td class="text-center">
+                <span class="badge badge-secondary">New</span>
+                <input type="checkbox" name="form-__prefix__-DELETE" id="id_form-__prefix__-DELETE"
+                       style="display: none;">
+            </td>
+        </tr>
+    </script>
 {% endblock content %}
 
 {% block page_scripts %}
-<script>
-$(document).ready(function() {
-    let formIndex = parseInt($('#id_form-TOTAL_FORMS').val());
-    
-    // Add new subject row
-    $('#add-subject-btn').click(function() {
-        const template = $('#empty-form-template').html();
-        const newForm = template.replace(/__prefix__/g, formIndex);
-        $('#formset-container').append(newForm);
-        
-        // Update total forms count
-        $('#id_form-TOTAL_FORMS').val(formIndex + 1);
-        formIndex++;
-    });
-    
-    // Handle delete checkbox changes
-    $(document).on('change', 'input[name$="-DELETE"]', function() {
-        const row = $(this).closest('tr');
-        if (this.checked) {
-            row.addClass('table-danger');
-        } else {
-            row.removeClass('table-danger');
-        }
-    });
-});
-</script>
+    <script>
+        $(document).ready(function () {
+            let formIndex = parseInt($('#id_form-TOTAL_FORMS').val());
+
+            // Add new subject row
+            $('#add-subject-btn').click(function () {
+                const template = $('#empty-form-template').html();
+                const newForm = template.replace(/__prefix__/g, formIndex);
+                $('#formset-container').append(newForm);
+
+                // Update total forms count
+                $('#id_form-TOTAL_FORMS').val(formIndex + 1);
+                formIndex++;
+            });
+
+            // Handle delete checkbox changes
+            $(document).on('change', 'input[name$="-DELETE"]', function () {
+                const row = $(this).closest('tr');
+                if (this.checked) {
+                    row.addClass('table-danger');
+                } else {
+                    row.removeClass('table-danger');
+                }
+            });
+        });
+    </script>
 {% endblock page_scripts %}

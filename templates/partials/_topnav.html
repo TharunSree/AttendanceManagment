@@ -36,7 +36,7 @@
         {% endcomment %}
     </div>
 
-    <a class="navbar-logo" href="{% url 'home' %}"> {# Or your main dashboard URL #}
+    <a class="navbar-logo" href="#"> {# Or your main dashboard URL #}
         {# Make sure these logo spans are styled by your CSS to show the logo, or replace with <img> tags #}
         <span class="logo d-none d-xs-block"></span>
         <span class="logo-mobile d-block d-xs-none"></span>
@@ -137,7 +137,7 @@
             <div class="dropdown-menu dropdown-menu-right mt-3">
                 <a class="dropdown-item" href="#">Account</a> {# {% url 'profile_view' %} #}
                 {# Add other relevant links here #}
-                <a class="dropdown-item" href="{% url 'logout' %}">Sign out</a>
+                <a class="dropdown-item" href="{% url 'accounts:logout' %}">Sign out</a>
             </div>
             {% else %}
              <a class="btn btn-outline-primary btn-sm" href="{% url 'login' %}">Login</a>

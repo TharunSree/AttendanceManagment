@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}Admin Settings{% endblock page_title %}
+
+{% block main_page_title %}Application Settings{% endblock main_page_title %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item active" aria-current="page">Settings</li>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+
+    <div class="col-12 col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Manage Time Slots</h5>
+                <p class="text-muted">Define the periods that make up a day for the timetable.</p>
+                
+                {# --- THIS IS THE FIX --- #}
+                {# Using the data-table class from your theme file #}
+                <table class="data-table data-table-scrollable responsive nowrap" data-order="[[ 1, &quot;asc&quot; ]]">
+                    <thead>
+                        <tr>
+                            <th class='text-center' scope="col">Label</th>
+                            <th class='text-center' scope="col">Start Time</th>
+                            <th class='text-center' scope="col">End Time</th>
+                            <th scope="col" class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for slot in timeslots %}
+                        <tr>
+                            <td class='text-center'>
+                                <p class="list-item-heading">{{ slot.label|default:"-" }}</p>
+                            </td>
+                            <td class='text-center'>
+                                <p class="text-muted">{{ slot.start_time|time:"g:i A" }}</p>
+                            </td>
+                            <td class='text-center'>
+                                <p class="text-muted">{{ slot.end_time|time:"g:i A" }}</p>
+                            </td>
+                            <td class="text-right">
+                                <form action="{% url 'academics:timeslot_delete' slot.pk %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-xs btn-outline-danger" onclick="return confirm('Are you sure you want to delete this time slot?');">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No time slots created yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <hr />
+                
+                <h6 class="mb-4">Add New Time Slot</h6>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            {{ timeslot_form.start_time.label_tag }}
+                            {{ timeslot_form.start_time }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            {{ timeslot_form.end_time.label_tag }}
+                            {{ timeslot_form.end_time }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ timeslot_form.label.label_tag }}
+                        {{ timeslot_form.label }}
+                    </div>
+                    <button type="submit" name="submit_timeslot" class="btn btn-primary">Add Time Slot</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">General Settings</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ settings_form.required_percentage.id_for_label }}">Required Attendance Percentage</label>
+                        {{ settings_form.required_percentage }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ settings_form.mark_deadline_days.id_for_label }}">Deadline to Mark Attendance (in days)</label>
+                        {{ settings_form.mark_deadline_days }}
+                        <small class="form-text text-muted">{{ settings_form.mark_deadline_days.help_text }}</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ settings_form.edit_deadline_days.id_for_label }}">Deadline to Edit Attendance (in days)</label>
+                        {{ settings_form.edit_deadline_days }}
+                        <small class="form-text text-muted">{{ settings_form.edit_deadline_days.help_text }}</small>
+                    </div>
+                    <button type="submit" name="submit_settings" class="btn btn-primary">Save Settings</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
+{% block vendor_scripts %}
+    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
+{% endblock vendor_scripts %}

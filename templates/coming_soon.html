@@ -1,0 +1,57 @@
+{% extends "base_minimal.html" %}
+{% load static %}
+
+{% block page_title %}Coming Soon{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+    <div class="row h-100">
+        <div class="col-12 col-md-10 mx-auto my-auto">
+            <div class="card auth-card text-center">
+                <div class="card-body">
+                    <a href="#">
+                        <span class="logo-single"></span>
+                    </a>
+                    <h6 class="lead mb-5 mt-4">This Feature will be available soon!</h6>
+
+                    <div id="timer" class="mb-5"></div>
+
+                    <div class="row">
+                        <div class="col-12 offset-0 col-md-8 offset-md-2 mb-2">
+                            <p>We are working hard to bring this feature to you.</p>
+                        </div>
+                        <div class="col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3 newsletter-input-container">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Enter your E-mail to get notified">
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary btn-xl" type="button">NOTIFY ME</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block page_scripts %}
+<script src="{% static 'js/vendor/countdown.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        if (typeof $.fn.countdown !== 'undefined') {
+            var TargetDate = new Date();
+            TargetDate.setDate(TargetDate.getDate() + 30);
+            $("#timer").countdown(TargetDate, function (event) {
+                $(this).html(
+                    event.strftime(
+                        '<div class="countdown-container"><div class="countdown-item"><span>%D</span> Days </div><div class="countdown-item"><span>%H</span> Hours </div><div class="countdown-item"><span>%M</span> Minutes </div><div class="countdown-item"><span>%S</span> Seconds </div></div>'
+                    )
+                );
+            });
+        }
+    });
+</script>
+{% endblock page_scripts %}

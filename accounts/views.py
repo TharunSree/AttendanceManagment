@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login as auth_login  # Renaming to
 from django.contrib.auth.forms import AuthenticationForm  # Django's default login form
 from django.contrib import messages
 
-from accounts.decorators import admin_required
+from accounts.decorators import admin_required, nav_item
 from accounts.forms import AddTeacherForm, EditTeacherForm
 
 
@@ -69,6 +69,7 @@ def home(request):
 
 @login_required
 @admin_required
+@nav_item(title="Manage Teachers", icon="simple-icon-people",url_name='accounts:teacher_list', roles=['admin'],group='admin_management')
 def teacher_list_view(request):
     # Get all users who have a profile with the role 'faculty'
     teachers = User.objects.filter(profile__role='faculty').prefetch_related('profile__field_of_expertise')

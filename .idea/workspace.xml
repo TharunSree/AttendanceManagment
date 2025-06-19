@@ -4,32 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="Set up comprehensive academics module, added migrations, templates, admin configurations, and support for attendance tracking.">
-      <change afterPath="$PROJECT_DIR$/templates/403.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/404.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/course_form_with_subjects.html" afterDir="false" />
+    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="Next Commit">
+      <change afterPath="$PROJECT_DIR$/academics/navigation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/academics/templatetags/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/academics/templatetags/nav_helpers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/admin_settings.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/base_minimal.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/coming_soon.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AttendanceManagement/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AttendanceManagement/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/academics/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/decorators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/admin_select_class.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_select_class.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/admin_student_attendance_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_student_attendance_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/admin_student_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_student_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/course_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/course_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/student_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/subject_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/subject_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/subject_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/subject_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/teacher_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/teacher_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/course_form_with_subjects.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/course_form_with_subjects.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/accounts/teacher_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/teacher_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/partials/_sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/_sidebar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/partials/_topnav.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/_topnav.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,27 +74,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Django Server.AttendanceManagement.executor": "Run",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
-    "django.template.preview.state": "SHOW_EDITOR",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/AttendanceManagement",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Django Server.AttendanceManagement.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/AttendanceManagement&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\AttendanceManagement\templates\accounts" />
@@ -167,7 +162,9 @@
       <workItem from="1750097554380" duration="187000" />
       <workItem from="1750100132172" duration="6627000" />
       <workItem from="1750191000680" duration="8986000" />
-      <workItem from="1750267382998" duration="12179000" />
+      <workItem from="1750267382998" duration="13916000" />
+      <workItem from="1750334729404" duration="3251000" />
+      <workItem from="1750338055627" duration="2135000" />
     </task>
     <task id="LOCAL-00001" summary="Add initial project configuration files and user profile signal handling">
       <option name="closed" value="true" />
@@ -241,7 +238,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750095048394</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Next Commit">
+      <option name="closed" value="true" />
+      <created>1750279989262</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1750279989262</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -266,6 +271,7 @@
     <MESSAGE value="Add index.html and update login, register, and password reset templates with static URL handling" />
     <MESSAGE value="Add password reset functionality with custom forms and email templates" />
     <MESSAGE value="Set up comprehensive academics module, added migrations, templates, admin configurations, and support for attendance tracking." />
-    <option name="LAST_COMMIT_MESSAGE" value="Set up comprehensive academics module, added migrations, templates, admin configurations, and support for attendance tracking." />
+    <MESSAGE value="Next Commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Next Commit" />
   </component>
 </project>

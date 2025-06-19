@@ -8,16 +8,49 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django import forms
 
-from academics.forms import EditStudentForm
+from academics.forms import EditStudentForm, AttendanceSettingsForm, TimeSlotForm
 from accounts.models import Profile
 from .forms import StudentGroupForm, CourseForm, AddStudentForm, SubjectForm
 from .models import StudentGroup, AttendanceSettings, Course, Subject, \
-    Timetable, AttendanceRecord, CourseSubject
-from accounts.decorators import admin_required
+    Timetable, AttendanceRecord, CourseSubject, TimeSlot
+from accounts.decorators import admin_required, nav_item
 import json
 
 
 # ... other views ...
+
+@login_required
+@admin_required
+@nav_item(title="Application Settings", icon="iconsminds-gears", url_name="academics:admin_settings", roles=['admin'],group='admin_management')
+def admin_settings_view(request):
+    timeslot_form = TimeSlotForm()
+    settings_obj = AttendanceSettings.load()
+    settings_form = AttendanceSettingsForm(instance=settings_obj)
+
+    if request.method == 'POST':
+        # Check which form was submitted based on the button's name attribute
+        if 'submit_timeslot' in request.POST:
+            timeslot_form = TimeSlotForm(request.POST)
+            if timeslot_form.is_valid():
+                timeslot_form.save()
+                messages.success(request, "New time slot has been created.")
+                return redirect('academics:admin_settings')
+
+        elif 'submit_settings' in request.POST:
+            settings_form = AttendanceSettingsForm(request.POST, instance=settings_obj)
+            if settings_form.is_valid():
+                settings_form.save()
+                messages.success(request, "Attendance settings have been updated.")
+                return redirect('academics:admin_settings')
+
+    timeslots = TimeSlot.objects.all()
+    context = {
+        'timeslots': timeslots,
+        'timeslot_form': timeslot_form,
+        'settings_form': settings_form
+    }
+    return render(request, 'academics/admin_settings.html', context)
+
 
 @login_required
 @admin_required
@@ -66,6 +99,7 @@ def admin_student_list_view(request, group_id):
 
 @login_required
 @admin_required
+@nav_item(title="View Class Attendance", icon="simple-icon-eye",url_name='academics:admin_select_class', roles=['admin'],group='attendance_views')
 def admin_select_class_view(request):
     """
     This view fetches all existing classes (StudentGroup) from the database
@@ -90,21 +124,33 @@ def admin_student_attendance_detail_view(request, student_id):
         student_group = student.profile.student_group
 
     subject_attendance_data = []
+    available_semesters = []
+    selected_semester = request.GET.get('semester')
 
     if student_group and student_group.course:
-        # Get all CourseSubject instances for the student's course
-        all_course_subjects = CourseSubject.objects.filter(course=student_group.course)
+        all_course_subjects_qs = CourseSubject.objects.filter(course=student_group.course)
+        available_semesters = all_course_subjects_qs.values_list('semester', flat=True).distinct().order_by('semester')
 
-        # Check which subjects have timetable entries
+        # --- THIS IS THE CHANGE ---
+        # If no semester is selected in the URL and semesters are available,
+        # default to the latest (highest number) semester.
+        if selected_semester is None and available_semesters:
+            selected_semester = available_semesters.last()
+        # --- END OF CHANGE ---
+
+        # Filter the subjects based on the selected (or defaulted) semester
+        if selected_semester and str(selected_semester).isdigit():
+            all_course_subjects = all_course_subjects_qs.filter(semester=selected_semester)
+        else:
+            all_course_subjects = all_course_subjects_qs
+
         timetable_coursesubject_ids = set(
             Timetable.objects.filter(student_group=student_group)
             .values_list('subject_id', flat=True)
         )
 
         for course_subject_instance in all_course_subjects:
-            # Check if this subject has timetable entries
             if course_subject_instance.id in timetable_coursesubject_ids:
-                # Calculate attendance as before
                 total_classes = AttendanceRecord.objects.filter(
                     timetable__student_group=student_group,
                     timetable__subject=course_subject_instance
@@ -117,7 +163,6 @@ def admin_student_attendance_detail_view(request, student_id):
                     status='Present'
                 ).count()
             else:
-                # No timetable entries yet - show as 0/0
                 total_classes = 0
                 attended_classes = 0
 
@@ -135,8 +180,12 @@ def admin_student_attendance_detail_view(request, student_id):
         'student_group': student_group,
         'subject_attendance_data': subject_attendance_data,
         'subject_attendance_data_json': json.dumps(subject_attendance_data),
+        'available_semesters': available_semesters,
+        'selected_semester': int(selected_semester) if selected_semester and str(selected_semester).isdigit() else None,
     }
     return render(request, 'academics/admin_student_attendance_detail.html', context)
+
+
 
 @login_required
 @admin_required
@@ -179,6 +228,7 @@ def student_group_update_view(request, pk):
 
 @login_required
 @admin_required
+@nav_item(title="Manage Courses", icon="iconsminds-books",url_name='academics:course_list', roles=['admin'],group='admin_management')
 def course_list_view(request):
     courses = Course.objects.all()
     return render(request, 'academics/course_list.html', {'courses': courses})
@@ -373,6 +423,7 @@ def student_delete_view(request, pk):
 
 @login_required
 @admin_required
+@nav_item(title="Manage Subjects", icon="iconsminds-book",url_name='academics:subject_list', roles=['admin'],group='admin_management')
 def subject_list_view(request):
     subjects = Subject.objects.all().order_by('name')
     return render(request, 'academics/subject_list.html', {'subjects': subjects})
@@ -457,3 +508,22 @@ def student_update_view(request, pk):
         'student_group': student_user.student_groups.first()  # For the cancel button link
     }
     return render(request, 'academics/student_form.html', context)
+
+
+
+
+@login_required
+@admin_required
+def timeslot_delete_view(request, pk):
+    timeslot = get_object_or_404(TimeSlot, pk=pk)
+    if request.method == 'POST':
+        timeslot.delete()
+        messages.success(request, "Time slot has been deleted.")
+    return redirect('academics:admin_settings')
+
+@login_required
+@admin_required
+@nav_item(title="Daily Schedule", icon="simple-icon-check",url_name='academics:coming_soon', roles=['faculty'],group='admin_management')
+def faculty_daily_schedule_view(request):
+    # This view is not built yet, so we'll just render a placeholder
+    return render(request, 'coming_soon.html') # A simple placeholder template

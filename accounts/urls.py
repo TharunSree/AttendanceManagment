@@ -4,6 +4,7 @@ from django.contrib.auth import views as auth_views
 
 from .forms import CustomPasswordResetForm, CustomSetPasswordForm
 
+app_name = 'accounts'
 urlpatterns = [
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
