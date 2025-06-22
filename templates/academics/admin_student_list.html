@@ -26,7 +26,12 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="card-title mb-0">{{ student_group.name }} ({{ total_students }} Total)
                             | {{ student_group.start_year }}
-                            - {{ student_group.passout_year }}</h5>
+                            - {{ student_group.passout_year }}
+                        {% if latest_semester_num %}
+                            <span class="badge badge-pill badge-outline-primary">Semester {{ latest_semester_num }} Attendance</span>
+                        {% endif %}
+                        </h5>
+
                         {% if students_with_attendance %}
                             <a href="{% url 'academics:student_create' student_group.id %}" class="btn btn-primary">Add
                                 Student</a>

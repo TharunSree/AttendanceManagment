@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}Mark Attendance{% endblock page_title %}
+
+{% block main_page_title %}
+    Mark Attendance
+    <span class="text-muted font-weight-light">- {{ timetable_entry.subject.subject.name }} | {{ timetable_entry.student_group.name }}</span>
+{% endblock main_page_title %}
+
+{% block content %}
+    {# Main form for submitting attendance #}
+    <form method="post" id="main-attendance-form" action="{% url 'academics:mark_attendance' timetable_entry.pk %}">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Student List</h5>
+
+                        <table class="data-table data-table-scrollable responsive nowrap" data-order="[]">
+                            <thead>
+                            <tr>
+                                <th>Mark All As:</th>
+                                <th class="text-center">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" id="markAllPresent"
+                                               name="markAll" value="Present">
+                                        <label class="custom-control-label" for="markAllPresent"></label>
+                                    </div>
+                                </th>
+                                <th class="text-center">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" id="markAllAbsent"
+                                               name="markAll" value="Absent">
+                                        <label class="custom-control-label" for="markAllAbsent"></label>
+                                    </div>
+                                </th>
+                                <th class="text-center">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" id="markAllLate" name="markAll"
+                                               value="Late">
+                                        <label class="custom-control-label" for="markAllLate"></label>
+                                    </div>
+                                </th>
+                                <th class="text-center">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" id="markAllOnDuty"
+                                               name="markAll" value="On Duty">
+                                        <label class="custom-control-label" for="markAllOnDuty"></label>
+                                    </div>
+                                </th>
+                                <th class="text-center">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" id="markAllExcused"
+                                               name="markAll" value="Excused">
+                                        <label class="custom-control-label" for="markAllExcused"></label>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th scope="col">Student Name</th>
+                                <th scope="col" class="text-center">Present</th>
+                                <th scope="col" class="text-center">Absent</th>
+                                <th scope="col" class="text-center">Late</th>
+                                <th scope="col" class="text-center">On Duty</th>
+                                <th scope="col" class="text-center">Excused</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for student_form in student_forms %}
+                                <tr>
+                                    <td>
+                                        <p class="list-item-heading">{{ student_form.0.get_full_name }}</p>
+                                        {{ student_form.1.student_id }}
+                                    </td>
+                                    {% for radio in student_form.1.status %}
+                                        <td class="text-center">
+                                            <div class="custom-control custom-radio">
+                                                {{ radio.tag }}
+                                                <label class="custom-control-label"
+                                                       for="{{ radio.id_for_label }}"></label>
+                                            </div>
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {# --- FIX: Combined button container --- #}
+    <div class="row mt-4">
+        <div class="col-12 text-right">
+
+            <form action="{% url 'academics:cancel_class' timetable_entry.pk %}" method="post" class="d-inline mr-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Are you sure you want to mark this class as not conducted? This cannot be undone.');">
+                    Class Not Conducted
+                </button>
+            </form>
+
+            <button type="submit" form="main-attendance-form" class="btn btn-primary btn-lg">Submit Attendance</button>
+
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block vendor_scripts %}
+    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
+{% endblock vendor_scripts %}
+{% block page_scripts %}
+    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('input[name="markAll"]').on('change', function () {
+                var status = $(this).val();
+                $('.data-table tbody input[type="radio"][value="' + status + '"]').prop('checked', true);
+            });
+        });
+    </script>
+{% endblock page_scripts %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block page_title %}User Group Permissions{% endblock page_title %}
+{% block main_page_title %}User Group Permissions{% endblock main_page_title %}
+
+{% block content %}
+<div class="row">
+    {% for group in groups %}
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <a href="{% url 'accounts:group_permission_edit' group.id %}">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="iconsminds-administrator large-icon"></i>
+                        <h5 class="card-title mt-3">{{ group.name }}</h5>
+                        <p class="card-text text-muted">{{ group.user_set.count }} user{{ group.user_set.count|pluralize }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <p>No user groups found. Please create groups in the Django Admin panel.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock content %}

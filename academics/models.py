@@ -110,6 +110,7 @@ class TimeSlot(models.Model):
     # --- NEW FIELD ---
     label = models.CharField(max_length=50, blank=True, null=True,
                              help_text="Optional label to display instead of time (e.g., 'LUNCH').")
+    is_schedulable = models.BooleanField(default=True, help_text="Uncheck for breaks like Lunch.")
 
     def __str__(self):
         if self.label:
@@ -168,6 +169,7 @@ class AttendanceRecord(models.Model):
         ('Present', 'Present'),
         ('Absent', 'Absent'),
         ('Late', 'Late'),
+        ('On Duty', 'On Duty'),
         ('Excused', 'Excused'),
     ]
 
@@ -198,3 +200,33 @@ class AttendanceRecord(models.Model):
 
     def __str__(self):
         return f"{self.student.username} on {self.date} - {self.status}"
+
+class ClassCancellation(models.Model):
+    """
+    A record to indicate that a scheduled class was not conducted on a specific day.
+    """
+    timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE, related_name='cancellations')
+    date = models.DateField()
+    cancelled_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        # A class can only be cancelled once per day
+        unique_together = ('timetable', 'date')
+
+    def __str__(self):
+        return f"Cancelled: {self.timetable} on {self.date}"
+
+class DailySubstitution(models.Model):
+    """
+    Represents a temporary, one-day substitution for a scheduled timetable entry.
+    """
+    timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE, related_name='substitutions')
+    date = models.DateField()
+    substituted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='substitute_classes', limit_choices_to={'profile__role': 'faculty'})
+
+    class Meta:
+        # A specific class period on a specific day can only have one substitute.
+        unique_together = ('timetable', 'date')
+
+    def __str__(self):
+        return f"{self.timetable} on {self.date} substituted by {self.substituted_by.get_full_name()}"

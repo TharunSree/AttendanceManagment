@@ -4,27 +4,38 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="Next Commit">
-      <change afterPath="$PROJECT_DIR$/academics/navigation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/academics/templatetags/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/academics/templatetags/nav_helpers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/admin_settings.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/base_minimal.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/coming_soon.html" afterDir="false" />
+    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="feat(academics): Default latest semester in attendance, fix group assignment for new students&#10;&#10;- In the student attendance detail view, if no semester is specified via URL,&#10;  the view now defaults to displaying data for the latest available semester.&#10;- Corrected an issue in the student creation process where the new student's&#10;  profile was not being associated with the selected student group.">
+      <change afterPath="$PROJECT_DIR$/academics/registry.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/daily_attendance_log.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/daily_log_detail.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/faculty_schedule.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/manage_substitutions.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/manage_timetable.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/mark_attendance.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/accounts/group_permission_edit.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/accounts/group_permission_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/partials/modal_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AttendanceManagement/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academics/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academics/navigation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/academics/templatetags/nav_helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/templatetags/nav_helpers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/decorators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/signals.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/403.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/403.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/admin_settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_settings.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/admin_student_attendance_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_student_attendance_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/course_form_with_subjects.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/course_form_with_subjects.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/teacher_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/teacher_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/partials/_sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/_sidebar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/partials/_topnav.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/_topnav.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/admin_student_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_student_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/subject_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/subject_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/Login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/Login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/teacher_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/teacher_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,6 +114,7 @@
       <recent name="D:\AttendanceManagement\templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\AttendanceManagement\academics" />
       <recent name="D:\AttendanceManagement\templates\accounts" />
       <recent name="D:\AttendanceManagement\templates\academics" />
       <recent name="D:\AttendanceManagement\accounts" />
@@ -164,7 +176,8 @@
       <workItem from="1750191000680" duration="8986000" />
       <workItem from="1750267382998" duration="13916000" />
       <workItem from="1750334729404" duration="3251000" />
-      <workItem from="1750338055627" duration="2135000" />
+      <workItem from="1750338055627" duration="19760000" />
+      <workItem from="1750427299824" duration="10215000" />
     </task>
     <task id="LOCAL-00001" summary="Add initial project configuration files and user profile signal handling">
       <option name="closed" value="true" />
@@ -246,7 +259,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750279989262</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="feat(academics): Default latest semester in attendance, fix group assignment for new students&#10;&#10;- In the student attendance detail view, if no semester is specified via URL,&#10;  the view now defaults to displaying data for the latest available semester.&#10;- Corrected an issue in the student creation process where the new student's&#10;  profile was not being associated with the selected student group.">
+      <option name="closed" value="true" />
+      <created>1750340597126</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1750340597126</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -272,6 +293,7 @@
     <MESSAGE value="Add password reset functionality with custom forms and email templates" />
     <MESSAGE value="Set up comprehensive academics module, added migrations, templates, admin configurations, and support for attendance tracking." />
     <MESSAGE value="Next Commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Next Commit" />
+    <MESSAGE value="feat(academics): Default latest semester in attendance, fix group assignment for new students&#10;&#10;- In the student attendance detail view, if no semester is specified via URL,&#10;  the view now defaults to displaying data for the latest available semester.&#10;- Corrected an issue in the student creation process where the new student's&#10;  profile was not being associated with the selected student group." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(academics): Default latest semester in attendance, fix group assignment for new students&#10;&#10;- In the student attendance detail view, if no semester is specified via URL,&#10;  the view now defaults to displaying data for the latest available semester.&#10;- Corrected an issue in the student creation process where the new student's&#10;  profile was not being associated with the selected student group." />
   </component>
 </project>

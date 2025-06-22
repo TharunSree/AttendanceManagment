@@ -10,7 +10,8 @@ from .models import (
     Timetable,
     AttendanceRecord,
     CourseSubject,
-    TimeSlot
+    TimeSlot,
+ClassCancellation
 )
 
 
@@ -77,3 +78,4 @@ class TimetableAdmin(admin.ModelAdmin):
 admin.site.register(AttendanceRecord)
 admin.site.register(CourseSubject)
 admin.site.register(TimeSlot)
+admin.site.register(ClassCancellation)

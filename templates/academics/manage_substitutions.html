@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load nav_helpers %}
+
+{% block page_title %}Manage Substitutions{% endblock page_title %}
+
+{% block main_page_title %}Manage Substitutions{% endblock main_page_title %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Select Date</h5>
+                <form method="get">
+                    <div class="form-group">
+                        <input type="text" class="form-control datepicker" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">View Schedule</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Schedule for {{ selected_date|date:"F d, Y" }}</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Class</th>
+                                <th>Subject</th>
+                                <th>Original Faculty</th>
+                                <th>Substitute Faculty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+    {% for entry in schedule %}
+        <tr>
+            <td>{{ entry.time_slot }}</td>
+            <td>{{ entry.student_group.name }}</td>
+            <td>{{ entry.subject.subject.name }}</td>
+            <td>{{ entry.faculty.get_full_name }}</td>
+            <td>
+                {% with current_sub=substitutions_map|get_item:entry.id %}
+                    {% if current_sub %}
+                        {# If a substitute is already assigned, show their name and a Cancel button #}
+                        <form action="{% url 'academics:cancel_substitution' entry.pk %}" method="post" class="form-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-success text-white">{{ current_sub.get_full_name }}</span>
+                                </div>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-danger" type="submit">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
+                    {% else %}
+                        {# If no substitute is assigned, show the assignment form #}
+                        <form action="{% url 'academics:assign_substitution' entry.pk %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+                            <div class="input-group">
+                                {{ substitution_form.substitute_faculty }}
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit">Assign</button>
+                                </div>
+                            </div>
+                        </form>
+                    {% endif %}
+                {% endwith %}
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="5" class="text-center text-muted">No classes scheduled for this day.</td>
+        </tr>
+    {% endfor %}
+</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block page_scripts %}
+<script>
+    // Initialize the datepicker
+    $('.datepicker').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true
+    });
+</script>
+{% endblock %}

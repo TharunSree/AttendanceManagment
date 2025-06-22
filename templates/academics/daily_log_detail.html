@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}Log Details{% endblock page_title %}
+
+{% block main_page_title %}Attendance Details{% endblock main_page_title %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'academics:daily_log' %}">Daily Activity Log</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Session Details</li>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card  mb-4">
+            <div class="card-body">
+                <h5 >{{ timetable_entry.subject.subject.name }}</h5>
+                <p class="mb-0"><strong>Class:</strong> {{ timetable_entry.student_group.name }}</p>
+                <p class="mb-0"><strong>Faculty:</strong> {{ timetable_entry.faculty.get_full_name }}</p>
+                <p class="text-muted"><strong>Date:</strong> {{ date }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Student Statuses</h5>
+                <table class="data-table data-table-scrollable responsive nowrap">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in records %}
+                            <tr>
+                                <td>
+                                    <p class="list-item-heading">{{ record.student.get_full_name }}</p>
+                                </td>
+                                <td class="text-center">
+                                    {# Using different badge colors based on status #}
+                                    {% if record.status == "Present" %}
+                                        <span class="badge badge-pill badge-outline-success">{{ record.status }}</span>
+                                    {% elif record.status == "Absent" %}
+                                         <span class="badge badge-pill badge-outline-danger">{{ record.status }}</span>
+                                    {% else %}
+                                         <span class="badge badge-pill badge-outline-secondary">{{ record.status }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-muted">No attendance records found for this session.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block vendor_scripts %}
+    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
+{% endblock vendor_scripts %}

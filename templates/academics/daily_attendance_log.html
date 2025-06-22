@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block page_title %}Daily Activity Log{% endblock page_title %}
+
+{% block main_page_title %}Daily Activity Log{% endblock main_page_title %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            {% for date, entries in log_data.items %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ date|date:"F d, Y" }} - {{ date|date:"l" }}</h5>
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Class</th>
+                                <th>Subject</th>
+                                <th>Faculty</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in entries %}
+
+                                <tr>
+                                    <td>
+                                        <p class="text-muted">{{ item.timetable.time_slot }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="list-item-heading">{{ item.timetable.student_group.name }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="text-muted">{{ item.timetable.subject.subject.name }}</p>
+                                    </td>
+                                    <td>
+                                        {# Show original faculty, and the substitute if one exists #}
+                                        <p class="text-muted mb-0">{{ item.timetable.faculty.get_full_name }}</p>
+                                        {% if item.substituted_by %}
+                                            <span class="text-success text-small">(Sub: {{ item.substituted_by.get_full_name }})</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="text-center">
+                                        <a href="{% url 'academics:daily_log_detail' timetable_id=item.timetable.id date=date|date:'Y-m-d' %}"
+                                        >
+                                            {% if item.status == 'Conducted' %}
+                                                <span class="badge badge-pill badge-primary">{{ item.present_count }} / {{ item.total_students }} Present</span>
+                                            {% elif item.status == 'Cancelled' %}
+                                                <span class="badge badge-pill badge-danger">Not Conducted</span>
+                                            {% endif %}
+                                        </a>
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="alert alert-info">No attendance has been marked for any class yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

@@ -32,6 +32,8 @@ body.show-spinner::after {
   z-index: 1;
 }
 
+
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -43,3 +45,4 @@ body.show-spinner::after {
     -webkit-transform: rotate(360deg);
   }
 }
+

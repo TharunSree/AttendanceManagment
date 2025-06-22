@@ -13,77 +13,95 @@
     {{ block.super }}
     <li class="breadcrumb-item"><a href="{% url 'academics:admin_select_class' %}">Select Class</a></li>
     {% if student_group %}
-    <li class="breadcrumb-item"><a href="{% url 'academics:admin_student_list' student_group.pk %}">{{ student_group.name }}</a></li>
+        <li class="breadcrumb-item"><a
+                href="{% url 'academics:admin_student_list' student_group.pk %}">{{ student_group.name }}</a></li>
     {% endif %}
     <li class="breadcrumb-item active" aria-current="page">{{ student.get_full_name|default:student.username }}</li>
 {% endblock breadcrumbs %}
 
 {% block content %}
-<div class="row">
-    {# Student Info Card #}
-    <div class="col-12 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h4>{{ student.get_full_name|default:student.username }}</h4>
-                <p class="text-muted mb-1">Student ID: {{ student.profile.student_id_number|default:"N/A" }}</p>
-                <p class="text-muted mb-0">Class: {% if student_group %} {{ student_group.name }} {% else %} Not Assigned {% endif %}</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-{# Semester Filter Card #}
-<div class="row">
-    <div class="col-12 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <form method="get" action="">
-                    <div class="form-row align-items-end">
-                        <div class="form-group col-md-4">
-                            <label for="semesterFilter"><strong>Filter by Semester</strong></label>
-                            <select id="semesterFilter" name="semester" class="form-control custom-select">
-                                <option value="">All Semesters</option>
-                                {% for sem in available_semesters %}
-                                    <option value="{{ sem }}" {% if sem == selected_semester %}selected{% endif %}>
-                                        Semester {{ sem }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <button type="submit" class="btn btn-primary">Filter</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-{# Subject-wise Attendance Charts #}
-<div class="row">
-    {% for item in subject_attendance_data %}
-    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">{{ item.subject_name }}</h5>
-                <p class="text-muted text-small">Total Classes: {{ item.total_classes }}</p>
-                <div class="chart-container" style="height: 250px;">
-                    <canvas id="doughnutChart{{ item.subject_pk }}"></canvas>
+    <div class="row">
+        {# Student Info Card #}
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4>{{ student.get_full_name|default:student.username }}</h4>
+                    <p class="text-muted mb-1">Student ID: {{ student.profile.student_id_number|default:"N/A" }}</p>
+                    <p class="text-muted mb-0">Class: {% if student_group %} {{ student_group.name }} {% else %} Not
+                        Assigned {% endif %}</p>
                 </div>
             </div>
         </div>
     </div>
-    {% empty %}
-    <div class="col-12">
-        <div class="alert alert-warning">
-            <p class="mb-0">No subjects found for the selected semester.</p>
-            <p class="mb-0 text-small">There might be no subjects assigned to this semester for the student's course, or there might be no timetable scheduled yet for these subjects.</p>
+
+    {# Semester Filter Card #}
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <form method="get" action="">
+                        <div class="form-row align-items-end">
+                            <div class="form-group col-md-4">
+                                <label for="semesterFilter"><strong>Filter by Semester</strong></label>
+                                <select id="semesterFilter" name="semester" class="form-control custom-select">
+                                    <option value="">All Semesters</option>
+                                    {% for sem in available_semesters %}
+                                        <option value="{{ sem }}" {% if sem == selected_semester %}selected{% endif %}>
+                                            Semester {{ sem }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-    {% endfor %}
-</div>
+
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">
+                        Overall Attendance {% if selected_semester %}(Semester {{ selected_semester }}){% endif %}
+                    </h5>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="overallDoughnutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {# Subject-wise Attendance Charts #}
+    <div class="row">
+        {% for item in subject_attendance_data %}
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.subject_name }}</h5>
+                        <p class="text-muted text-small">Total Classes: {{ item.total_classes }}</p>
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="doughnutChart{{ item.subject_pk }}"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    <p class="mb-0">No subjects found for the selected semester.</p>
+                    <p class="mb-0 text-small">There might be no subjects assigned to this semester for the student's
+                        course, or there might be no timetable scheduled yet for these subjects.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock content %}
 
 {% block vendor_scripts %}
@@ -95,257 +113,130 @@
 {% endblock vendor_scripts %}
 
 {% block page_scripts %}
-<script>
-    $(document).ready(function() {
-        // --- START: Global Chart.js configuration and Custom Plugin Definitions ---
+    <script>
+        $(document).ready(function () {
+            // --- Global Chart Config ---
+            var rootStyle = getComputedStyle(document.body);
+            var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
+            var foregroundColor = rootStyle.getPropertyValue("--foreground-color").trim();
+            var separatorColor = rootStyle.getPropertyValue("--separator-color").trim();
+            var chartTooltip = {backgroundColor: foregroundColor, titleFontColor: primaryColor, borderColor: separatorColor, borderWidth: 0.5, bodyFontColor: primaryColor, bodySpacing: 10, xPadding: 15, yPadding: 15, cornerRadius: 0.15, displayColors: false };
 
-        // 03.01. Getting Colors from CSS (Copied from dore.script.js to ensure local scope and availability)
-        var rootStyle = getComputedStyle(document.body);
-        var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
-        var foregroundColor = rootStyle.getPropertyValue("--foreground-color").trim();
-        var separatorColor = rootStyle.getPropertyValue("--separator-color").trim();
+            if (typeof Chart !== "undefined") {
+                Chart.defaults.global.defaultFontFamily = "'JetBrains Mono', sans-serif";
+                Chart.defaults.DoughnutWithShadow = Chart.defaults.doughnut;
+                Chart.controllers.DoughnutWithShadow = Chart.controllers.doughnut.extend({
+                    draw: function (ease) {
+                        Chart.controllers.doughnut.prototype.draw.call(this, ease);
+                        let ctx = this.chart.chart.ctx;
+                        ctx.save();
+                        ctx.shadowColor = "rgba(0,0,0,0.15)";
+                        ctx.shadowBlur = 10;
+                        ctx.shadowOffsetX = 0;
+                        ctx.shadowOffsetY = 10;
+                        ctx.responsive = true;
+                        Chart.controllers.doughnut.prototype.draw.apply(this, arguments);
+                        ctx.restore();
+                    }
+                });
+            }
 
-        // Chart Tooltip (Copied from dore.script.js for consistency)
-        var chartTooltip = {
-            backgroundColor: foregroundColor,
-            titleFontColor: primaryColor,
-            borderColor: separatorColor,
-            borderWidth: 0.5,
-            bodyFontColor: primaryColor,
-            bodySpacing: 10,
-            xPadding: 15,
-            yPadding: 15,
-            cornerRadius: 0.15,
-            displayColors: false
-        };
-
-        // --- IMPORTANT: Redefine DoughnutWithShadow here ---
-        // This ensures the custom chart type is available BEFORE any chart is created in this script.
-        if (typeof Chart !== "undefined") {
-            Chart.defaults.global.defaultFontFamily = "'JetBrains Mono', sans-serif"; // Ensure font is set globally here too
-
-            Chart.defaults.DoughnutWithShadow = Chart.defaults.doughnut;
-            Chart.controllers.DoughnutWithShadow = Chart.controllers.doughnut.extend({
-                draw: function (ease) {
-                    Chart.controllers.doughnut.prototype.draw.call(this, ease);
-                    let ctx = this.chart.chart.ctx;
-                    ctx.save();
-                    ctx.shadowColor = "rgba(0,0,0,0.15)";
-                    ctx.shadowBlur = 10;
-                    ctx.shadowOffsetX = 0;
-                    ctx.shadowOffsetY = 10;
-                    ctx.responsive = true;
-                    Chart.controllers.doughnut.prototype.draw.apply(this, arguments);
+            // --- Center Text Plugin (Modified to accept a pre-calculated percentage) ---
+            var centerTextPlugin = {
+                beforeDraw: function (chart) {
+                    var width = chart.chartArea.right;
+                    var height = chart.chartArea.bottom;
+                    var ctx = chart.chart.ctx;
                     ctx.restore();
+
+                    // Get the official percentage from the chart's custom options
+                    var officialPercentage = chart.options.centerText ? chart.options.centerText.percentage : 0;
+
+                    ctx.font = "36px" + " Nunito, sans-serif";
+                    ctx.fillStyle = primaryColor;
+                    ctx.textBaseline = "middle";
+
+                    var text = officialPercentage.toFixed(1) + "%",
+                        textX = Math.round((width - ctx.measureText(text).width) / 2),
+                        textY = height / 2;
+
+                    ctx.fillText(text, textX, textY);
+                    ctx.save();
                 }
-            });
-            // You might want to copy other custom chart types here if you use them elsewhere in this block,
-            // e.g., LineWithShadow, PieWithShadow, etc.
-        }
-        // --- END IMPORTANT REDEFINITION ---
+            };
 
 
-        // Copy of centerTextPlugin from dore.script.js, adapted for robust use here
-        var centerTextPlugin = {
-        afterDatasetsUpdate: function (chart) { },
-        beforeDraw: function (chart) {
-          var width = chart.chartArea.right;
-          var height = chart.chartArea.bottom;
-          var ctx = chart.chart.ctx;
-          ctx.restore();
+            // --- Reusable Chart Initialization Function ---
+            function initializeChart(canvasId, presentCount, absentCount, onDutyCount, officialPercentage) {
+                const ctx = document.getElementById(canvasId)?.getContext('2d');
+                if (!ctx) return; // Don't try to render if canvas not found
 
-          var activeLabel = chart.data.labels[0];
-          var activeValue = chart.data.datasets[0].data[0];
-          var dataset = chart.data.datasets[0];
-          var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-          var total = meta.total;
+                const total = presentCount + absentCount + onDutyCount;
 
-          var activePercentage = parseFloat(
-            ((activeValue / total) * 100).toFixed(1)
-          );
-          activePercentage = chart.legend.legendItems[0].hidden
-            ? 0
-            : activePercentage;
+                let labels = ['Present', 'Absent', 'On Duty'];
+                let data = [presentCount, absentCount, onDutyCount];
+                let backgroundColors = ["rgba(40, 212, 69, 0.2)", "rgba(250, 4, 27, 0.2)", "rgba(150, 150, 150, 0.2)"];
+                let borderColors = ["rgba(40, 212, 69, 0.75)", "rgba(250, 4, 27, 0.75)", "rgba(150, 150, 150, 0.75)"];
 
-          if (chart.pointAvailable) {
-            activeLabel = chart.data.labels[chart.pointIndex];
-            activeValue =
-              chart.data.datasets[chart.pointDataIndex].data[chart.pointIndex];
+                if (total === 0) {
+                    labels = ['No Data'];
+                    data = [1];
+                    backgroundColors = ["rgba(150, 150, 150, 0.2)"];
+                    borderColors = ["rgba(150, 150, 150, 0.75)"];
+                }
 
-            dataset = chart.data.datasets[chart.pointDataIndex];
-            meta = dataset._meta[Object.keys(dataset._meta)[0]];
-            total = meta.total;
-            activePercentage = parseFloat(
-              ((activeValue / total) * 100).toFixed(1)
+                new Chart(ctx, {
+                    type: 'DoughnutWithShadow',
+                    data: {
+                        labels: labels,
+                        datasets: [{ data: data, backgroundColor: backgroundColors, borderColor: borderColors, borderWidth: 2 }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutoutPercentage: 80,
+                        title: { display: false },
+                        centerText: { percentage: officialPercentage, color: primaryColor }, // Pass data to our plugin
+                        legend: {
+                            display: true, position: 'bottom', labels: { padding: 20, usePointStyle: true, fontSize: 12,
+                                generateLabels: function (chart) {
+                                    const data = chart.data;
+                                    return data.labels.map((label, i) => ({
+                                        text: `${label} - ${data.datasets[0].data[i]}`,
+                                        fillStyle: data.datasets[0].backgroundColor[i]
+                                    }));
+                                }
+                            }
+                        },
+                        plugins: { datalabels: { display: false } },
+                        tooltips: chartTooltip
+                    },
+                    plugins: [centerTextPlugin]
+                });
+            }
+
+            // --- Initialize All Charts ---
+
+            // 1. Overall Chart
+            initializeChart(
+                'overallDoughnutChart',
+                {{ overall_attended }},
+                {{ overall_absent }},
+                {{ overall_on_duty }},
+                {{ overall_official_percentage }}
             );
-            activePercentage = chart.legend.legendItems[chart.pointIndex].hidden
-              ? 0
-              : activePercentage;
-          }
 
-          ctx.font = "28px" + " Nunito, sans-serif";
-          ctx.fillStyle = primaryColor;
-          ctx.textBaseline = "top";
-
-          var text = activePercentage + "%",
-            textX = Math.round((width - ctx.measureText(text).width) / 2),
-            textY = height / 2;
-          ctx.fillText(text, textX, textY);
-
-          ctx.font = "14px" + " Nunito, sans-serif";
-          ctx.textBaseline = "middle";
-
-          var text2 = activeLabel,
-            textX = Math.round((width - ctx.measureText(text2).width) / 2),
-            textY = height / 2 - 30;
-          ctx.fillText(text2, textX, textY);
-
-          ctx.save();
-        },
-        beforeEvent: function (chart, event, options) {
-          var firstPoint = chart.getElementAtEvent(event)[0];
-
-          if (firstPoint) {
-            chart.pointIndex = firstPoint._index;
-            chart.pointDataIndex = firstPoint._datasetIndex;
-            chart.pointAvailable = true;
-          }
-        }
-      };
-
-        // --- END: Global Chart.js configuration and Custom Plugin Definitions ---
-
-        // We'll use a named function for initialization to call it more reliably
-        function initializeDoughnutCharts() {
-            try {
-                const subjectAttendanceData = JSON.parse('{{ subject_attendance_data_json|safe }}');
-
-                // Destroy any existing Chart instances on these canvases to prevent conflicts
-                document.querySelectorAll('[id^="doughnutChart"]').forEach(canvas => {
-                    if (canvas.chart) {
-                        canvas.chart.destroy();
-                        canvas.chart = null;
-                    }
-                });
-
-                document.querySelectorAll('[id^="doughnutChart"]').forEach(canvasElement => {
-                    const subject_pk_match = canvasElement.id.match(/doughnutChart(\d+)/);
-                    if (!subject_pk_match) {
-                        console.warn(`Skipping canvas with invalid ID pattern: ${canvasElement.id}`);
-                        return;
-                    }
-
-                    const subject_pk = parseInt(subject_pk_match[1]);
-                    const item = subjectAttendanceData.find(dataItem => dataItem.subject_pk === subject_pk);
-
-                    if (!item) {
-                        console.warn(`No matching data found for canvas ID: ${canvasElement.id}. Data might be missing from Django context.`);
-                        return;
-                    }
-
-                    const ctx = canvasElement.getContext('2d');
-                    if (!ctx) {
-                        console.error(`ERROR: Could not get 2D context for canvas ID: ${canvasElement.id}. Canvas might be invalid or not rendered.`);
-                        return;
-                    }
-
-                    let attendedClasses = item.attended_classes;
-                    let absentClasses = item.total_classes - item.attended_classes;
-                    const totalClassesOverall = item.total_classes;
-
-                    let labels = ['Present', 'Absent'];
-                    let data = [attendedClasses, absentClasses];
-                    let backgroundColors = ["rgba(40, 212, 69, 0.2)", "rgba(250, 4, 27, 0.2)"];
-                    let borderColors = ["rgba(40, 212, 69, 0.75)", "rgba(250, 4, 27, 0.75)"];
-
-                    if (totalClassesOverall === 0) {
-                        labels = ['No Data'];
-                        data = [1];
-                        backgroundColors = ["rgba(150, 150, 150, 0.2)"];
-                        borderColors = ["rgba(150, 150, 150, 0.75)"];
-                    }
-
-                    const newChart = new Chart(ctx, {
-                        type: 'DoughnutWithShadow',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                data: data,
-                                backgroundColor: backgroundColors,
-                                borderColor: borderColors,
-                                borderWidth: 2
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            cutoutPercentage: 80,
-                            animation: {
-                                animateRotate: true,
-                                animateScale: true
-                            },
-                            legend: {
-                                display: true,
-                                position: 'bottom',
-                                labels: {
-                                    padding: 30,
-                                    usePointStyle: true,
-                                    fontSize: 12,
-                                    generateLabels: function(chart) {
-                                        const chartData = chart.data;
-                                        if (chartData.labels.length && chartData.datasets.length) {
-                                            return chartData.labels.map(function(label, i) {
-                                                const dataset = chartData.datasets[0];
-                                                const value = dataset.data[i];
-                                                const backgroundColor = dataset.backgroundColor[i];
-                                                const borderColor = dataset.borderColor[i];
-                                                const meta = chart.getDatasetMeta(0);
-
-                                                return {
-                                                    text: label + ' - ' + value,
-                                                    fillStyle: backgroundColor,
-                                                    strokeStyle: borderColor,
-                                                    lineWidth: dataset.borderWidth,
-                                                    hidden: (meta.data[i] && meta.data[i].hidden) || isNaN(value),
-                                                    index: i,
-                                                    datasetIndex: 0
-                                                };
-                                            });
-                                        }
-                                        return [];
-                                    }
-                                }
-                            },
-                            plugins: {
-                                datalabels: {
-                                    display: false
-                                }
-                            },
-                            tooltips: chartTooltip
-                        },
-                        plugins: [centerTextPlugin]
-                    });
-
-                    canvasElement.chart = newChart; // Store chart instance
-                });
-
-            } catch (error) {
-                console.error("An error occurred during chart initialization:", error);
-            }
-        }
-
-        const checkAndInitCharts = () => {
-            const canvasElements = document.querySelectorAll('[id^="doughnutChart"]');
+            // 2. Individual Subject Charts
             const subjectAttendanceData = JSON.parse('{{ subject_attendance_data_json|safe }}');
-            if (canvasElements.length === subjectAttendanceData.length) {
-                initializeDoughnutCharts();
-            } else {
-                setTimeout(checkAndInitCharts, 100);
-            }
-        };
-
-        checkAndInitCharts();
-
-    });
-</script>
+            subjectAttendanceData.forEach(item => {
+                initializeChart(
+                    `doughnutChart${item.subject_pk}`,
+                    item.attended_classes,
+                    item.absent_classes,
+                    item.on_duty_classes,
+                    item.official_percentage
+                );
+            });
+        });
+    </script>
 {% endblock page_scripts %}

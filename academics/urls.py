@@ -33,6 +33,19 @@ urlpatterns = [
     path('coming-soon/', views.faculty_daily_schedule_view, name='coming_soon'),
     path('settings/', views.admin_settings_view, name='admin_settings'),
     path('settings/timeslot/<int:pk>/delete/', views.timeslot_delete_view, name='timeslot_delete'),
+    path('faculty/schedule/', views.faculty_daily_schedule_view, name='faculty_schedule'),
+    path('faculty/mark-attendance/<int:timetable_id>/', views.mark_attendance_view, name='mark_attendance'),
+    path('faculty/cancel-class/<int:timetable_id>/', views.class_cancellation_view, name='cancel_class'),
+    path('daily-log/', views.daily_attendance_log_view, name='daily_log'),
+    path('daily-log/<int:timetable_id>/<str:date>/', views.daily_log_detail_view, name='daily_log_detail'),
+    path('timetable-entry/create/<int:group_id>/<str:day>/<int:timeslot_id>/', views.timetable_entry_create_view,
+         name='timetable_entry_create'),
+    path('timetable-entry/update/<int:entry_id>/', views.timetable_entry_update_view, name='timetable_entry_update'),
+    path('timetable-entry/delete/<int:entry_id>/', views.timetable_entry_delete_view, name='timetable_entry_delete'),
+    path('manage_timetable/', views.manage_timetable_view, name='manage_timetable'),
+    path('manage-substitutions/', views.manage_substitutions_view, name='manage_substitutions'),
+    path('assign-substitution/<int:timetable_id>/', views.assign_substitution_view, name='assign_substitution'),
+    path('cancel-substitution/<int:timetable_id>/', views.cancel_substitution_view, name='cancel_substitution'),
 
     # --- Academic Session Management URLs ---
 

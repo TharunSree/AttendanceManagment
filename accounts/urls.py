@@ -37,4 +37,6 @@ urlpatterns = [
     path('teachers/create/', views.teacher_create_view, name='teacher_create'),
     path('teachers/<int:pk>/delete/', views.teacher_delete_view, name='teacher_delete'),
     path('teachers/<int:pk>/update/', views.teacher_update_view, name='teacher_update'),
+    path('groups/', views.group_permission_list_view, name='group_permission_list'),
+    path('groups/<int:group_id>/edit/', views.group_permission_edit_view, name='group_permission_edit'),
 ]
