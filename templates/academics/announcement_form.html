@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}New Announcement{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>Create New Announcement</h1>
+            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                <ol class="breadcrumb pt-0">
+                    <li class="breadcrumb-item"><a href="{% url 'academics:announcement_list' %}">Announcements</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Create</li>
+                </ol>
+            </nav>
+            <div class="separator mb-5"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Compose Message</h5>
+                    <form method="post" class="mt-4" novalidate>
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label for="{{ form.title.id_for_label }}">Title</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}<div class="alert-danger p-1 mt-1 rounded">{{ form.title.errors }}</div>{% endif %}
+                        </div>
+                         <div class="form-group">
+                            <label for="{{ form.content.id_for_label }}">Content</label>
+                            {{ form.content }}
+                            {% if form.content.errors %}<div class="alert-danger p-1 mt-1 rounded">{{ form.content.errors }}</div>{% endif %}
+                        </div>
+
+                        {# --- NEW CHECKBOXES FOR TARGETING --- #}
+                        <h6 class="mt-4">Audience</h6>
+                        <div class="custom-control custom-checkbox mb-2">
+                            {{ form.send_to_all_students }}
+                            <label class="custom-control-label" for="{{ form.send_to_all_students.id_for_label }}">Send to All Students</label>
+                        </div>
+                        <div class="custom-control custom-checkbox mb-3">
+                            {{ form.send_to_all_faculty }}
+                            <label class="custom-control-label" for="{{ form.send_to_all_faculty.id_for_label }}">Send to All Faculty</label>
+                        </div>
+                        {# ------------------------------------ #}
+
+                         <div class="form-group">
+                            <label for="{{ form.target_student_groups.id_for_label }}">{{ form.target_student_groups.label }}</label>
+                            <p class="text-muted text-small">Select specific classes only if "Send to All Students" is unchecked.</p>
+                            <div class="scroll border" style="height: 150px;">
+                                <div class="p-3">
+                                    {{ form.target_student_groups }}
+                                </div>
+                            </div>
+                             {% if form.target_student_groups.errors %}<div class="alert-danger p-1 mt-1 rounded">{{ form.target_student_groups.errors }}</div>{% endif %}
+                        </div>
+                        <a href="{% url 'academics:announcement_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Send Announcement</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

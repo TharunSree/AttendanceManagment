@@ -1,60 +1,28 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block page_title %}Attendance Details - {{ student.get_full_name|default:student.username }}{% endblock page_title %}
+{% block page_title %}My Attendance{% endblock page_title %}
 
-{% block vendor_styles %}
-    {# This page needs Chart.js CSS if your base.html doesn't have it #}
-{% endblock vendor_styles %}
-
-{% block main_page_title %}Attendance Details{% endblock main_page_title %}
-
-{% block breadcrumbs %}
-    {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'academics:admin_select_class' %}">Select Class</a></li>
-    {% if student_group %}
-        <li class="breadcrumb-item"><a
-                href="{% url 'academics:admin_student_list' student_group.pk %}">{{ student_group.name }}</a></li>
-    {% endif %}
-    <li class="breadcrumb-item active" aria-current="page">{{ student.get_full_name|default:student.username }}</li>
-{% endblock breadcrumbs %}
+{% block main_page_title %}My Attendance{% endblock main_page_title %}
 
 {% block content %}
     <div class="row">
-        {# Student Info Card #}
+        {# Semester Filter Card #}
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-body">
-                    <h4>{{ student.get_full_name|default:student.username }}</h4>
-                    <p class="text-muted mb-1">Student ID: {{ student.profile.student_id_number|default:"N/A" }}</p>
-                    <p class="text-muted mb-0">Class: {% if student_group %} {{ student_group.name }} {% else %} Not
-                        Assigned {% endif %}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {# Semester Filter Card #}
-    <div class="row">
-        <div class="col-12 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <form method="get" action="">
-                        <div class="form-row align-items-end">
-                            <div class="form-group col-md-4">
-                                <label for="semesterFilter"><strong>Filter by Semester</strong></label>
-                                <select id="semesterFilter" name="semester" class="form-control custom-select">
-                                    <option value="">All Semesters</option>
-                                    {% for sem in available_semesters %}
-                                        <option value="{{ sem }}" {% if sem == selected_semester %}selected{% endif %}>
-                                            Semester {{ sem }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <button type="submit" class="btn btn-primary">Filter</button>
-                            </div>
+                    <form method="get" action="" class="form-inline">
+                        <div class="form-group mr-3">
+                            <label for="semesterFilter" class="mr-2"><strong>View Semester</strong></label>
+                            <select id="semesterFilter" name="semester" class="form-control custom-select" onchange="this.form.submit()">
+                                {% for sem in available_semesters %}
+                                    <option value="{{ sem }}" {% if sem == selected_semester %}selected{% endif %}>
+                                        Semester {{ sem }}
+                                    </option>
+                                {% empty %}
+                                     <option>No Semesters Found</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -62,12 +30,13 @@
         </div>
     </div>
 
+    {# Overall Attendance Chart #}
     <div class="row">
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="card-title">
-                        Overall Attendance {% if selected_semester %}(Semester {{ selected_semester }}){% endif %}
+                        Overall Attendance (Semester {{ selected_semester|default:'N/A' }})
                     </h5>
                     <div class="chart-container" style="height: 300px;">
                         <canvas id="overallDoughnutChart"></canvas>
@@ -76,7 +45,6 @@
             </div>
         </div>
     </div>
-
 
     {# Subject-wise Attendance Charts #}
     <div class="row">
@@ -94,141 +62,72 @@
             </div>
         {% empty %}
             <div class="col-12">
-                <div class="alert alert-warning">
-                    <p class="mb-0">No subjects found for the selected semester.</p>
-                    <p class="mb-0 text-small">There might be no subjects assigned to this semester for the student's
-                        course, or there might be no timetable scheduled yet for these subjects.</p>
+                <div class="alert alert-info">
+                    <p class="mb-0">No attendance data is available for this semester.</p>
                 </div>
             </div>
         {% endfor %}
     </div>
 {% endblock content %}
 
-{% block vendor_scripts %}
+
+{% block page_scripts %}
     <script src="{% static 'js/vendor/Chart.bundle.min.js' %}"></script>
     <script src="{% static 'js/vendor/chartjs-plugin-datalabels.js' %}"></script>
 
-    <script src="{% static 'js/dore.script.js' %}"></script>
-    <script src="{% static 'js/scripts.js' %}"></script>
-{% endblock vendor_scripts %}
-
-{% block page_scripts %}
     <script>
         $(document).ready(function () {
-            // --- Global Chart Config ---
+            // --- Global Chart Config & Plugins (for consistency) ---
             var rootStyle = getComputedStyle(document.body);
             var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
-            var foregroundColor = rootStyle.getPropertyValue("--foreground-color").trim();
-            var separatorColor = rootStyle.getPropertyValue("--separator-color").trim();
-            var chartTooltip = {backgroundColor: foregroundColor, titleFontColor: primaryColor, borderColor: separatorColor, borderWidth: 0.5, bodyFontColor: primaryColor, bodySpacing: 10, xPadding: 15, yPadding: 15, cornerRadius: 0.15, displayColors: false };
-
-            if (typeof Chart !== "undefined") {
-                Chart.defaults.global.defaultFontFamily = "'JetBrains Mono', sans-serif";
-                Chart.defaults.DoughnutWithShadow = Chart.defaults.doughnut;
-                Chart.controllers.DoughnutWithShadow = Chart.controllers.doughnut.extend({
-                    draw: function (ease) {
-                        Chart.controllers.doughnut.prototype.draw.call(this, ease);
-                        let ctx = this.chart.chart.ctx;
-                        ctx.save();
-                        ctx.shadowColor = "rgba(0,0,0,0.15)";
-                        ctx.shadowBlur = 10;
-                        ctx.shadowOffsetX = 0;
-                        ctx.shadowOffsetY = 10;
-                        ctx.responsive = true;
-                        Chart.controllers.doughnut.prototype.draw.apply(this, arguments);
-                        ctx.restore();
-                    }
-                });
-            }
-
-            // --- Center Text Plugin (Modified to accept a pre-calculated percentage) ---
-            var centerTextPlugin = {
-                beforeDraw: function (chart) {
-                    var width = chart.chartArea.right;
-                    var height = chart.chartArea.bottom;
-                    var ctx = chart.chart.ctx;
-                    ctx.restore();
-
-                    // Get the official percentage from the chart's custom options
-                    var officialPercentage = chart.options.centerText ? chart.options.centerText.percentage : 0;
-
-                    ctx.font = "36px" + " Nunito, sans-serif";
-                    ctx.fillStyle = primaryColor;
-                    ctx.textBaseline = "middle";
-
-                    var text = officialPercentage.toFixed(1) + "%",
-                        textX = Math.round((width - ctx.measureText(text).width) / 2),
-                        textY = height / 2;
-
-                    ctx.fillText(text, textX, textY);
-                    ctx.save();
-                }
-            };
-
+            if (typeof Chart !== "undefined") { Chart.defaults.global.defaultFontFamily = "'JetBrains Mono', sans-serif"; Chart.defaults.DoughnutWithShadow = Chart.defaults.doughnut; Chart.controllers.DoughnutWithShadow = Chart.controllers.doughnut.extend({ draw: function (ease) { Chart.controllers.doughnut.prototype.draw.call(this, ease); let ctx = this.chart.chart.ctx; ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.15)"; ctx.shadowBlur = 10; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 10; ctx.responsive = true; Chart.controllers.doughnut.prototype.draw.apply(this, arguments); ctx.restore(); } });}
+            var centerTextPlugin = { beforeDraw: function (chart) { var width = chart.chartArea.right; var height = chart.chartArea.bottom; var ctx = chart.chart.ctx; ctx.restore(); var officialPercentage = chart.options.centerText ? chart.options.centerText.percentage : 0; ctx.font = "36px" + " Nunito, sans-serif"; ctx.fillStyle = primaryColor; ctx.textBaseline = "middle"; var text = officialPercentage.toFixed(1) + "%", textX = Math.round((width - ctx.measureText(text).width) / 2), textY = height / 2; ctx.fillText(text, textX, textY); ctx.save(); } };
+            var chartTooltip = {backgroundColor: getComputedStyle(document.body).getPropertyValue("--foreground-color").trim(), titleFontColor: primaryColor, borderColor: getComputedStyle(document.body).getPropertyValue("--separator-color").trim(), borderWidth: 0.5, bodyFontColor: primaryColor, bodySpacing: 10, xPadding: 15, yPadding: 15, cornerRadius: 0.15, displayColors: false };
 
             // --- Reusable Chart Initialization Function ---
-            function initializeChart(canvasId, presentCount, absentCount, onDutyCount, officialPercentage) {
+            function initializeChart(canvasId, present, absent, onDuty, officialPercentage) {
                 const ctx = document.getElementById(canvasId)?.getContext('2d');
-                if (!ctx) return; // Don't try to render if canvas not found
+                if (!ctx) return;
 
-                const total = presentCount + absentCount + onDutyCount;
-
+                const total = present + absent + onDuty;
                 let labels = ['Present', 'Absent', 'On Duty'];
-                let data = [presentCount, absentCount, onDutyCount];
+                let data = [present, absent, onDuty];
                 let backgroundColors = ["rgba(40, 212, 69, 0.2)", "rgba(250, 4, 27, 0.2)", "rgba(150, 150, 150, 0.2)"];
                 let borderColors = ["rgba(40, 212, 69, 0.75)", "rgba(250, 4, 27, 0.75)", "rgba(150, 150, 150, 0.75)"];
 
                 if (total === 0) {
-                    labels = ['No Data'];
-                    data = [1];
-                    backgroundColors = ["rgba(150, 150, 150, 0.2)"];
-                    borderColors = ["rgba(150, 150, 150, 0.75)"];
+                    labels = ['No Data']; data = [1];
+                    backgroundColors = ["rgba(200, 200, 200, 0.2)"];
+                    borderColors = ["rgba(200, 200, 200, 0.75)"];
                 }
 
                 new Chart(ctx, {
                     type: 'DoughnutWithShadow',
-                    data: {
-                        labels: labels,
-                        datasets: [{ data: data, backgroundColor: backgroundColors, borderColor: borderColors, borderWidth: 2 }]
-                    },
+                    data: { labels, datasets: [{ data, backgroundColor: backgroundColors, borderColor: borderColors, borderWidth: 2 }] },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutoutPercentage: 80,
-                        title: { display: false },
-                        centerText: { percentage: officialPercentage, color: primaryColor }, // Pass data to our plugin
-                        legend: {
-                            display: true, position: 'bottom', labels: { padding: 20, usePointStyle: true, fontSize: 12,
-                                generateLabels: function (chart) {
-                                    const data = chart.data;
-                                    return data.labels.map((label, i) => ({
-                                        text: `${label} - ${data.datasets[0].data[i]}`,
-                                        fillStyle: data.datasets[0].backgroundColor[i]
-                                    }));
-                                }
-                            }
-                        },
-                        plugins: { datalabels: { display: false } },
-                        tooltips: chartTooltip
+                        responsive: true, maintainAspectRatio: false, cutoutPercentage: 80,
+                        centerText: { percentage: officialPercentage },
+                        legend: { display: true, position: 'bottom', labels: { padding: 20, usePointStyle: true, generateLabels: (chart) => chart.data.labels.map((label, i) => ({ text: `${label} - ${chart.data.datasets[0].data[i]}`, fillStyle: chart.data.datasets[0].backgroundColor[i] })) } },
+                        tooltips: chartTooltip, plugins: { datalabels: { display: false } }
                     },
                     plugins: [centerTextPlugin]
                 });
             }
 
-            // --- Initialize All Charts ---
+            // --- Initialize All Charts Using Data from View ---
 
             // 1. Overall Chart
             initializeChart(
                 'overallDoughnutChart',
-                {{ overall_attended }},
-                {{ overall_absent }},
-                {{ overall_on_duty }},
-                {{ overall_official_percentage }}
+                {{ overall_attended|default:0 }},
+                {{ overall_absent|default:0 }},
+                {{ overall_on_duty|default:0 }},
+                {{ overall_official_percentage|default:0 }}
             );
 
             // 2. Individual Subject Charts
-            const subjectAttendanceData = JSON.parse('{{ subject_attendance_data_json|safe }}');
-            subjectAttendanceData.forEach(item => {
+            const subjectData = JSON.parse('{{ subject_attendance_data_json|safe }}');
+            subjectData.forEach(item => {
                 initializeChart(
                     `doughnutChart${item.subject_pk}`,
                     item.attended_classes,

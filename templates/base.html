@@ -13,34 +13,48 @@
 
     {# <link rel="shortcut icon" href="{% static 'favicon.ico' %}" /> #}
 
-    <link rel="stylesheet" href="{% static 'font/iconsmind-s/css/iconsminds.css' %}" />
-    <link rel="stylesheet" href="{% static 'font/simple-line-icons/css/simple-line-icons.css' %}" />
+    <link rel="stylesheet" href="{% static 'font/iconsmind-s/css/iconsminds.css' %}"/>
+    <link rel="stylesheet" href="{% static 'font/simple-line-icons/css/simple-line-icons.css' %}"/>
     {% block vendor_styles %}{% endblock vendor_styles %}
-    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.rtl.only.min.css' %}" /> {# If using RTL #}
-    <link rel="stylesheet" href="{% static 'css/vendor/component-custom-switch.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/vendor/perfect-scrollbar.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.rtl.only.min.css' %}"/>
+    {# If using RTL #}
+    <link rel="stylesheet" href="{% static 'css/vendor/component-custom-switch.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/vendor/perfect-scrollbar.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}"/>
 
-    {# Add other common vendor CSS files your theme uses on most pages #}
-    {# For example, if datepicker is common: #}
-    {# <link rel="stylesheet" href="{% static 'css/vendor/bootstrap-datepicker3.min.css' %}" /> #}
 
-    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    {% block page_styles %}
+        {# ... other CSS links ... #}
 
-    {% block page_styles %}{% endblock page_styles %} {# For page-specific CSS #}
+        <style>
+            /* Fix for notification text in dark mode */
+            body.dark-mode .dropdown-menu#notificationDropdown .scroll .d-flex p {
+                color: var(--foreground-color) !important;
+            }
+
+            /* --- ADD THIS NEW RULE for the 'No unread' message --- */
+            body.dark-mode .dropdown-menu#notificationDropdown .d-flex .pl-3 p.font-weight-medium {
+                color: var(--foreground-color) !important;
+            }
+
+            /* ---------------------------------------------------- */
+        </style>
+
+    {% endblock page_styles %} {# For page-specific CSS #}
 
 </head>
 
-<body id="app-container" class="menu-default show-spinner"> {# Add other body classes like 'vertical boxed' if needed universally #}
+<body id="app-container" class="menu-default show-spinner">
+{# Add other body classes like 'vertical boxed' if needed universally #}
 
-    {% include 'partials/_topnav.html' %}
+{% include 'partials/_topnav.html' %}
 
-    {% include 'partials/_sidebar.html' %}
+{% include 'partials/_sidebar.html' %}
 
-    <main>
-        <div class="container-fluid">
-            {% block content %}
+<main>
+    <div class="container-fluid">
+        {% block content %}
             {# Default content if a child template doesn't provide any #}
             <div class="row">
                 <div class="col-12">
@@ -50,31 +64,104 @@
                             <li class="breadcrumb-item">
                                 <a href="{% url 'home' %}">Home</a> {# Or dashboard URL #}
                             </li>
-                             {% block breadcrumb %}{% endblock breadcrumb %}
+                            {% block breadcrumb %}{% endblock breadcrumb %}
                         </ol>
                     </nav>
                     <div class="separator mb-5"></div>
                 </div>
             </div>
-             <p>This is the default content from base.html. Please override this block in your child template.</p>
-            {% endblock content %}
+            <p>This is the default content from base.html. Please override this block in your child template.</p>
+        {% endblock content %}
+    </div>
+</main>
+
+<div class="modal fade" id="announcementModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="announcementModalTitle">
+                        <i class="simple-icon-speech mr-2"></i> Announcement
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-center mb-3" id="announcementModalTitleContent"></h4>
+                    <p id="announcementModalBodyContent"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">I Understand</button>
+                </div>
+            </div>
         </div>
-    </main>
+    </div>
 
-    {% include 'partials/_footer.html' %}
+{% include 'partials/_footer.html' %}
 
-    <script src="{% static 'js/vendor/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/vendor/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/vendor/perfect-scrollbar.min.js' %}"></script>
+<script src="{% static 'js/vendor/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/vendor/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/vendor/perfect-scrollbar.min.js' %}"></script>
 
-    {# BLOCK for page-specific libraries like datatables.min.js #}
-    {% block vendor_scripts %}{% endblock vendor_scripts %}
+{# BLOCK for page-specific libraries like datatables.min.js #}
+{% block vendor_scripts %}{% endblock vendor_scripts %}
 
-    <script src="{% static 'js/dore.script.js' %}"></script>
-    <script src="{% static 'js/scripts.js' %}"></script>
+<script src="{% static 'js/dore.script.js' %}"></script>
+<script src="{% static 'js/scripts.js' %}"></script>
 
 
-    {% block page_scripts %}{% endblock page_scripts %} {# For page-specific JS #}
+{% block page_scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#notificationButton').on('click', function () {
+                // If there are unread notifications, send a request to mark them as read
+                if (parseInt($('.count', this).text()) > 0) {
+                    $.ajax({
+                        url: "{% url 'accounts:mark_notifications_as_read' %}",
+                        type: 'POST',
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                        },
+                        success: function (response) {
+                            if (response.status === 'success') {
+                                // Hide the count badge immediately for better UX
+                                $('#notificationButton .count').hide();
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            function fetchAnnouncement() {
+                $.ajax({
+                    url: "{% url 'academics:check_announcements' %}",
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.found) {
+                            // An unseen announcement was found, let's populate and show the modal
+                            $('#announcementModalTitleContent').text(response.title);
+                            $('#announcementModalBodyContent').html(response.content.replace(/\n/g, '<br>'));
+                            $('#announcementModal').modal('show');
+                        }
+                    },
+                    error: function() {
+                        // Silently fail to avoid interrupting the user
+                        console.log("Could not check for announcements.");
+                    }
+                });
+            }
+
+            // Check for an announcement 3 seconds after the page loads
+            setTimeout(fetchAnnouncement, 3000);
+
+            // Then, check again every 30 seconds to provide real-time pop-ups
+            setInterval(fetchAnnouncement, 30000);
+        });
+    </script>
+{% endblock page_scripts %} {# For page-specific JS #}
 
 </body>
 </html>

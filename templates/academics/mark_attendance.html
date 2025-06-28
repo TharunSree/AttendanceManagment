@@ -10,7 +10,7 @@
 
 {% block content %}
     {# Main form for submitting attendance #}
-    <form method="post" id="main-attendance-form" action="{% url 'academics:mark_attendance' timetable_entry.pk %}">
+    <form method="post" id="main-attendance-form" action="{% if date %}{% url 'academics:mark_attendance_for_date' timetable_entry.pk date|date:'Y-m-d' %}{% else %}{% url 'academics:mark_attendance' timetable_entry.pk %}{% endif %}">
         {% csrf_token %}
         {{ formset.management_form }}
 

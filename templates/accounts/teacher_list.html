@@ -28,6 +28,7 @@
                             <th class="text-center">Contact No.</th>
                             <th class="text-center">Subjects Taught</th>
                             <th class="text-center">Actions</th>
+                            <th class="text-right">Password</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -55,6 +56,14 @@
                                         <a href="{% url 'accounts:teacher_delete' teacher.pk %}"
                                            class="btn btn-outline-danger btn-xs">Delete</a>
                                     </div>
+                                </td>
+                                <td class="text-right">
+                                    <form action="{% url 'accounts:admin_trigger_password_reset' teacher.pk %}"
+                                          method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-xs btn-outline-warning">Send Reset Link
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         {% empty %}

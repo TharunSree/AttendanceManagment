@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Attendance Reports{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>Generate Attendance Report</h1>
+            <div class="separator mb-5"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Select Report Criteria</h5>
+                    <form method="get" action="{% url 'academics:download_attendance_report' %}" target="_blank">
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label>Class</label>
+                                {{ form.student_group }}
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Subject</label>
+                                {{ form.subject }}
+                            </div>
+                             <div class="form-group col-md-3">
+                                <label>Month</label>
+                                {{ form.month }}
+                            </div>
+                             <div class="form-group col-md-3">
+                                <label>Year</label>
+                                {{ form.year }}
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Generate & Download Excel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

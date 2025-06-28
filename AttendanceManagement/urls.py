@@ -8,16 +8,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # --- THIS IS THE FIX ---
-    # Change the include() statements to use the recommended tuple format,
-    # which provides an app_name and a namespace for URL discovery.
-    
-    # OLD WAY:
-    # path('', include('accounts.urls')),
-    # path('academics/', include('academics.urls')),
-
-    # NEW, CORRECT WAY:
-    path('', include(('accounts.urls', 'accounts'), namespace='accounts')),
+    path('accounts/', include('accounts.urls')),
     path('academics/', include(('academics.urls', 'academics'), namespace='academics')),
 ]
 

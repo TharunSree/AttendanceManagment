@@ -1,17 +1,23 @@
+import csv
+import json
+
+from django.utils import timezone
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.contrib import messages
 
 from academics.models import Course, StudentGroup, Subject, Timetable, AttendanceRecord, DailySubstitution, \
-    ClassCancellation, AttendanceSettings
+    ClassCancellation, AttendanceSettings, CourseSubject
 from .decorators import nav_item
-from .forms import AddTeacherForm, EditTeacherForm
+from .forms import AddTeacherForm, EditTeacherForm, UserUpdateForm, ProfileUpdateForm, BulkImportForm
+from .models import Profile, Notification
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -22,6 +28,12 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    # Get the 'next' parameter from the GET request
+    next_url = request.GET.get('next')
+
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -30,15 +42,21 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 auth_login(request, user)
-                messages.success(request, f"Welcome back, {username}!")
-                return redirect('/')
+                messages.info(request, f"Welcome back, {user.get_full_name() or user.username}.")
+
+                # Get the 'next' parameter from the POST request (from the hidden input)
+                next_url_post = request.POST.get('next')
+                print(next_url_post)
+                if next_url_post != 'None':
+                    return redirect(next_url_post)
+                return redirect('accounts:home')
             else:
                 messages.error(request, "Invalid username or password.")
-        else:
-            messages.error(request, "Invalid username or password.")
     else:
         form = CustomAuthenticationForm()
-    return render(request, 'accounts/login.html', {'form': form})
+
+    # Pass the 'next' url to the template context
+    return render(request, 'accounts/login.html', {'form': form, 'next': next_url})
 
 
 def logout_view(request):
@@ -47,9 +65,22 @@ def logout_view(request):
     return redirect('accounts:login')
 
 
-def home(request):
-    # This is a simple placeholder. You should have a proper home view.
-    return render(request, 'index.html')
+@login_required
+@nav_item(title="Dashboard", icon="iconsminds-shop-4", url_name="accounts:home", order=0)
+def home_view(request):
+    """
+    Redirects users to their appropriate dashboard after login.
+    """
+    if hasattr(request.user, 'profile'):
+        if request.user.profile.role == 'admin':
+            return redirect('accounts:admin_dashboard')
+        elif request.user.profile.role == 'faculty':
+            return redirect('accounts:faculty_dashboard')
+        elif request.user.profile.role == 'student':
+            return redirect('accounts:student_dashboard')
+
+    # Fallback for superusers or users without a profile role
+    return redirect('accounts:admin_dashboard')
 
 
 @login_required
@@ -143,28 +174,48 @@ def group_permission_list_view(request):
 def group_permission_edit_view(request, group_id):
     group = get_object_or_404(Group, pk=group_id)
 
-    # --- (The existing logic for fetching permissions remains the same) ---
     managed_models = [
         Course, Subject, StudentGroup, User,
         Timetable, AttendanceRecord, DailySubstitution, ClassCancellation,
         AttendanceSettings
     ]
+    # Use the ContentType manager to get the content types for your models
     content_types = ContentType.objects.get_for_models(*managed_models).values()
     all_permissions = Permission.objects.filter(content_type__in=content_types)
     group_permissions = group.permissions.all()
+
+    # --- MODIFICATION START ---
     permissions_by_model = []
+    other_permissions = []  # A new list to hold any non-standard permissions
+
     for ct in content_types:
+        model_class = ct.model_class()
+        if not model_class:
+            continue
+
+        model_name_lower = model_class._meta.model_name
+        perms_for_model = all_permissions.filter(content_type=ct)
+
+        # Keep the existing structure for the main table
         model_perms = {
-            'name': ct.model_class()._meta.verbose_name_plural.title(),
-            'view': all_permissions.filter(content_type=ct, codename__startswith='view_').first(),
-            'add': all_permissions.filter(content_type=ct, codename__startswith='add_').first(),
-            'change': all_permissions.filter(content_type=ct, codename__startswith='change_').first(),
-            'delete': all_permissions.filter(content_type=ct, codename__startswith='delete_').first(),
+            'name': model_class._meta.verbose_name_plural.title(),
+            'view': perms_for_model.filter(codename=f'view_{model_name_lower}').first(),
+            'add': perms_for_model.filter(codename=f'add_{model_name_lower}').first(),
+            'change': perms_for_model.filter(codename=f'change_{model_name_lower}').first(),
+            'delete': perms_for_model.filter(codename=f'delete_{model_name_lower}').first(),
         }
         permissions_by_model.append(model_perms)
 
+        # Now, find any permission that is NOT a standard one and add it to our new list
+        standard_codenames = {
+            f'view_{model_name_lower}', f'add_{model_name_lower}',
+            f'change_{model_name_lower}', f'delete_{model_name_lower}'
+        }
+        custom_perms_for_model = perms_for_model.exclude(codename__in=standard_codenames)
+        other_permissions.extend(list(custom_perms_for_model))
+    # --- MODIFICATION END ---
+
     if request.method == 'POST':
-        # --- (The POST handling logic remains the same) ---
         selected_permission_ids = request.POST.getlist('permissions')
         selected_permissions = Permission.objects.filter(pk__in=selected_permission_ids)
         group.permissions.set(selected_permissions)
@@ -174,9 +225,320 @@ def group_permission_edit_view(request, group_id):
     context = {
         'group': group,
         'permissions_by_model': permissions_by_model,
+        'other_permissions': other_permissions,  # Add the new list to the context
         'group_permissions': group_permissions,
-        # --- FIX: Add the action lists to the context ---
         'actions': ["View", "Add", "Update", "Delete"],
         'action_codes': ["view", "add", "change", "delete"],
     }
     return render(request, 'accounts/group_permission_edit.html', context)
+
+
+@login_required
+@permission_required('auth.view_user')
+def admin_dashboard_view(request):
+    today = timezone.now().date()
+
+    # Top Row Stats
+    total_students = Profile.objects.filter(role='student').count()
+    total_faculty = Profile.objects.filter(role='faculty').count()
+    total_courses = Course.objects.count()
+    total_classes = StudentGroup.objects.count()
+
+    # --- FIX: Provide the exact variables the script needs ---
+    todays_records = AttendanceRecord.objects.filter(date=today)
+    present_today = todays_records.filter(status='Present').count()
+    on_duty_today = todays_records.filter(status='On Duty').count()
+
+    # For the chart, consider all other statuses as 'absent'
+    absent_today = todays_records.exclude(status__in=['Present', 'On Duty']).count()
+
+    effective_total = present_today + absent_today  # Exclude On Duty from percentage
+    attendance_today_percentage = (present_today / effective_total * 100) if effective_total > 0 else 0
+    # --- END FIX ---
+
+    recent_cancellations = ClassCancellation.objects.filter(date__lte=today).order_by('-date')[:5]
+    recent_substitutions = DailySubstitution.objects.filter(date__lte=today).order_by('-date')[:5]
+
+    context = {
+        'total_students': total_students,
+        'total_faculty': total_faculty,
+        'total_courses': total_courses,
+        'total_classes': total_classes,
+
+        # Pass data with variable names expected by the script's "Overall Chart" call
+        'overall_attended': present_today,
+        'overall_absent': absent_today,
+        'overall_on_duty': on_duty_today,
+        'overall_official_percentage': attendance_today_percentage,
+
+        'recent_cancellations': recent_cancellations,
+        'recent_substitutions': recent_substitutions,
+    }
+    return render(request, 'accounts/admin_dashboard.html', context)
+
+
+@login_required
+@permission_required('academics.add_attendancerecord')  # Example permission for faculty
+def faculty_dashboard_view(request):
+    today = timezone.now().date()
+    current_day_str = today.strftime('%A')
+    faculty_user = request.user
+
+    # Today's Schedule (Regular + Substitutions)
+    regular_classes = Timetable.objects.filter(faculty=faculty_user, day_of_week=current_day_str)
+    substitution_classes = DailySubstitution.objects.filter(substituted_by=faculty_user, date=today)
+
+    todays_schedule = list(regular_classes) + [sub.timetable for sub in substitution_classes]
+    todays_schedule.sort(key=lambda x: x.time_slot.start_time)
+
+    # Classes Today & Pending Attendance
+    classes_today_count = len(todays_schedule)
+    marked_timetable_ids = AttendanceRecord.objects.filter(
+        marked_by=faculty_user, date=today
+    ).values_list('timetable_id', flat=True).distinct()
+
+    pending_attendance_count = 0
+    for entry in todays_schedule:
+        if entry.id not in marked_timetable_ids:
+            pending_attendance_count += 1
+
+    context = {
+        'classes_today_count': classes_today_count,
+        'pending_attendance_count': pending_attendance_count,
+        'todays_schedule': todays_schedule,
+        'marked_timetable_ids': marked_timetable_ids,
+        # 'notifications': [] # Placeholder for future notifications feature
+    }
+    return render(request, 'accounts/faculty_dashboard.html', context)
+
+
+@login_required
+@permission_required('academics.view_own_attendance')
+def student_dashboard_view(request):
+    student_user = request.user
+    today = timezone.now().date()
+    current_day_str = today.strftime('%A')
+    student_group = student_user.profile.student_group
+
+    # --- IMPLEMENTATION: Calculate real attendance data ---
+    subject_attendance_data = []
+    settings = AttendanceSettings.load()
+
+    if student_group and student_group.course:
+        # Default to the latest semester for the dashboard view
+        latest_semester_num = CourseSubject.objects.filter(
+            course=student_group.course
+        ).order_by('-semester').values_list('semester', flat=True).first()
+
+        if latest_semester_num:
+            subjects_for_semester = CourseSubject.objects.filter(
+                course=student_group.course, semester=latest_semester_num
+            )
+            for course_subject in subjects_for_semester:
+                total_classes = AttendanceRecord.objects.filter(
+                    timetable__student_group=student_group,
+                    timetable__subject=course_subject
+                ).values('date', 'timetable_id').distinct().count()
+
+                student_records = AttendanceRecord.objects.filter(
+                    student=student_user,
+                    timetable__subject=course_subject
+                )
+                present_count = student_records.filter(status='Present').count()
+                on_duty_count = student_records.filter(status='On Duty').count()
+                absent_count = total_classes - (present_count + on_duty_count)
+                effective_total = total_classes - on_duty_count
+                official_percentage = (present_count / effective_total * 100) if effective_total > 0 else 0
+
+                subject_attendance_data.append({
+                    'subject_pk': course_subject.subject.pk,
+                    'subject_name': course_subject.subject.name,
+                    'attended_classes': present_count,
+                    'absent_classes': absent_count if absent_count > 0 else 0,
+                    'on_duty_classes': on_duty_count,
+                    'official_percentage': round(official_percentage, 2),
+                })
+
+    # Calculate Overall data
+    overall_attended = sum(item['attended_classes'] for item in subject_attendance_data)
+    overall_absent = sum(item['absent_classes'] for item in subject_attendance_data)
+    overall_on_duty = sum(item['on_duty_classes'] for item in subject_attendance_data)
+    overall_total = overall_attended + overall_absent + overall_on_duty
+    overall_effective_total = overall_total - overall_on_duty
+    overall_official_percentage = (
+            overall_attended / overall_effective_total * 100) if overall_effective_total > 0 else 0
+
+    subjects_below_threshold = [
+        item for item in subject_attendance_data if item['official_percentage'] < settings.required_percentage
+    ]
+
+    # Today's Classes
+    todays_classes = Timetable.objects.filter(
+        student_group=student_group, day_of_week=current_day_str
+    ).order_by('time_slot__start_time')
+    # --- END IMPLEMENTATION ---
+
+    context = {
+        'overall_official_percentage': overall_official_percentage,
+        'overall_attended': overall_attended,
+        'overall_absent': overall_absent,
+        'overall_on_duty': overall_on_duty,
+        'subjects_below_threshold': subjects_below_threshold,
+        'todays_classes': todays_classes,
+        'subject_attendance_data_json': json.dumps(subject_attendance_data)
+    }
+    return render(request, 'accounts/student_dashboard.html', context)
+
+
+@login_required
+@permission_required('auth.change_user', raise_exception=True)
+def admin_trigger_password_reset_view(request, user_id):
+    """
+    Allows an admin to trigger a password reset email for a specific user.
+    This view should only be accessible via a POST request.
+    """
+    if request.method == 'POST':
+        user = get_object_or_404(User, pk=user_id)
+
+        if user.email:
+            form = PasswordResetForm(data={'email': user.email})
+            if form.is_valid():
+                # The save() method of this form handles sending the email.
+                # We pass the request to build the full URL in the email.
+                form.save(
+                    request=request,
+                    use_https=request.is_secure(),
+                    subject_template_name='registration/password_reset_subject.txt',
+                    email_template_name='registration/password_reset_email.html',
+                    html_email_template_name='registration/password_reset_email.html'
+                )
+                messages.success(request,
+                                 f"A password reset link has been sent to {user.get_full_name()}'s email address: {user.email}.")
+            else:
+                messages.error(request, "Could not process the password reset request.")
+        else:
+            messages.error(request,
+                           f"Cannot send reset link: User '{user.username}' does not have an email address on file.")
+
+    # Redirect back to the previous page
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+@login_required
+def account_view(request):
+    """
+    Displays the user's own account information and allows them to update it.
+    """
+    user_form = UserUpdateForm(instance=request.user)
+    profile_form = ProfileUpdateForm(instance=request.user.profile)
+
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your account has been updated successfully.')
+            return redirect('accounts:account_view')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form
+    }
+    return render(request, 'accounts/account_view.html', context)
+
+
+@login_required
+@permission_required('auth.add_user')  # Admin permission
+@nav_item(title="Bulk Import Users", icon="iconsminds-up", url_name="accounts:bulk_user_import",
+          permission='auth.add_user', group='admin_management')
+def bulk_user_import_view(request):
+    if request.method == 'POST':
+        form = BulkImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = request.FILES['file']
+
+            # Read CSV file in memory
+            decoded_file = csv_file.read().decode('utf-8').splitlines()
+            reader = csv.DictReader(decoded_file)
+
+            success_count = 0
+            error_list = []
+
+            try:
+                with transaction.atomic():
+                    for row_num, row in enumerate(reader, 2):
+                        username = row.get('username')
+                        password = row.get('password')
+                        student_group_name = row.get('student_group_name')
+
+                        # Basic Validation
+                        if User.objects.filter(username=username).exists():
+                            error_list.append(f"Row {row_num}: User '{username}' already exists.")
+                            continue
+
+                        try:
+                            student_group = StudentGroup.objects.get(name=student_group_name)
+                        except StudentGroup.DoesNotExist:
+                            error_list.append(f"Row {row_num}: Class '{student_group_name}' not found.")
+                            continue
+
+                        # Create User and Profile
+                        user = User.objects.create_user(
+                            username=username,
+                            password=password,
+                            first_name=row.get('first_name'),
+                            last_name=row.get('last_name'),
+                            email=row.get('email')
+                        )
+                        user.profile.role = 'student'
+                        user.profile.student_id_number = row.get('student_id_number')
+                        user.profile.contact_number = row.get('contact_number')
+                        user.profile.student_group = student_group
+                        user.profile.save()
+                        success_count += 1
+
+                if not error_list:
+                    messages.success(request, f"Successfully imported {success_count} students.")
+                else:
+                    messages.warning(request,
+                                     f"Import completed with errors. Successfully imported: {success_count}. Failed: {len(error_list)}.")
+
+            except Exception as e:
+                messages.error(request,
+                               f"An unexpected error occurred during import: {e}. The transaction was rolled back.")
+
+            # Pass errors to be displayed in the template
+            return render(request, 'accounts/bulk_user_import.html', {'form': BulkImportForm(), 'errors': error_list})
+
+    else:
+        form = BulkImportForm()
+    return render(request, 'accounts/bulk_user_import.html', {'form': form})
+
+
+@login_required
+@permission_required('auth.add_user')
+def download_csv_template_view(request):
+    """
+    Generates and serves a blank CSV template for bulk user import.
+    """
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="student_import_template.csv"'
+
+    writer = csv.writer(response)
+    # Write the exact header row needed for the import to work
+    writer.writerow(['username', 'password', 'first_name', 'last_name', 'email', 'student_id_number', 'contact_number',
+                     'student_group_name'])
+
+    return response
+
+
+@login_required
+def mark_notifications_as_read_view(request):
+    if request.method == 'POST':
+        Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)

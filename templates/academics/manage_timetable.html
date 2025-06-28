@@ -121,90 +121,99 @@
 {% endblock content %}
 
 {% block page_scripts %}
-    <script>
-        $(document).ready(function () {
-            console.log("DEBUG: Timetable script loaded. Document is ready.");
+<script>
+$(document).ready(function() {
+    // Select the modal and form based on the IDs in your HTML
+    const modal = $('#timetable-modal');
+    const form = $('#timetable-entry-form');
+    const modalContent = modal.find('.modal-content');
 
-            const modal = $('#timetable-modal');
-            if (modal.length === 0) {
-                console.error("DEBUG ERROR: Modal with ID #timetable-modal was not found in the HTML.");
-                return;
-            }
-            const modalContent = modal.find('.modal-content');
-            const form = modal.find('#timetable-entry-form');
+    // CLICK HANDLER: Load form content into the modal
+    $('#timetable-grid').on('click', '.timetable-cell', function(e) {
+        e.preventDefault();
+        const cell = $(this);
+        const entry = cell.find('.timetable-entry');
+        let url;
 
-            // --- Click handler for any schedulable cell ---
-            $('#timetable-grid').on('click', '.timetable-cell', function () {
-                console.log("DEBUG: Timetable cell clicked.");
+        if (entry.length > 0) {
+            url = entry.data('update-url'); // URL for editing
+        } else {
+            url = cell.data('create-url'); // URL for creating
+        }
 
-                let currentCell = $(this);
-                const entry = currentCell.find('.timetable-entry');
-                let url;
+        if (!url) return;
 
-                if (entry.length > 0) { // Check if we are editing an existing entry
-                    url = entry.data('update-url');
-                    console.log("DEBUG: Edit mode detected. URL: " + url);
-                } else { // Or adding a new one
-                    url = currentCell.data('create-url');
-                    console.log("DEBUG: Add mode detected. URL: " + url);
-                }
+        // Set the form's action attribute to the correct URL
+        form.attr('action', url);
 
-                if (!url) {
-                    console.error("DEBUG ERROR: Could not find a URL in the cell's data attributes.");
-                    return;
-                }
-
-                // Fetch the form from the server via AJAX
-                console.log("DEBUG: Making GET request to: " + url);
-                $.get(url, function (data) {
-                    console.log("DEBUG: AJAX request successful. Received form HTML.");
-                    modalContent.html(data);
-
-                    console.log("DEBUG: Initializing select2 dropdowns...");
-                    modal.find('.select2-single').select({theme: "bootstrap", placeholder: ""});
-
-                    if (entry.length > 0) {
-                        $('#btn-delete-entry').data('delete-url', entry.data('delete-url')).removeClass('d-none');
-                    }
-
-                    console.log("DEBUG: Showing modal.");
-                    modal.modal('show');
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    console.error("DEBUG ERROR: AJAX GET request failed!");
-                    console.error("Status: " + textStatus);
-                    console.error("Error: " + errorThrown);
-                    console.error("Response: " + jqXHR.responseText);
-                });
-            });
-
-            // --- Handler for form submission inside the modal ---
-            form.on('submit', function (e) {
-                e.preventDefault();
-                console.log("DEBUG: Modal form submitted.");
-                $.post(form.attr('action'), form.serialize(), function (response) {
-                    if (response.success) {
-                        location.reload();
-                    } else {
-                        alert("Please correct the errors in the form.");
-                    }
-                }).fail(() => alert("An error occurred submitting the form."));
-            });
-
-            // --- Handler for the delete button inside the modal ---
-            modal.on('click', '#btn-delete-entry', function () {
-                if (!confirm('Are you sure you want to delete this period?')) return;
-                console.log("DEBUG: Delete button clicked.");
-                const url = $(this).data('delete-url');
-                const csrfToken = '{{ csrf_token }}';
-
-                $.post(url, {'csrfmiddlewaretoken': csrfToken}, function (response) {
-                    if (response.success) {
-                        location.reload();
-                    } else {
-                        alert(response.message || "Could not delete.");
-                    }
-                }).fail(() => alert("An error occurred during deletion."));
-            });
+        // Load the partial form HTML into the modal's content area
+        modalContent.load(url, function() {
+            // Re-initialize any plugins like select2 if you use them here
+            modal.modal('show');
         });
-    </script>
+    });
+
+    // SUBMIT HANDLER: This is now correctly attached to the static form
+    form.on('submit', function(e) {
+        e.preventDefault();
+        const url = form.attr('action'); // Get the action URL we just set
+        const errorContainer = modal.find('#modal-errors-container');
+        errorContainer.html('');
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function(response) {
+                if (response && response.success) {
+                    modal.modal('hide');
+                    location.reload();
+                } else {
+                    let errorHtml = '<div class="alert alert-danger p-2" role="alert">';
+                    if (response.errors && response.errors.__all__) {
+                        errorHtml += "<strong>SCHEDULING CONFLICT:</strong> This class or faculty is already booked at this time.";
+                    } else {
+                        errorHtml += "Please correct the errors in the form and try again.";
+                    }
+                    errorHtml += '</div>';
+                    errorContainer.html(errorHtml);
+                }
+            },
+            error: function() {
+                errorContainer.html('<div class="alert alert-danger p-2" role="alert">A server error occurred.</div>');
+            }
+        });
+    });
+
+    // DELETE HANDLER
+    modal.on('click', '#btn-delete-entry', function(e) {
+        e.preventDefault();
+        if (confirm("Are you sure you want to delete this period?")) {
+            let deleteUrl = $(this).data('delete-url');
+            if (!deleteUrl) {
+                 // Fallback in case data attribute isn't on the button, get from the form action
+                 const updateUrl = form.attr('action');
+                 deleteUrl = updateUrl.replace('/update/', '/delete/');
+            }
+            const csrfToken = form.find('input[name="csrfmiddlewaretoken"]').val();
+
+            $.ajax({
+                url: deleteUrl,
+                type: 'POST',
+                data: { 'csrfmiddlewaretoken': csrfToken },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        modal.modal('hide');
+                        location.reload();
+                    } else {
+                        alert(response.message || "Failed to delete.");
+                    }
+                }
+            });
+        }
+    });
+});
+</script>
 {% endblock page_scripts %}

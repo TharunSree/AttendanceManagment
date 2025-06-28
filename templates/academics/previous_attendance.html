@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block page_title %}Edit Past Attendance{% endblock page_title %}
+{% block main_page_title %}Recently Marked Attendance{% endblock main_page_title %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Editable Sessions</h5>
+                <p class="text-muted">You can edit attendance for sessions you marked within the last few days.</p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in sessions %}
+                        <tr>
+                            <td>{{ session.date|date:"d M Y" }}</td>
+                            <td>{{ session.timetable.time_slot }}</td>
+                            <td>{{ session.timetable.student_group.name }}</td>
+                            <td>{{ session.timetable.subject.subject.name }}</td>
+                            <td class="text-right">
+                                <a href="{% url 'academics:mark_attendance_for_date' session.timetable.pk session.date|date:'Y-m-d' %}" class="btn btn-xs btn-outline-primary">Edit</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No recently marked sessions found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

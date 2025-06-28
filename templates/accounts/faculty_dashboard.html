@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Faculty Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>Welcome, {{ user.get_full_name }}</h1>
+            <div class="separator mb-5"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="iconsminds-calendar-4 text-primary" style="font-size: 48px;"></i>
+                    <p class="card-text mb-0">Classes Today</p>
+                    <p class="lead text-center">{{ classes_today_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="iconsminds-pen text-warning" style="font-size: 48px;"></i>
+                    <p class="card-text mb-0">Pending Attendance</p>
+                    <p class="lead text-center">{{ pending_attendance_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Today's Schedule</h5>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Time</th>
+                                <th class="text-center">Subject</th>
+                                <th class="text-center">Class</th>
+                                <th class="text-center">Status / Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in todays_schedule %}
+                            <tr>
+                                <td class="text-center">{{ entry.time_slot.start_time|time:"h:i A" }}</td>
+                                <td class="text-center">
+                                    {{ entry.subject.subject.name }}
+                                    {% if entry.id in substitution_timetable_ids %}<span class="badge badge-pill badge-warning">Sub</span>{% endif %}
+                                </td>
+                                <td class="text-center">{{ entry.student_group.name }}</td>
+                                <td  class="text-center">
+                                    {% if entry.id in marked_timetable_ids %}
+                                        <a href="{% url 'academics:mark_ class="text-centerattendance' entry.id %}" class="btn btn-sm btn-outline-secondary">View/Edit</a>
+                                    {% else %}
+                                        <a href="{% url 'academics:mark_attendance' entry.id %}" class="btn btn-sm btn-primary">Mark Attendance</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No classes scheduled for today.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

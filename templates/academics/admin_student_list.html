@@ -27,9 +27,9 @@
                         <h5 class="card-title mb-0">{{ student_group.name }} ({{ total_students }} Total)
                             | {{ student_group.start_year }}
                             - {{ student_group.passout_year }}
-                        {% if latest_semester_num %}
-                            <span class="badge badge-pill badge-outline-primary">Semester {{ latest_semester_num }} Attendance</span>
-                        {% endif %}
+                            {% if latest_semester_num %}
+                                <span class="badge badge-pill badge-outline-primary">Semester {{ latest_semester_num }} Attendance</span>
+                            {% endif %}
                         </h5>
 
                         {% if students_with_attendance %}
@@ -54,7 +54,7 @@
 
                     {# This class enables all the features: search, pagination, etc. #}
                     {% if students_with_attendance %}
-                        <table class="data-table data-table-scrollable responsive nowrap">
+                        <table class="data-table data-table-feature responsive nowrap">
                             <thead>
                             <tr>
                                 {# Added text-center class to all headers #}
@@ -63,6 +63,7 @@
                                 <th class="text-center">Mobile No.</th>
                                 <th class="text-center">Overall Attendance</th>
                                 <th class="text-center">Actions</th>
+                                <th class="text-right">Password</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -92,6 +93,15 @@
                                             <a href="{% url 'academics:student_delete' item.student.pk %}"
                                                class="btn btn-outline-danger btn-xs">Delete</a>
                                         </div>
+                                    </td>
+                                    <td class="text-right">
+                                        <form action="{% url 'accounts:admin_trigger_password_reset' item.student.pk %}"
+                                              method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-xs btn-outline-warning">Send Reset
+                                                Link
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             {% endfor %}

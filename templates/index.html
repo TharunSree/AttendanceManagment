@@ -1,10 +1,151 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<a href="{% url 'accounts:login' %}">Login</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}Dashboard{% endblock page_title %}
+{% block main_page_title %}Dashboard{% endblock main_page_title %}
+
+{% block vendor_scripts %}
+    {# Add Glide for the admin icon cards carousel #}
+    <script src="{% static 'js/vendor/glide.min.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+
+{# =============================================================== #}
+{# ================       ADMIN DASHBOARD       ==================== #}
+{# =============================================================== #}
+{% if user.profile.role == 'admin' %}
+<div class="row">
+    <div class="col-lg-12 col-xl-6">
+        {# This component is taken from Dashboard.Default.html #}
+        <div class="icon-cards-row">
+            <div class="glide dashboard-numbers">
+                <div class="glide__track" data-glide-el="track">
+                    <ul class="glide__slides">
+                        <li class="glide__slide">
+                            <a href="#" class="card">
+                                <div class="card-body text-center">
+                                    <i class="iconsminds-student-male-female"></i>
+                                    <p class="card-text mb-0">Total Students</p>
+                                    <p class="lead text-center">{{ student_count }}</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="glide__slide">
+                            <a href="{% url 'accounts:teacher_list' %}" class="card">
+                                <div class="card-body text-center">
+                                    <i class="iconsminds-business-man-woman"></i>
+                                    <p class="card-text mb-0">Total Faculty</p>
+                                    <p class="lead text-center">{{ faculty_count }}</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="glide__slide">
+                            <a href="{% url 'academics:course_list' %}" class="card">
+                                <div class="card-body text-center">
+                                    <i class="iconsminds-books"></i>
+                                    <p class="card-text mb-0">Total Courses</p>
+                                    <p class="lead text-center">{{ course_count }}</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="glide__slide">
+                            <a href="{% url 'academics:daily_log' %}" class="card">
+                                <div class="card-body text-center">
+                                    <i class="iconsminds-pie-chart-3"></i>
+                                    <p class="card-text mb-0">Today's Attendance</p>
+                                    <p class="lead text-center">{{ todays_attendance_percentage }}%</p>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-lg-12 mb-4">
+        {# This component is adapted from Dashboard.Default.html #}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Quick Actions</h5>
+                <div class="list-group">
+                    <a href="{% url 'academics:manage_timetable' %}" class="list-group-item list-group-item-action">Manage Timetables</a>
+                    <a href="{% url 'academics:manage_substitutions' %}" class="list-group-item list-group-item-action">Manage Substitutions</a>
+                    <a href="{% url 'accounts:group_permission_list' %}" class="list-group-item list-group-item-action">Group Permissions</a>
+                    <a href="{% url 'academics:admin_settings' %}" class="list-group-item list-group-item-action">Application Settings</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{# =============================================================== #}
+{# ================      FACULTY DASHBOARD      ==================== #}
+{# =============================================================== #}
+{% elif user.profile.role == 'faculty' %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Your Schedule for Today</h5>
+                {% if schedule %}
+                    {# This table is styled like the "Top Viewed Posts" in Dashboard.Content.html #}
+                    <table class="data-table data-table-standard responsive nowrap" data-order="[]">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Class</th>
+                                <th>Subject</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in schedule %}
+                            <tr>
+                                <td>{{ entry.time_slot }}</td>
+                                <td>{{ entry.student_group.name }}</td>
+                                <td>
+                                    {{ entry.subject.subject.name }}
+                                    {% if entry.is_substitution %}
+                                        <span class="badge badge-pill badge-outline-info ml-2">Substitution</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="alert alert-info">You have no classes scheduled for today.</div>
+                {% endif %}
+                <a href="{% url 'academics:faculty_schedule' %}" class="btn btn-link float-right p-0 mt-2">View Full Schedule &rarr;</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# =============================================================== #}
+{# ================      STUDENT DASHBOARD      ==================== #}
+{# =============================================================== #}
+{% else %}
+<div class="row">
+    <div class="col-12 col-lg-6 mb-4">
+        {# This card is inspired by the progress banners in Dashboard.Default.html #}
+        <div class="card dashboard-progress-card">
+            <div class="card-body">
+                 <h5 class="card-title">My Overall Attendance</h5>
+                 <p class="text-small text-muted">(Latest Semester)</p>
+                 <div class="mb-4">
+                    <p class="lead text-center text-primary" style="font-size: 2.5rem;">{{ overall_attendance_percentage|floatformat:1 }}%</p>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: {{ overall_attendance_percentage }}%" aria-valuenow="{{ overall_attendance_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <a href="{% url 'academics:student_my_attendance' %}" class="btn btn-primary btn-block">View Detailed Report</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock content %}

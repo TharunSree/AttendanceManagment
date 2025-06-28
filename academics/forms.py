@@ -1,17 +1,20 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+import datetime
 
 from accounts.models import Profile
 from .models import Course, StudentGroup, Subject, AttendanceRecord, CourseSubject, AttendanceSettings, TimeSlot, \
-    Timetable
+    Timetable, Announcement
 
 from django import forms
 from django.contrib.auth.models import User
+
 
 # --- NEW: Custom form field to display user's full name ---
 class UserChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.get_full_name()
+
 
 class StudentGroupForm(forms.ModelForm):
     class Meta:
@@ -107,7 +110,7 @@ class EditStudentForm(forms.ModelForm):
 class TimeSlotForm(forms.ModelForm):
     class Meta:
         model = TimeSlot
-        fields = ['start_time', 'end_time', 'label','is_schedulable']
+        fields = ['start_time', 'end_time', 'label', 'is_schedulable']
         widgets = {
             'start_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
             'end_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
@@ -163,6 +166,7 @@ class TimetableEntryForm(forms.ModelForm):
 
             self.fields['subject'].queryset = queryset
 
+
 class SubstitutionForm(forms.Form):
     # This field will be a dropdown of all users who are faculty members.
     substitute_faculty = UserChoiceField(
@@ -170,3 +174,43 @@ class SubstitutionForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-control form-control-sm'}),
         label=""
     )
+
+
+class AttendanceReportForm(forms.Form):
+    student_group = forms.ModelChoiceField(
+        queryset=StudentGroup.objects.all(),
+        empty_label="--- Select Class ---",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    subject = forms.ModelChoiceField(
+        queryset=Subject.objects.all(),
+        empty_label="--- Select Subject ---",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    month = forms.ChoiceField(
+        choices=[(i, datetime.date(2000, i, 1).strftime('%B')) for i in range(1, 13)],
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    year = forms.ChoiceField(
+        choices=[(i, i) for i in range(datetime.date.today().year, 2020, -1)],
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+
+class AnnouncementForm(forms.ModelForm):
+    target_student_groups = forms.ModelMultipleChoiceField(
+        queryset=StudentGroup.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Target Specific Classes"
+    )
+
+    class Meta:
+        model = Announcement
+        fields = ['title', 'content', 'target_student_groups', 'send_to_all_students', 'send_to_all_faculty']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'send_to_all_students': forms.CheckboxInput(attrs={'class': 'custom-control-input'}),
+            'send_to_all_faculty': forms.CheckboxInput(attrs={'class': 'custom-control-input'}),
+        }

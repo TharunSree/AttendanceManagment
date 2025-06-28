@@ -35,7 +35,10 @@ urlpatterns = [
     path('settings/timeslot/<int:pk>/delete/', views.timeslot_delete_view, name='timeslot_delete'),
     path('faculty/schedule/', views.faculty_daily_schedule_view, name='faculty_schedule'),
     path('faculty/mark-attendance/<int:timetable_id>/', views.mark_attendance_view, name='mark_attendance'),
+    path('faculty/mark-attendance/<int:timetable_id>/<str:date_str>', views.mark_attendance_view,
+         name='mark_attendance_for_date'),
     path('faculty/cancel-class/<int:timetable_id>/', views.class_cancellation_view, name='cancel_class'),
+    path('faculty/previous-attendance/', views.previous_attendance_view, name='previous_attendance'),
     path('daily-log/', views.daily_attendance_log_view, name='daily_log'),
     path('daily-log/<int:timetable_id>/<str:date>/', views.daily_log_detail_view, name='daily_log_detail'),
     path('timetable-entry/create/<int:group_id>/<str:day>/<int:timeslot_id>/', views.timetable_entry_create_view,
@@ -46,6 +49,14 @@ urlpatterns = [
     path('manage-substitutions/', views.manage_substitutions_view, name='manage_substitutions'),
     path('assign-substitution/<int:timetable_id>/', views.assign_substitution_view, name='assign_substitution'),
     path('cancel-substitution/<int:timetable_id>/', views.cancel_substitution_view, name='cancel_substitution'),
+    path('student/my-attendance/', views.student_my_attendance_view, name='student_my_attendance'),
+    path('student/my-timetable/', views.student_timetable_view, name='student_timetable'),
+    path('reports/attendance/', views.attendance_report_view, name='attendance_report'),
+    path('reports/attendance/download/', views.download_attendance_report_view, name='download_attendance_report'),
+    path('announcements/', views.announcement_list_view, name='announcement_list'),
+    path('announcements/create/', views.announcement_create_view, name='announcement_create'),
+    path('announcements/check/', views.check_announcements_view, name='check_announcements'),
+    path('search/', views.global_search_view, name='global_search'),
 
     # --- Academic Session Management URLs ---
 

@@ -1,13 +1,15 @@
 # In academics/views.py
 import json
+import calendar
 from datetime import datetime
 from itertools import chain
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db import transaction
+from django.db.models import ExpressionWrapper, fields, F, Q
 from django.forms import inlineformset_factory, formset_factory
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
@@ -16,19 +18,23 @@ from django.urls import reverse
 from django.utils import timezone
 
 from academics.forms import EditStudentForm, AttendanceSettingsForm, TimeSlotForm, MarkAttendanceForm, \
-    TimetableEntryForm, SubstitutionForm
+    TimetableEntryForm, SubstitutionForm, AttendanceReportForm, AnnouncementForm
 from accounts.models import Profile
 from .forms import StudentGroupForm, CourseForm, AddStudentForm, SubjectForm
 from .models import StudentGroup, AttendanceSettings, Course, Subject, \
-    Timetable, AttendanceRecord, CourseSubject, TimeSlot, ClassCancellation, DailySubstitution
+    Timetable, AttendanceRecord, CourseSubject, TimeSlot, ClassCancellation, DailySubstitution, Announcement, \
+    UserNotificationStatus
 from accounts.decorators import nav_item
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment
 
 
 # ... other views ...
 
 @login_required
 @permission_required('academics.view_attendance_settings', raise_exception=True)
-@nav_item(title="Attendance Settings", icon="iconsminds-gears", url_name="academics:admin_settings", permission='academics.view_attendance_settings',group='application_settings', order=1)
+@nav_item(title="Attendance Settings", icon="iconsminds-gears", url_name="academics:admin_settings",
+          permission='academics.view_attendance_settings', group='application_settings', order=1)
 def admin_settings_view(request):
     timeslot_form = TimeSlotForm()
     settings_obj = AttendanceSettings.load()
@@ -65,61 +71,77 @@ def admin_settings_view(request):
 @permission_required('auth.view_user', raise_exception=True)
 def admin_student_list_view(request, group_id):
     student_group = get_object_or_404(StudentGroup, pk=group_id)
-    students = User.objects.filter(profile__student_group=student_group).order_by('first_name', 'last_name')
-    attendance_settings = AttendanceSettings.load()
-    required_percentage = attendance_settings.required_percentage
+    students = User.objects.filter(
+        profile__student_group=student_group, profile__role='student'
+    ).select_related('profile').order_by('first_name', 'last_name')
 
-    latest_semester_instance = CourseSubject.objects.filter(course=student_group.course).order_by('-semester').first()
-    latest_semester_num = latest_semester_instance.semester if latest_semester_instance else None
+    settings = AttendanceSettings.load()
+    required_percentage = settings.required_percentage
 
-    latest_semester_subjects_ids = []
-    if latest_semester_num:
-        latest_semester_subjects_ids = CourseSubject.objects.filter(
-            course=student_group.course,
-            semester=latest_semester_num
-        ).values_list('id', flat=True)
-
-    # --- NEW: Get total classes held for the entire group in the semester ---
-    total_classes_held = AttendanceRecord.objects.filter(
-        timetable__student_group=student_group,
-        timetable__subject_id__in=latest_semester_subjects_ids
-    ).values('timetable', 'date').distinct().count()
-    # --- END NEW ---
+    # Determine the latest semester to calculate attendance against
+    latest_semester_num = CourseSubject.objects.filter(
+        course=student_group.course
+    ).order_by('-semester').values_list('semester', flat=True).first()
 
     students_with_attendance = []
-    for student in students:
-        student_records = AttendanceRecord.objects.filter(
-            student=student,
-            timetable__student_group=student_group,
-            timetable__subject_id__in=latest_semester_subjects_ids
-        )
+    if latest_semester_num:
+        for student in students:
+            # This logic calculates the attendance percentage for each student
+            subjects_for_semester = CourseSubject.objects.filter(
+                course=student_group.course, semester=latest_semester_num
+            )
+            total_classes = AttendanceRecord.objects.filter(
+                timetable__student_group=student_group,
+                timetable__subject__in=subjects_for_semester
+            ).values('date', 'timetable_id').distinct().count()
 
-        present_count = student_records.filter(status='Present').count()
-        on_duty_count = student_records.filter(status='On Duty').count()
+            student_records = AttendanceRecord.objects.filter(
+                student=student, timetable__subject__in=subjects_for_semester
+            )
+            present_count = student_records.filter(status='Present').count()
+            on_duty_count = student_records.filter(status='On Duty').count()
 
-        effective_total_classes = total_classes_held - on_duty_count
-        percentage = (present_count / effective_total_classes * 100) if effective_total_classes > 0 else 0
+            effective_total = total_classes - on_duty_count
+            percentage = (present_count / effective_total * 100) if effective_total > 0 else None
 
-        students_with_attendance.append({
-            'student': student,
-            'attendance_percentage': percentage,
-        })
+            students_with_attendance.append({
+                'student': student,
+                'attendance_percentage': percentage
+            })
+    else:
+        # If no semester, just list students without attendance data
+        students_with_attendance = [{'student': s, 'attendance_percentage': None} for s in students]
 
-    # ... (rest of the view is the same)
+    # --- FIX STARTS HERE ---
+
+    # 1. Check the GET parameter from the form submission
+    show_low_attendance_only = request.GET.get('low_attendance_filter') == 'on'
+
+    # 2. If the filter is active, rebuild the list with only matching students
+    if show_low_attendance_only:
+        students_with_attendance = [
+            item for item in students_with_attendance
+            if item['attendance_percentage'] is not None and item['attendance_percentage'] < required_percentage
+        ]
+
+    # --- FIX ENDS HERE ---
+
     context = {
         'student_group': student_group,
         'students_with_attendance': students_with_attendance,
-        'required_percentage': required_percentage,
-        'show_low_attendance_only': request.GET.get('low_attendance_filter') == 'on',
-        'total_students': len(students),
+        'total_students': students.count(),
         'latest_semester_num': latest_semester_num,
+        'required_percentage': required_percentage,
+        # 3. Pass the flag back to the template to keep the checkbox state
+        'show_low_attendance_only': show_low_attendance_only,
     }
     return render(request, 'academics/admin_student_list.html', context)
 
 
 @login_required
 @permission_required('academics.view_studentgroup', raise_exception=True)
-@nav_item(title="Manage Classes", icon="iconsminds-network", url_name="academics:admin_select_class", permission='academics.view_studentgroup', group='admin_management', order=30)
+@nav_item(title="Manage Classes", icon="iconsminds-network", url_name="academics:admin_select_class",
+          permission='academics.view_studentgroup', group='admin_management', order=30)
 def admin_select_class_view(request):
     """
     This view fetches all existing classes (StudentGroup) from the database
@@ -200,7 +222,7 @@ def admin_student_attendance_detail_view(request, student_id):
     overall_total = overall_attended + overall_absent + overall_on_duty
     overall_effective_total = overall_total - overall_on_duty
     overall_official_percentage = (
-                overall_attended / overall_effective_total * 100) if overall_effective_total > 0 else 0
+            overall_attended / overall_effective_total * 100) if overall_effective_total > 0 else 0
 
     context = {
         'student': student,
@@ -258,7 +280,8 @@ def student_group_update_view(request, pk):
 
 @login_required
 @permission_required('academics.view_course', raise_exception=True)
-@nav_item(title="Manage Courses", icon="iconsminds-books", url_name='academics:course_list', permission='academics.view_course', group='admin_management', order=10)
+@nav_item(title="Manage Courses", icon="iconsminds-books", url_name='academics:course_list',
+          permission='academics.view_course', group='admin_management', order=10)
 def course_list_view(request):
     courses = Course.objects.all()
     return render(request, 'academics/course_list.html', {'courses': courses})
@@ -377,6 +400,7 @@ def student_create_view(request, group_id):
                 last_name=form.cleaned_data['last_name']
             )
             # The signal creates the Profile. Now we update it.
+            user.profile.role = 'student'
             user.profile.student_id_number = form.cleaned_data['student_id_number']
             user.profile.contact_number = form.cleaned_data['contact_number']
 
@@ -453,7 +477,8 @@ def student_delete_view(request, pk):
 
 @login_required
 @permission_required('academics.view_subject', raise_exception=True)
-@nav_item(title="Manage Subjects", icon="iconsminds-book", url_name='academics:subject_list', permission='academics.view_subject', group='admin_management', order=20)
+@nav_item(title="Manage Subjects", icon="iconsminds-book", url_name='academics:subject_list',
+          permission='academics.view_subject', group='admin_management', order=20)
 def subject_list_view(request):
     subjects = Subject.objects.all().order_by('name')
     return render(request, 'academics/subject_list.html', {'subjects': subjects})
@@ -555,9 +580,26 @@ def timeslot_delete_view(request, pk):
 @nav_item(title="Daily Schedule", icon="simple-icon-check", url_name="academics:faculty_schedule",
           permission='academics.add_attendancerecord', group='faculty_tools', order=10)
 def faculty_daily_schedule_view(request):
+    settings = AttendanceSettings.load()
+    today = timezone.now().date()
+    deadline_date = today - timezone.timedelta(days=settings.mark_deadline_days)
+    faculty_timetable_slots = Timetable.objects.filter(faculty=request.user)
+    day_to_check = deadline_date.strftime('%A')
+    slots_to_check = faculty_timetable_slots.filter(day_of_week=day_to_check)
+    for slot in slots_to_check:
+        # Check if any attendance or cancellation record already exists for this slot on its deadline date
+        has_record = AttendanceRecord.objects.filter(timetable=slot, date=deadline_date).exists()
+        is_cancelled = ClassCancellation.objects.filter(timetable=slot, date=deadline_date).exists()
+
+        if not has_record and not is_cancelled:
+            # If no record exists, automatically mark it as not conducted
+            ClassCancellation.objects.create(
+                timetable=slot,
+                date=deadline_date,
+                cancelled_by=None  # Marked by the system
+            )
     current_day = timezone.now().strftime('%A')
     current_date = timezone.now().date()
-
     # 1. Get regularly scheduled classes
     regular_schedule = list(Timetable.objects.filter(
         faculty=request.user, day_of_week=current_day
@@ -600,14 +642,17 @@ def faculty_daily_schedule_view(request):
 
 @login_required
 @permission_required('academics.add_attendancerecord', raise_exception=True)
-def mark_attendance_view(request, timetable_id):
+def mark_attendance_view(request, timetable_id, date_str=None):
+    if date_str:
+        current_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+    else:
+        current_date = timezone.now().date()
+
     timetable_entry = get_object_or_404(Timetable, pk=timetable_id)
     students = User.objects.filter(profile__student_group=timetable_entry.student_group).order_by('first_name')
 
     MarkAttendanceFormSet = formset_factory(MarkAttendanceForm, extra=0)
-    current_date = timezone.now().date()
 
-    # Prevent marking attendance for a cancelled class
     is_cancelled = ClassCancellation.objects.filter(timetable=timetable_entry, date=current_date).exists()
     if is_cancelled:
         messages.warning(request, "This class session was marked as not conducted, so attendance cannot be taken.")
@@ -622,42 +667,44 @@ def mark_attendance_view(request, timetable_id):
                     status = form.cleaned_data['status']
                     student = User.objects.get(pk=student_id)
 
-                    AttendanceRecord.objects.update_or_create(
+                    # --- THIS IS THE FIX ---
+                    # We now use get_or_create to fetch the object first.
+                    record, created = AttendanceRecord.objects.get_or_create(
                         student=student,
                         timetable=timetable_entry,
                         date=current_date,
                         defaults={'status': status, 'marked_by': request.user}
                     )
+
+                    # If the record was not new (i.e., it already existed), we are editing it.
+                    if not created:
+                        record.status = status
+                        record.marked_by = request.user
+                        # This explicit .save() call is what updates the `updated_at` timestamp.
+                        record.save()
+                    # --- END FIX ---
+
             messages.success(request, "Attendance has been marked successfully.")
             return redirect('academics:faculty_schedule')
     else:
-        # --- THIS IS THE FIX ---
+        # The GET request logic for pre-filling the form remains the same
         initial_data = []
-        # Get all existing records for this session in a single, efficient query
-        existing_records = AttendanceRecord.objects.filter(
-            timetable=timetable_entry,
-            date=current_date
-        )
-        # Create a dictionary mapping student_id to their saved status for quick lookup
+        existing_records = AttendanceRecord.objects.filter(timetable=timetable_entry, date=current_date)
         status_map = {record.student_id: record.status for record in existing_records}
-
         for student in students:
-            # For each student, check if a status was already saved
             saved_status = status_map.get(student.id)
             initial_data.append({
                 'student_id': student.id,
-                # Use the saved status, or default to 'Present' if none exists
                 'status': saved_status if saved_status else 'Present'
             })
-
         formset = MarkAttendanceFormSet(initial=initial_data)
-        # --- END FIX ---
 
     student_forms = zip(students, formset)
     context = {
         'timetable_entry': timetable_entry,
         'formset': formset,
-        'student_forms': student_forms
+        'student_forms': student_forms,
+        'date': current_date
     }
     return render(request, 'academics/mark_attendance.html', context)
 
@@ -707,6 +754,14 @@ def daily_attendance_log_view(request):
                 timetable=entry, date=date, status='Present'
             ).count()
             total_students = Profile.objects.filter(student_group=entry.student_group).count()
+            was_edited = AttendanceRecord.objects.filter(
+                timetable=entry,
+                date=date
+            ).annotate(
+                # Check if updated_at is more than 5 seconds after created_at
+                is_edited=ExpressionWrapper(Q(updated_at__gt=F('created_at') + timezone.timedelta(seconds=5)),
+                                            output_field=fields.BooleanField())
+            ).filter(is_edited=True).exists()
 
             # --- FIX: Added substitution info to the context for the template ---
             daily_log.append({
@@ -715,7 +770,8 @@ def daily_attendance_log_view(request):
                 'present_count': present_count,
                 'total_students': total_students,
                 'date': date,
-                'substituted_by': sub_map.get(entry.id)  # Will be None if no sub exists
+                'substituted_by': sub_map.get(entry.id),  # Will be None if no sub exists
+                'was_edited': was_edited,
             })
 
         for entry in cancelled_entries:
@@ -730,6 +786,7 @@ def daily_attendance_log_view(request):
 
     context = {'log_data': log_data}
     return render(request, 'academics/daily_attendance_log.html', context)
+
 
 @login_required
 @permission_required('academics.view_attendancelog', raise_exception=True)
@@ -844,7 +901,7 @@ def manage_timetable_view(request):
 @login_required
 @permission_required('academics.add_dailysubstitution', raise_exception=True)
 @nav_item(title="Manage Substitutions", icon="iconsminds-shuffle-1", url_name="academics:manage_substitutions",
-          group='admin_management', order=50)
+          group='admin_management', permission='academics.add_dailysubstitution', order=50)
 def manage_substitutions_view(request):
     # Get the date from the request's GET parameters, default to today if not provided
     selected_date_str = request.GET.get('date', timezone.now().strftime('%Y-%m-%d'))
@@ -905,3 +962,319 @@ def cancel_substitution_view(request, timetable_id):
 
     # Redirect to the main page if accessed via GET
     return redirect('academics:manage_substitutions')
+
+
+@login_required
+@permission_required('academics.view_own_attendance', raise_exception=True)
+@nav_item(title="My Attendance", icon="simple-icon-pie-chart", url_name="academics:student_my_attendance",
+          permission='academics.view_own_attendance', group='my_academics', order=1)
+def student_my_attendance_view(request):
+    """
+    Allows a logged-in student to view their own attendance details,
+    filtered by semester, with charts for visualization.
+    """
+    student = request.user
+    student_group = student.profile.student_group if hasattr(student, 'profile') else None
+
+    subject_attendance_data = []
+    available_semesters = []
+    selected_semester = request.GET.get('semester')
+
+    if student_group and student_group.course:
+        all_course_subjects_qs = CourseSubject.objects.filter(course=student_group.course)
+        available_semesters = all_course_subjects_qs.values_list('semester', flat=True).distinct().order_by('semester')
+
+        # Default to the latest semester if none is selected
+        if not selected_semester and available_semesters:
+            selected_semester = available_semesters.last()
+
+        subjects_for_semester = all_course_subjects_qs
+        if selected_semester and str(selected_semester).isdigit():
+            subjects_for_semester = all_course_subjects_qs.filter(semester=selected_semester)
+
+        for course_subject in subjects_for_semester:
+            total_classes = AttendanceRecord.objects.filter(
+                timetable__student_group=student_group,
+                timetable__subject=course_subject
+            ).values('date', 'timetable_id').distinct().count()
+
+            student_records = AttendanceRecord.objects.filter(
+                student=student,
+                timetable__subject=course_subject
+            )
+            present_count = student_records.filter(status='Present').count()
+            on_duty_count = student_records.filter(status='On Duty').count()
+
+            absent_count = total_classes - (present_count + on_duty_count)
+            effective_total = total_classes - on_duty_count
+            official_percentage = (present_count / effective_total * 100) if effective_total > 0 else 0
+
+            subject_attendance_data.append({
+                'subject_pk': course_subject.subject.pk,
+                'subject_name': course_subject.subject.name,
+                'attended_classes': present_count,
+                'absent_classes': absent_count if absent_count >= 0 else 0,
+                'on_duty_classes': on_duty_count,
+                'total_classes': total_classes,
+                'official_percentage': round(official_percentage, 2),
+            })
+
+    # Calculate Overall data
+    overall_attended = sum(item['attended_classes'] for item in subject_attendance_data)
+    overall_absent = sum(item['absent_classes'] for item in subject_attendance_data)
+    overall_on_duty = sum(item['on_duty_classes'] for item in subject_attendance_data)
+    overall_official_percentage = ((overall_attended / (overall_attended + overall_absent)) * 100) if (
+                                                                                                              overall_attended + overall_absent) > 0 else 0
+
+    context = {
+        'student': student,
+        'student_group': student_group,
+        'subject_attendance_data': subject_attendance_data,
+        'subject_attendance_data_json': json.dumps(subject_attendance_data),
+        'available_semesters': available_semesters,
+        'selected_semester': int(selected_semester) if selected_semester and str(selected_semester).isdigit() else None,
+        'overall_attended': overall_attended,
+        'overall_absent': overall_absent,
+        'overall_on_duty': overall_on_duty,
+        'overall_official_percentage': round(overall_official_percentage, 2)
+    }
+    return render(request, 'academics/student_my_attendance.html', context)
+
+
+@login_required
+@permission_required('academics.change_attendancerecord', raise_exception=True)
+@nav_item(title="Edit Past Attendance", icon="simple-icon-note", url_name="academics:previous_attendance",
+          permission='academics.change_attendancerecord', group='faculty_tools', order=20)
+def previous_attendance_view(request):
+    settings = AttendanceSettings.load()
+    # Calculate the cutoff date based on the edit deadline
+    cutoff_date = timezone.now().date() - timezone.timedelta(days=settings.edit_deadline_days)
+
+    # Find all distinct sessions marked by this faculty within the deadline
+    marked_sessions = AttendanceRecord.objects.filter(
+        marked_by=request.user,
+        date__gte=cutoff_date
+    ).values('date', 'timetable_id').distinct().order_by('-date')
+
+    # Fetch the related timetable details for display
+    session_details = []
+    for session in marked_sessions:
+        entry = Timetable.objects.select_related('time_slot', 'subject__subject', 'student_group').get(
+            pk=session['timetable_id'])
+        session_details.append({
+            'date': session['date'],
+            'timetable': entry
+        })
+
+    context = {'sessions': session_details}
+    return render(request, 'academics/previous_attendance.html', context)
+
+
+@login_required
+@permission_required('academics.view_own_timetable', raise_exception=True)  # Re-using existing student permission
+@nav_item(title="My Timetable", icon="iconsminds-calendar-4", url_name="academics:student_timetable",
+          permission='academics.view_own_timetable', group='my_academics', order=2)
+def student_timetable_view(request):
+    """
+    Displays the weekly timetable for the logged-in student's class.
+    """
+    student_group = request.user.profile.student_group
+    timetable_grid = {}
+
+    if student_group:
+        entries = Timetable.objects.filter(student_group=student_group).select_related(
+            'subject__subject', 'faculty', 'time_slot'
+        )
+        for entry in entries:
+            if entry.day_of_week not in timetable_grid:
+                timetable_grid[entry.day_of_week] = {}
+            timetable_grid[entry.day_of_week][entry.time_slot.id] = entry
+
+    context = {
+        'student_group': student_group,
+        'timeslots': TimeSlot.objects.filter(is_schedulable=True),
+        'days_of_week': [day[0] for day in Timetable.DAY_CHOICES],
+        'timetable_grid': timetable_grid,
+    }
+    return render(request, 'academics/student_timetable.html', context)
+
+
+@login_required
+@permission_required('academics.view_attendancerecord')  # Admin permission
+@nav_item(title="Attendance Reports", icon="simple-icon-printer", url_name="academics:attendance_report",
+          permission='academics.view_attendancerecord', group='admin_management')
+def attendance_report_view(request):
+    form = AttendanceReportForm()
+    return render(request, 'academics/attendance_report_form.html', {'form': form})
+
+
+@login_required
+@permission_required('academics.view_attendancerecord')
+def download_attendance_report_view(request):
+    group_id = request.GET.get('student_group')
+    subject_id = request.GET.get('subject')
+    month = int(request.GET.get('month'))
+    year = int(request.GET.get('year'))
+
+    student_group = StudentGroup.objects.get(pk=group_id)
+    subject = Subject.objects.get(pk=subject_id)
+    students = User.objects.filter(profile__student_group=student_group).order_by('last_name', 'first_name')
+
+    # Fetch all attendance records for the specific subject, class, and month
+    records = AttendanceRecord.objects.filter(
+        timetable__student_group=student_group,
+        timetable__subject__subject=subject,
+        date__year=year,
+        date__month=month
+    ).order_by('date')  # Order by date to process chronologically
+
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = f"{subject.name} - {student_group.name}"
+
+    # Create Header Row for ALL days in the month
+    num_days = calendar.monthrange(year, month)[1]
+    headers = ["Student Name"] + list(range(1, num_days + 1))
+    sheet.append(headers)
+    for col in sheet.iter_cols(min_row=1, max_row=1, min_col=1, max_col=len(headers)):
+        for cell in col:
+            cell.font = Font(bold=True)
+            cell.alignment = Alignment(horizontal='center')
+
+    # --- FIX: Manually ensure uniqueness in Python instead of the DB ---
+    records_dict = {}
+    processed_keys = set()  # Keep track of (student_id, day) pairs we've already handled
+    for record in records:
+        key = (record.student.id, record.date.day)
+        if key not in processed_keys:
+            records_dict[key] = record.status[0]
+            processed_keys.add(key)
+    # --- END FIX ---
+
+    # Populate Data Rows
+    for student in students:
+        row_data = [student.get_full_name()]
+        for day in range(1, num_days + 1):
+            status = records_dict.get((student.id, day), "-")
+            row_data.append(status)
+        sheet.append(row_data)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response[
+        'Content-Disposition'] = f'attachment; filename="Attendance_{subject.name}_{student_group.name}_{month}_{year}.xlsx"'
+    workbook.save(response)
+
+    return response
+
+
+@login_required
+@permission_required('academics.can_send_announcement')
+@nav_item(title="Announcements", icon="simple-icon-speech", url_name="academics:announcement_list",
+          permission='academics.can_send_announcement', group='admin_management')
+def announcement_list_view(request):
+    announcements = Announcement.objects.all()
+    return render(request, 'academics/announcement_list.html', {'announcements': announcements})
+
+
+@login_required
+@permission_required('academics.can_send_announcement')
+@transaction.atomic
+def announcement_create_view(request):
+    if request.method == 'POST':
+        form = AnnouncementForm(request.POST)
+        if form.is_valid():
+            # Create the object in memory but don't save to DB yet
+            announcement = form.save(commit=False)
+            announcement.sender = request.user
+
+            # Now save the main object and its M2M relationships.
+            # The transaction ensures this is an all-or-nothing operation.
+            announcement.save()
+            form.save_m2m()
+
+            messages.success(request, "Announcement has been sent successfully.")
+            return redirect('academics:announcement_list')
+    else:
+        form = AnnouncementForm()
+    return render(request, 'academics/announcement_form.html', {'form': form})
+
+
+@login_required
+def check_announcements_view(request):
+    """
+    API-like view for the frontend to check for the latest unseen announcement.
+    This version correctly targets users and excludes admins from pop-ups.
+    """
+    user = request.user
+    # Admins or users without a profile won't get pop-up notifications
+    if not hasattr(user, 'profile') or user.profile.role == 'admin':
+        return JsonResponse({'found': False})
+
+    # Base query for all announcements not yet seen by the user
+    unseen_query = Announcement.objects.exclude(usernotificationstatus__user=user)
+
+    # Build the filter based on the user's role and group
+    target_filter = Q()  # Start with an empty Q object
+
+    if user.profile.role == 'student' and user.profile.student_group:
+        target_filter = Q(send_to_all_students=True) | Q(target_student_groups=user.profile.student_group)
+    elif user.profile.role == 'faculty':
+        target_filter = Q(send_to_all_faculty=True)
+
+    # If the user is in a role that doesn't match, the filter remains empty,
+    # and the query will correctly return no announcements.
+    if not target_filter:
+        return JsonResponse({'found': False})
+
+    # Find the latest announcement that matches the criteria
+    latest_announcement = unseen_query.filter(target_filter).distinct().order_by('-created_at').first()
+
+    if latest_announcement:
+        # Mark this announcement as seen for this user to prevent re-notification
+        UserNotificationStatus.objects.get_or_create(user=user, announcement=latest_announcement)
+        return JsonResponse({
+            'found': True,
+            'title': latest_announcement.title,
+            'content': latest_announcement.content,
+        })
+
+    return JsonResponse({'found': False})
+
+
+@login_required
+def global_search_view(request):
+    """
+    Handles the global search query from the top navigation bar.
+    Searches for Students, Faculty, and Subjects.
+    """
+    query = request.GET.get('q', '')
+    students_found = User.objects.none()
+    faculty_found = User.objects.none()
+    subjects_found = Subject.objects.none()
+
+    if query:
+        # Search for students by name, username, or student ID
+        students_found = User.objects.filter(
+            Q(profile__role='student') &
+            (Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query) | Q(profile__student_id_number__icontains=query))
+        ).distinct()
+
+        # Search for faculty by name or username
+        faculty_found = User.objects.filter(
+            Q(profile__role='faculty') &
+            (Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query))
+        ).distinct()
+
+        # Search for subjects by name or code
+        subjects_found = Subject.objects.filter(
+            Q(name__icontains=query) | Q(code__icontains=query)
+        )
+
+    context = {
+        'query': query,
+        'students': students_found,
+        'faculty': faculty_found,
+        'subjects': subjects_found,
+        'result_count': len(students_found) + len(faculty_found) + len(subjects_found)
+    }
+    return render(request, 'academics/search_results.html', context)

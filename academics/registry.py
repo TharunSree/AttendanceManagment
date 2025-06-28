@@ -23,5 +23,10 @@ NAVIGATION_GROUPS = [
         'id': 'application_settings',  # Unique ID for the group
         'title': 'Application Settings',
         'icon': 'iconsminds-gears',
+    },
+    {
+        'id':'my_academics',
+        'title' : 'My Academics',
+        'icon' : 'simple-icon-user',
     }
 ]

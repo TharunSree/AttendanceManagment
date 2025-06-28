@@ -44,14 +44,18 @@
                                     </td>
 
                                     <td class="text-center">
-                                        <a href="{% url 'academics:daily_log_detail' timetable_id=item.timetable.id date=date|date:'Y-m-d' %}"
-                                        >
-                                            {% if item.status == 'Conducted' %}
-                                                <span class="badge badge-pill badge-primary">{{ item.present_count }} / {{ item.total_students }} Present</span>
-                                            {% elif item.status == 'Cancelled' %}
-                                                <span class="badge badge-pill badge-danger">Not Conducted</span>
+
+                                        {% if item.status == 'Conducted' %}
+                                            <a href="{% url 'academics:daily_log_detail' timetable_id=item.timetable.id date=date|date:'Y-m-d' %}"
+                                            ><span class="badge badge-pill badge-primary">{{ item.present_count }} / {{ item.total_students }} Present</span>
+                                            </a>
+                                            {% if item.was_edited %}
+                                                <span class="badge badge-pill badge-outline-warning ml-1">Edited</span>
                                             {% endif %}
-                                        </a>
+                                        {% elif item.status == 'Cancelled' %}
+                                            <span class="badge badge-pill badge-danger">Not Conducted</span>
+                                        {% endif %}
+
                                     </td>
 
                                 </tr>

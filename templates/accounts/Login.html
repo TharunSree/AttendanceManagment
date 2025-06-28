@@ -52,6 +52,7 @@
 
                             <form method="post" action="{% url 'accounts:login' %}">
                                 {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ next }}">
 
                                 <label class="form-group has-float-label mb-4">
                                     {{ form.username }} <span>Username</span> {% if form.username.errors %}

@@ -1,7 +1,10 @@
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
 from django.dispatch import receiver
-from .models import Profile
+from django.urls import reverse
+
+from academics.models import DailySubstitution
+from .models import Profile, Notification
 
 
 @receiver(post_save, sender=User)
@@ -41,3 +44,22 @@ def add_user_to_group(sender, instance, **kwargs):
 
     # Add the user to their correct group
     target_group.user_set.add(user)
+
+
+@receiver(post_save, sender=DailySubstitution)
+def create_substitution_notification(sender, instance, created, **kwargs):
+    """
+    Creates a notification when a faculty member is assigned as a substitute.
+    """
+    if created:
+        faculty_member = instance.substituted_by
+        class_details = instance.timetable.subject.subject.name
+        class_time = instance.timetable.time_slot.start_time.strftime("%I:%M %p")
+
+        message = f"You have been assigned as a substitute for '{class_details}' at {class_time}."
+
+        Notification.objects.create(
+            recipient=faculty_member,
+            message=message,
+            url=reverse('academics:faculty_schedule')  # Link to their daily schedule
+        )

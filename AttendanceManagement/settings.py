@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'django-insecure-2o9oy3avts$v*n$*(53zx0oazf1zswku1^9g8i0y27fgkuvi)t
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -64,13 +62,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'accounts.context_processors.notifications_processor',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'AttendanceManagement.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -85,7 +83,6 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -105,18 +102,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -136,9 +131,12 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Standard port for TLS
 EMAIL_USE_TLS = True  # Use Transport Layer Security
 EMAIL_HOST_USER = os.environ.get('MY_EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('MY_EMAIL_APP_PASSWORD') # This should be your 16-digit App Password
+EMAIL_HOST_PASSWORD = os.environ.get('MY_EMAIL_APP_PASSWORD')  # This should be your 16-digit App Password
 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 SERVER_EMAIL = os.environ.get('SERVER_EMAIL', EMAIL_HOST_USER)
 ADMINS = [('Admin', os.environ.get('ADMIN_EMAIL', 'admin@example.com'))]
 
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = 'accounts:home'
+LOGOUT_REDIRECT_URL = 'accounts:login'

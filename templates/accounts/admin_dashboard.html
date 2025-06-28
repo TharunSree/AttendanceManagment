@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>Admin Dashboard</h1>
+                <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                    <ol class="breadcrumb pt-0">
+                        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                    </ol>
+                </nav>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="iconsminds-student-male-female text-primary" style="font-size: 48px;"></i>
+                        <p class="card-text mb-0">Total Students</p>
+                        <p class="lead text-center">{{ total_students }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="iconsminds-business-man-woman text-primary" style="font-size: 48px;"></i>
+                        <p class="card-text mb-0">Total Faculty</p>
+                        <p class="lead text-center">{{ total_faculty }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="iconsminds-books text-primary" style="font-size: 48px;"></i>
+                        <p class="card-text mb-0">Total Courses</p>
+                        <p class="lead text-center">{{ total_courses }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="iconsminds-network text-primary" style="font-size: 48px;"></i>
+                        <p class="card-text mb-0">Total Classes</p>
+                        <p class="lead text-center">{{ total_classes }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Attendance Today</h5>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="attendanceTodayChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Recent Class Cancellations</h5>
+                        <div class="scroll">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Faculty</th>
+                                    <th>Date</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for cancellation in recent_cancellations %}
+                                    <tr>
+                                        <td>{{ cancellation.timetable.subject.subject.name }}</td>
+                                        <td>{{ cancellation.timetable.faculty.get_full_name }}</td>
+                                        <td>{{ cancellation.date|date:"d M Y" }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="text-center">No recent cancellations.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Recent Substitutions</h5>
+                        <div class="scroll">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Original Faculty</th>
+                                    <th>Substitute</th>
+                                    <th>Subject</th>
+                                    <th>Date</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for sub in recent_substitutions %}
+                                    <tr>
+                                        <td>{{ sub.timetable.faculty.get_full_name }}</td>
+                                        <td>{{ sub.substituted_by.get_full_name }}</td>
+                                        <td>{{ sub.timetable.subject.subject.name }}</td>
+                                        <td>{{ sub.date|date:"d M Y" }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">No recent substitutions.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_scripts %}
+    <script src="{% static 'js/vendor/Chart.bundle.min.js' %}"></script>
+    <script src="{% static 'js/vendor/chartjs-plugin-datalabels.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            // --- Global Chart Config & Plugins (from your script) ---
+            var rootStyle = getComputedStyle(document.body);
+            var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
+            if (typeof Chart !== "undefined") {
+                Chart.defaults.global.defaultFontFamily = "'JetBrains Mono', sans-serif";
+                Chart.defaults.DoughnutWithShadow = Chart.defaults.doughnut;
+                Chart.controllers.DoughnutWithShadow = Chart.controllers.doughnut.extend({
+                    draw: function (ease) {
+                        Chart.controllers.doughnut.prototype.draw.call(this, ease);
+                        let ctx = this.chart.chart.ctx;
+                        ctx.save();
+                        ctx.shadowColor = "rgba(0,0,0,0.15)";
+                        ctx.shadowBlur = 10;
+                        ctx.shadowOffsetX = 0;
+                        ctx.shadowOffsetY = 10;
+                        ctx.responsive = true;
+                        Chart.controllers.doughnut.prototype.draw.apply(this, arguments);
+                        ctx.restore();
+                    }
+                });
+            }
+            var centerTextPlugin = {
+                beforeDraw: function (chart) {
+                    if (!chart.options.centerText) {
+                        return;
+                    }
+                    var width = chart.chartArea.right;
+                    var height = chart.chartArea.bottom;
+                    var ctx = chart.chart.ctx;
+                    ctx.restore();
+                    var officialPercentage = chart.options.centerText.percentage;
+                    ctx.font = "36px" + " Nunito, sans-serif";
+                    ctx.fillStyle = primaryColor;
+                    ctx.textBaseline = "middle";
+                    var text = officialPercentage.toFixed(1) + "%",
+                        textX = Math.round((width - ctx.measureText(text).width) / 2), textY = height / 2;
+                    ctx.fillText(text, textX, textY);
+                    ctx.save();
+                }
+            };
+            var chartTooltip = {
+                backgroundColor: getComputedStyle(document.body).getPropertyValue("--foreground-color").trim(),
+                titleFontColor: primaryColor,
+                borderColor: getComputedStyle(document.body).getPropertyValue("--separator-color").trim(),
+                borderWidth: 0.5,
+                bodyFontColor: primaryColor,
+                bodySpacing: 10,
+                xPadding: 15,
+                yPadding: 15,
+                cornerRadius: 0.15,
+                displayColors: false
+            };
+
+            // --- Reusable Chart Initialization Function ---
+            function initializeChart(canvasId, present, absent, onDuty, officialPercentage) {
+                const ctx = document.getElementById(canvasId)?.getContext('2d');
+                if (!ctx) return;
+
+                const total = present + absent + onDuty;
+                let labels = ['Present', 'Absent', 'On Duty'];
+                let data = [present, absent, onDuty];
+                let backgroundColors = ["rgba(40, 212, 69, 0.2)", "rgba(250, 4, 27, 0.2)", "rgba(150, 150, 150, 0.2)"];
+                let borderColors = ["rgba(40, 212, 69, 0.75)", "rgba(250, 4, 27, 0.75)", "rgba(150, 150, 150, 0.75)"];
+
+                if (total === 0) {
+                    labels = ['No Data'];
+                    data = [1];
+                    backgroundColors = ["rgba(200, 200, 200, 0.2)"];
+                    borderColors = ["rgba(200, 200, 200, 0.75)"];
+                }
+
+                new Chart(ctx, {
+                    type: 'DoughnutWithShadow',
+                    data: {
+                        labels,
+                        datasets: [{data, backgroundColor: backgroundColors, borderColor: borderColors, borderWidth: 2}]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false, cutoutPercentage: 80,
+                        centerText: {percentage: officialPercentage},
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                generateLabels: (chart) => chart.data.labels.map((label, i) => ({
+                                    text: `${label} - ${chart.data.datasets[0].data[i]}`,
+                                    fillStyle: chart.data.datasets[0].backgroundColor[i]
+                                }))
+                            }
+                        },
+                        tooltips: chartTooltip, plugins: {datalabels: {display: false}}
+                    },
+                    plugins: [centerTextPlugin]
+                });
+            }
+
+            // --- Initialize Today's Attendance Chart ---
+            initializeChart(
+                'attendanceTodayChart', // The canvas ID in admin_dashboard.html
+                {{ overall_attended|default:0 }},
+                {{ overall_absent|default:0 }},
+                {{ overall_on_duty|default:0 }},
+                {{ overall_official_percentage|default:0 }}
+            );
+        });
+    </script>
+{% endblock page_scripts %}

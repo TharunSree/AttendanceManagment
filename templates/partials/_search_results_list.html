@@ -1,0 +1,35 @@
+{% for item in items %}
+<div class="card d-flex flex-row mb-3">
+    <div class="d-flex flex-grow-1 min-width-zero">
+        <div class="card-body align-self-center d-flex flex-row justify-content-between min-width-zero">
+            <div class="min-width-zero">
+                <p class="list-item-heading mb-1">
+                    {% if item_type == "Student" %}
+                        <a href="{% url 'academics:admin_student_attendance_detail' item.pk %}">{{ item.get_full_name }}</a>
+                    {% elif item_type == "Faculty" %}
+                        {{ item.get_full_name }}
+                    {% elif item_type == "Subject" %}
+                         {{ item.name }}
+                    {% endif %}
+                </p>
+                <p class="mb-0 text-muted text-small">
+                    {% if item_type == "Student" %}
+                        ID: {{ item.profile.student_id_number }} | Class: {{ item.profile.student_group.name }}
+                    {% elif item_type == "Faculty" %}
+                        Username: {{ item.username }}
+                    {% elif item_type == "Subject" %}
+                        Code: {{ item.code }}
+                    {% endif %}
+                </p>
+            </div>
+            <div class="text-right">
+                <span class="badge badge-pill badge-light">{{ item_type }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% empty %}
+    {% if item_type == "Student" %}<p class="text-muted">No matching students found.</p>{% endif %}
+    {% if item_type == "Faculty" %}<p class="text-muted">No matching faculty found.</p>{% endif %}
+    {% if item_type == "Subject" %}<p class="text-muted">No matching subjects found.</p>{% endif %}
+{% endfor %}

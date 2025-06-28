@@ -11,17 +11,18 @@
 {% endblock breadcrumbs %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <form method="post">
-            {% csrf_token %}
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Set Permissions</h5>
-                    <p class="text-muted">Select the permissions that members of the "{{ group.name }}" group should have.</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
+    <div class="row">
+        <div class="col-12">
+            <form method="post">
+                {% csrf_token %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Set Permissions</h5>
+                        <p class="text-muted">Select the permissions that members of the "{{ group.name }}" group should
+                            have.</p>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
                                 <tr>
                                     <th>Functionality / Model</th>
                                     {# FIX: Loop over the 'actions' list from the view #}
@@ -29,41 +30,60 @@
                                         <th class="text-center">{{ action }}</th>
                                     {% endfor %}
                                 </tr>
-                            </thead>
-                            <tbody>
+                                </thead>
+                                <tbody>
                                 {% for model in permissions_by_model %}
-                                <tr>
-                                    <td><strong>{{ model.name }}</strong></td>
+                                    <tr>
+                                        <td><strong>{{ model.name }}</strong></td>
 
-                                    {# FIX: Loop over the 'action_codes' list from the view #}
-                                    {% for action_code in action_codes %}
-                                        <td class="text-center">
-                                            {% with perm=model|get_item:action_code %}
-                                                {% if perm %}
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" name="permissions" value="{{ perm.pk }}" id="perm_{{ perm.pk }}"
-                                                            {% if perm in group_permissions %}checked{% endif %}>
-                                                        <label class="custom-control-label" for="perm_{{ perm.pk }}"></label>
-                                                    </div>
-                                                {% else %}
-                                                    <span class="text-muted">-</span>
-                                                {% endif %}
-                                            {% endwith %}
-                                        </td>
-                                    {% endfor %}
-                                </tr>
+                                        {# FIX: Loop over the 'action_codes' list from the view #}
+                                        {% for action_code in action_codes %}
+                                            <td class="text-center">
+                                                {% with perm=model|get_item:action_code %}
+                                                    {% if perm %}
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input"
+                                                                   name="permissions" value="{{ perm.pk }}"
+                                                                   id="perm_{{ perm.pk }}"
+                                                                   {% if perm in group_permissions %}checked{% endif %}>
+                                                            <label class="custom-control-label"
+                                                                   for="perm_{{ perm.pk }}"></label>
+                                                        </div>
+                                                    {% else %}
+                                                        <span class="text-muted">-</span>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
                                 {% endfor %}
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+                {% if other_permissions %}
+                    <h5 class="mb-4 mt-5">Other Permissions</h5>
+                    <ul class="card">
+                        {% for perm in other_permissions %}
+                            <li class="card-body d-flex justify-content-between align-items-center">
+                                {{ perm.name }}
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="perm_{{ perm.id }}"
+                                           name="permissions" value="{{ perm.id }}"
+                                           {% if perm in group_permissions %}checked{% endif %}>
+                                    <label class="custom-control-label" for="perm_{{ perm.id }}"></label>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
 
-            <div class="text-right mt-4">
-                <a href="{% url 'accounts:group_permission_list' %}" class="btn btn-outline-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save Permissions</button>
-            </div>
-        </form>
+                <div class="text-right mt-4">
+                    <a href="{% url 'accounts:group_permission_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Permissions</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 {% endblock content %}

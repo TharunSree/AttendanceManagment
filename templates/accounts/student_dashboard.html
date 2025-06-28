@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>Welcome, {{ user.get_full_name }}</h1>
+            <div class="separator mb-5"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Overall Attendance</h5>
+                    <div class="chart-container" style="height: 250px;">
+                         <canvas id="overallDoughnutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Today's Classes</h5>
+                    <div class="scroll" style="max-height: 150px;">
+                        <table class="table table-sm">
+                            <tbody>
+                                {% for class in todays_classes %}
+                                <tr>
+                                    <td>{{ class.time_slot.start_time|time:"h:i A" }}</td>
+                                    <td>{{ class.subject.subject.name }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td class="text-center">No classes scheduled for today.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+             <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Subjects Below Attendance Threshold</h5>
+
+                        {% for item in subjects_below_threshold %}
+                            <p><span class="badge badge-outline-danger">{{item.subject_name}} - <wbr><span class="float-right text-danger">{{item.official_percentage}}%</span></span></p>
+                        {% empty %}
+                            <span class="badge badge-outline-primary">Great job! No subjects are below the threshold.</span>
+                        {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12">
+             <a href="{% url 'academics:student_my_attendance' %}" class="btn btn-primary">View Full Attendance Details</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="{% static 'js/vendor/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'js/vendor/chartjs-plugin-datalabels.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        // --- Global Chart Config & Plugins (for consistency) ---
+        var rootStyle = getComputedStyle(document.body);
+        var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
+        if (typeof Chart !== "undefined") { Chart.defaults.global.defaultFontFamily = "'JetBrains Mono', sans-serif"; Chart.defaults.DoughnutWithShadow = Chart.defaults.doughnut; Chart.controllers.DoughnutWithShadow = Chart.controllers.doughnut.extend({ draw: function (ease) { Chart.controllers.doughnut.prototype.draw.call(this, ease); let ctx = this.chart.chart.ctx; ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.15)"; ctx.shadowBlur = 10; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 10; ctx.responsive = true; Chart.controllers.doughnut.prototype.draw.apply(this, arguments); ctx.restore(); } });}
+        var centerTextPlugin = { beforeDraw: function (chart) { if (!chart.options.centerText) { return; } var width = chart.chartArea.right; var height = chart.chartArea.bottom; var ctx = chart.chart.ctx; ctx.restore(); var officialPercentage = chart.options.centerText.percentage; ctx.font = "36px" + " Nunito, sans-serif"; ctx.fillStyle = primaryColor; ctx.textBaseline = "middle"; var text = officialPercentage.toFixed(1) + "%", textX = Math.round((width - ctx.measureText(text).width) / 2), textY = height / 2; ctx.fillText(text, textX, textY); ctx.save(); } };
+        var chartTooltip = {backgroundColor: getComputedStyle(document.body).getPropertyValue("--foreground-color").trim(), titleFontColor: primaryColor, borderColor: getComputedStyle(document.body).getPropertyValue("--separator-color").trim(), borderWidth: 0.5, bodyFontColor: primaryColor, bodySpacing: 10, xPadding: 15, yPadding: 15, cornerRadius: 0.15, displayColors: false };
+
+        // --- Reusable Chart Initialization Function ---
+        function initializeChart(canvasId, present, absent, onDuty, officialPercentage) {
+            const ctx = document.getElementById(canvasId)?.getContext('2d');
+            if (!ctx) return;
+
+            const total = present + absent + onDuty;
+            let labels = ['Present', 'Absent', 'On Duty'];
+            let data = [present, absent, onDuty];
+            let backgroundColors = ["rgba(40, 212, 69, 0.2)", "rgba(250, 4, 27, 0.2)", "rgba(150, 150, 150, 0.2)"];
+            let borderColors = ["rgba(40, 212, 69, 0.75)", "rgba(250, 4, 27, 0.75)", "rgba(150, 150, 150, 0.75)"];
+
+            if (total === 0 && present === 0 && absent === 0) {
+                labels = ['No Data']; data = [1];
+                backgroundColors = ["rgba(200, 200, 200, 0.2)"];
+                borderColors = ["rgba(200, 200, 200, 0.75)"];
+                officialPercentage = 0;
+            }
+
+            new Chart(ctx, {
+                type: 'DoughnutWithShadow',
+                data: { labels, datasets: [{ data, backgroundColor: backgroundColors, borderColor: borderColors, borderWidth: 2 }] },
+                options: {
+                    responsive: true, maintainAspectRatio: false, cutoutPercentage: 80,
+                    centerText: { percentage: officialPercentage },
+                    legend: { display: true, position: 'bottom', labels: { padding: 20, usePointStyle: true, generateLabels: (chart) => chart.data.labels.map((label, i) => ({ text: `${label} - ${chart.data.datasets[0].data[i]}`, fillStyle: chart.data.datasets[0].backgroundColor[i] })) } },
+                    tooltips: chartTooltip, plugins: { datalabels: { display: false } }
+                },
+                plugins: [centerTextPlugin]
+            });
+        }
+
+        // --- Initialize All Charts Using Data from View ---
+        // 1. Overall Chart
+        initializeChart(
+            'overallDoughnutChart',
+            {{ overall_attended|default:0 }},
+            {{ overall_absent|default:0 }},
+            {{ overall_on_duty|default:0 }},
+            {{ overall_official_percentage|default:0 }}
+        );
+
+        // 2. Individual Subject Charts
+        const subjectData = JSON.parse('{{ subject_attendance_data_json|safe }}');
+        subjectData.forEach(item => {
+            initializeChart(
+                `doughnutChart${item.subject_pk}`,
+                item.attended_classes,
+                item.absent_classes,
+                item.on_duty_classes,
+                item.official_percentage
+            );
+        });
+    });
+</script>
+{% endblock %}

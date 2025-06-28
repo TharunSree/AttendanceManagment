@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Announcements{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>Announcements</h1>
+                <a href="{% url 'academics:announcement_create' %}" class="btn btn-primary btn-lg top-right-button">
+                    <i class="simple-icon-plus"></i> NEW
+                </a>
+            </div>
+             <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                <ol class="breadcrumb pt-0">
+                    <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Announcements</li>
+                </ol>
+            </nav>
+            <div class="separator mb-5"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% for announcement in announcements %}
+            <div class="card d-flex flex-row mb-4">
+                <div class="d-flex flex-grow-1 min-width-zero">
+                    <div class="card-body align-self-center d-flex flex-column flex-md-row justify-content-between min-width-zero align-items-md-center">
+                        <div class="min-width-zero">
+                            <h5 class="mb-1">{{ announcement.title }}</h5>
+                            <p class="text-muted text-small mb-2">{{ announcement.content|truncatewords:25 }}</p>
+                            <div>
+                                <span class="text-muted text-small">
+                                    <i class="simple-icon-user mr-1"></i> {{ announcement.sender.get_full_name }}
+                                </span>
+                                <span class="text-muted text-small ml-3">
+                                    <i class="simple-icon-calendar mr-1"></i> {{ announcement.created_at|date:"d M Y" }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-md-right mt-3 mt-md-0">
+                            <strong>To:</strong>
+                            {# --- CORRECTED DISPLAY LOGIC --- #}
+                            {% if announcement.send_to_all_students %}
+                                <span class="badge badge-pill badge-info">All Students</span>
+                            {% endif %}
+                             {% if announcement.send_to_all_faculty %}
+                                <span class="badge badge-pill badge-success">All Faculty</span>
+                            {% endif %}
+                            {% for group in announcement.target_student_groups.all %}
+                                <span class="badge badge-pill badge-primary">{{ group.name }}</span>
+                            {% endfor %}
+                            {# ------------------------------- #}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <div class="alert alert-info text-center">No announcements have been sent yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

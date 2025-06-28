@@ -1,6 +1,8 @@
+from django.contrib.auth.models import Group
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.conf import settings  # To link to the User model
+
 
 class AcademicSession(models.Model):
     name = models.CharField(max_length=100, unique=True, help_text="e.g., '2024-2025'")
@@ -10,6 +12,7 @@ class AcademicSession(models.Model):
 
     def __str__(self):
         return self.name
+
     class Meta:
         ordering = ['-start_year']
 
@@ -38,7 +41,7 @@ class Subject(models.Model):
         ('theory', 'Theory'),
         ('practical', 'Practical'),
     ]
-    
+
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=20, unique=True)
     subject_type = models.CharField(max_length=20, choices=SUBJECT_TYPE_CHOICES, default='theory')
@@ -134,6 +137,9 @@ class Timetable(models.Model):
     time_slot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE, related_name='timetable_entries')
 
     class Meta:
+        permissions = [
+            ("view_own_timetable", "Can view own timetable"),
+        ]
         # Prevent double booking a teacher or a class group at the same time
         unique_together = (('day_of_week', 'time_slot', 'faculty'), ('day_of_week', 'time_slot', 'student_group'))
 
@@ -194,12 +200,19 @@ class AttendanceRecord(models.Model):
         limit_choices_to={'profile__role__in': ['faculty', 'admin']}
     )
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         # A student can only have one attendance status for a specific class on a specific date
         unique_together = ('student', 'timetable', 'date')
+        permissions = [
+            ("view_own_attendance", "Can view own attendance page"),
+        ]
 
     def __str__(self):
         return f"{self.student.username} on {self.date} - {self.status}"
+
 
 class ClassCancellation(models.Model):
     """
@@ -216,13 +229,15 @@ class ClassCancellation(models.Model):
     def __str__(self):
         return f"Cancelled: {self.timetable} on {self.date}"
 
+
 class DailySubstitution(models.Model):
     """
     Represents a temporary, one-day substitution for a scheduled timetable entry.
     """
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE, related_name='substitutions')
     date = models.DateField()
-    substituted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='substitute_classes', limit_choices_to={'profile__role': 'faculty'})
+    substituted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                                       related_name='substitute_classes', limit_choices_to={'profile__role': 'faculty'})
 
     class Meta:
         # A specific class period on a specific day can only have one substitute.
@@ -230,3 +245,36 @@ class DailySubstitution(models.Model):
 
     def __str__(self):
         return f"{self.timetable} on {self.date} substituted by {self.substituted_by.get_full_name()}"
+
+
+class Announcement(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    # --- MODIFIED FIELDS ---
+    target_student_groups = models.ManyToManyField(
+        StudentGroup,
+        blank=True,
+        help_text="Select specific classes to send this to."
+    )
+    send_to_all_students = models.BooleanField(default=False)
+    send_to_all_faculty = models.BooleanField(default=False)
+    # -----------------------
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        permissions = [("can_send_announcement", "Can send announcements")]
+
+    def __str__(self):
+        return self.title
+
+class UserNotificationStatus(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
+    is_seen = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('user', 'announcement')
