@@ -69,6 +69,8 @@ urlpatterns = [
     path('users/bulk-import/template/', views.download_csv_template_view, name='download_csv_template'),
     path('notifications/mark-as-read/', views.mark_notifications_as_read_view, name='mark_notifications_as_read'),
 
+
     # See code quality suggestion below
     path('', include('django.contrib.auth.urls')),
+
 ]

@@ -4,107 +4,115 @@
 {% block title %}My Account{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <h1>My Account</h1>
-            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
-                <ol class="breadcrumb pt-0">
-                    <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">My Account</li>
-                </ol>
-            </nav>
-            <div class="separator mb-5"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>My Account</h1>
+                <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                    <ol class="breadcrumb pt-0">
+                        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">My Account</li>
+                    </ol>
+                </nav>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+        <div class="text-center">
+            <img alt="Profile Picture" src="{{ user.profile.photo.url }}"
+                 class="img-thumbnail border-0 rounded-circle mb-4 list-thumbnail xlarge"/>
+            <h5 class="card-title">{{ user.get_full_name }}</h5>
+            <p class="text-muted text-small mb-2">{{ user.profile.get_role_display|title }}</p>
+        </div>
+        <div class="separator mb-5"></div>
+
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Update Profile Details</h5>
+                        <form method="post" class="mt-4">
+                            {% csrf_token %}
+
+                            {# First Name Field #}
+                            <label>{{ user_form.first_name.label }}</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="simple-icon-user"></i></span>
+                                </div>
+                                {{ user_form.first_name }}
+                            </div>
+
+                            {# Last Name Field #}
+                            <label>{{ user_form.last_name.label }}</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="simple-icon-user-follow"></i></span>
+                                </div>
+                                {{ user_form.last_name }}
+                            </div>
+
+                            {# Email Field #}
+                            <label>{{ user_form.email.label }}</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="simple-icon-envelope"></i></span>
+                                </div>
+                                {{ user_form.email }}
+                            </div>
+
+                            {# Contact Number Field #}
+                            <label>{{ profile_form.contact_number.label }}</label>
+                            <div class="input-group mb-4">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="simple-icon-phone"></i></span>
+                                </div>
+                                {{ profile_form.contact_number }}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Update Details</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Change Password</h5>
+                        <p>For security, password changes are handled on a separate page.</p>
+                        <a href="{% url 'accounts:password_change' %}" class="btn btn-outline-primary">Change My
+                            Password</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">My Information</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">Username</dt>
+                            <dd class="col-sm-8">{{ user.username }}</dd>
+
+                            <dt class="col-sm-4">Role</dt>
+                            <dd class="col-sm-8">{{ user.profile.get_role_display }}</dd>
+
+                            {% if user.profile.role == 'student' %}
+                                <dt class="col-sm-4">Student ID</dt>
+                                <dd class="col-sm-8">{{ user.profile.student_id_number|default:'N/A' }}</dd>
+
+                                <dt class="col-sm-4">Class</dt>
+                                <dd class="col-sm-8">{{ user.profile.student_group.name|default:'Not Assigned' }}</dd>
+                            {% endif %}
+
+                            {% if user.profile.role == 'faculty' and user.profile.field_of_expertise.all %}
+                                <dt class="col-sm-4">Expertise</dt>
+                                <dd class="col-sm-8">
+                                    {% for subject in user.profile.field_of_expertise.all %}
+                                        <span class="badge badge-pill badge-light">{{ subject.name }}</span>
+                                    {% endfor %}
+                                </dd>
+                            {% endif %}
+                        </dl>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-12 col-lg-6">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Update Profile Details</h5>
-                    <form method="post" class="mt-4">
-                        {% csrf_token %}
-
-                        {# First Name Field #}
-                        <label>{{ user_form.first_name.label }}</label>
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="simple-icon-user"></i></span>
-                            </div>
-                            {{ user_form.first_name }}
-                        </div>
-
-                        {# Last Name Field #}
-                        <label>{{ user_form.last_name.label }}</label>
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="simple-icon-user-follow"></i></span>
-                            </div>
-                            {{ user_form.last_name }}
-                        </div>
-
-                        {# Email Field #}
-                        <label>{{ user_form.email.label }}</label>
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="simple-icon-envelope"></i></span>
-                            </div>
-                            {{ user_form.email }}
-                        </div>
-
-                        {# Contact Number Field #}
-                        <label>{{ profile_form.contact_number.label }}</label>
-                        <div class="input-group mb-4">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="simple-icon-phone"></i></span>
-                            </div>
-                            {{ profile_form.contact_number }}
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Update Details</button>
-                    </form>
-                </div>
-            </div>
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Change Password</h5>
-                    <p>For security, password changes are handled on a separate page.</p>
-                    <a href="{% url 'accounts:password_change' %}" class="btn btn-outline-primary">Change My Password</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-6">
-            <div class="card">
-                 <div class="card-body">
-                    <h5 class="card-title">My Information</h5>
-                    <dl class="row">
-                      <dt class="col-sm-4">Username</dt>
-                      <dd class="col-sm-8">{{ user.username }}</dd>
-
-                      <dt class="col-sm-4">Role</dt>
-                      <dd class="col-sm-8">{{ user.profile.get_role_display }}</dd>
-
-                      {% if user.profile.role == 'student' %}
-                        <dt class="col-sm-4">Student ID</dt>
-                        <dd class="col-sm-8">{{ user.profile.student_id_number|default:'N/A' }}</dd>
-
-                        <dt class="col-sm-4">Class</dt>
-                        <dd class="col-sm-8">{{ user.profile.student_group.name|default:'Not Assigned' }}</dd>
-                      {% endif %}
-
-                       {% if user.profile.role == 'faculty' and user.profile.field_of_expertise.all %}
-                        <dt class="col-sm-4">Expertise</dt>
-                        <dd class="col-sm-8">
-                            {% for subject in user.profile.field_of_expertise.all %}
-                                <span class="badge badge-pill badge-light">{{ subject.name }}</span>
-                            {% endfor %}
-                        </dd>
-                      {% endif %}
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}

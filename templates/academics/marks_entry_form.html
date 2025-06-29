@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+{% load nav_helpers %}
+
+{% block page_title %}Enter Marks{% endblock %}
+
+{% block main_page_title %}Enter Student Marks{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Select Class and Subject</h5>
+                    <form method="get" id="selection-form">
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+                                <label>Class</label>
+                                {{ form.student_group }}
+                            </div>
+                            <div class="form-group col-md-5">
+                                <label>Subject</label>
+                                {{ form.course_subject }}
+                            </div>
+                            <div class="form-group col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary btn-block">Load Students</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% if students and criteria %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Enter Marks</h5>
+                        <form method="post" action="{{ request.get_full_path }}">
+                            {% csrf_token %}
+                            <div class="table-responsive">
+                                <table class="data-table data-table-scrollable responsive nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th>Student Name</th>
+                                        {% for criterion in criteria %}
+                                            <th class="text-center">{{ criterion.name }} ({{ criterion.max_marks }})
+                                            </th>
+                                        {% endfor %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for student in students %}
+                                        <tr>
+                                            <td>{{ student.get_full_name }}</td>
+                                            {% for criterion in criteria %}
+                                                <td class="p-1">
+                                                    <input type="number"
+                                                           class="form-control"
+                                                           name="marks-{{ student.id }}-{{ criterion.id }}"
+                                                           step="0.01"
+                                                           min="0"
+                                                           max="{{ criterion.max_marks }}"
+                                                           value="{{ existing_marks|get_item:student.id|get_item:criterion.id|default:'' }}">
+                                                </td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-right mt-3">
+                                <button type="submit" class="btn btn-primary">Save All Marks</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% elif selected_group and selected_subject %}
+                <div class="alert alert-warning">No marking scheme or criteria found. Please contact an administrator.
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}
+{% block vendor_scripts %}
+    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
+{% endblock vendor_scripts %}
+{% block page_scripts %}
+    <script>
+        $(document).ready(function () {
+            // Parse the data from the view
+            const groupSubjectMap = JSON.parse('{{ group_subject_map_json|safe }}');
+            const groupSelect = $('#{{ form.student_group.id_for_label }}');
+            const subjectSelect = $('#{{ form.course_subject.id_for_label }}');
+            const selectedSubjectId = '{{ selected_subject|default:"" }}';
+
+            function updateSubjectDropdown() {
+                const selectedGroupId = groupSelect.val();
+                const subjects = groupSubjectMap[selectedGroupId] || [];
+
+                // Clear current subject options
+                subjectSelect.empty();
+                subjectSelect.append(new Option('---------', ''));
+
+                // Add new options based on the selected class
+                subjects.forEach(function (subject) {
+                    subjectSelect.append(new Option(subject.name, subject.id));
+                });
+
+                // If a subject was previously selected (e.g., after page load), restore it
+                if (selectedSubjectId) {
+                    subjectSelect.val(selectedSubjectId);
+                }
+            }
+
+            // When the class dropdown changes, update the subject dropdown
+            groupSelect.on('change', function () {
+                // Clear previous selection before updating
+                subjectSelect.val('');
+                updateSubjectDropdown();
+            });
+
+            // Run on page load in case a class is already selected
+            if (groupSelect.val()) {
+                updateSubjectDropdown();
+            }
+        });
+    </script>
+{% endblock %}

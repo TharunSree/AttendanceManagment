@@ -57,7 +57,19 @@ urlpatterns = [
     path('announcements/create/', views.announcement_create_view, name='announcement_create'),
     path('announcements/check/', views.check_announcements_view, name='check_announcements'),
     path('search/', views.global_search_view, name='global_search'),
-
+    path('late-comers/', views.late_comers_view, name='late_comers'),
+    path('student/<int:student_id>/profile/', views.student_profile_view, name='student_profile'),
+    path('schemes/', views.scheme_list_view, name='scheme_list'),
+    path('schemes/add/', views.scheme_create_view, name='scheme_create'),
+    path('schemes/<int:pk>/edit/', views.scheme_update_view, name='scheme_update'),
+    path('schemes/<int:pk>/delete/', views.scheme_delete_view, name='scheme_delete'),
+    path('marks/entry/', views.marks_entry_view, name='marks_entry'),
+    path('marks/import/', views.bulk_marks_import_view, name='bulk_marks_import'),
+    path('marks/import/template/', views.download_marks_template_view, name='download_marks_template'),
+    path('my-marks/', views.student_my_marks_view, name='student_my_marks'),
+    path('reports/marks/', views.marks_report_view, name='marks_report'),
+    path('reports/marks/download/', views.download_marks_report_view, name='download_marks_report'),
+    path('my-profile/', views.my_profile_view, name='my_profile'),
     # --- Academic Session Management URLs ---
 
 ]

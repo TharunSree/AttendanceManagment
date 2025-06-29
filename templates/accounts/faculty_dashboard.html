@@ -58,7 +58,7 @@
                                 <td class="text-center">{{ entry.student_group.name }}</td>
                                 <td  class="text-center">
                                     {% if entry.id in marked_timetable_ids %}
-                                        <a href="{% url 'academics:mark_ class="text-centerattendance' entry.id %}" class="btn btn-sm btn-outline-secondary">View/Edit</a>
+                                        <a href="{% url 'academics:mark_attendance' entry.id %}" class="btn btn-sm btn-outline-secondary">View/Edit</a>
                                     {% else %}
                                         <a href="{% url 'academics:mark_attendance' entry.id %}" class="btn btn-sm btn-primary">Mark Attendance</a>
                                     {% endif %}

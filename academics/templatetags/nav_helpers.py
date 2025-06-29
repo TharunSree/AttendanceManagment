@@ -1,7 +1,12 @@
-# In academics/templatetags/nav_helpers.py
-
 from django import template
-from academics.registry import REGISTERED_NAV_ITEMS, NAVIGATION_GROUPS
+from collections import defaultdict
+from django.urls import resolve
+from academics.registry import (
+    REGISTERED_NAV_ITEMS,
+    NAVIGATION_GROUPS,
+    SUBGROUP_DEFINITIONS,
+    SUBGROUP_MAPPING
+)
 
 register = template.Library()
 
@@ -12,48 +17,69 @@ def get_sidebar_nav(context):
     if not user.is_authenticated:
         return []
 
-    # Filter all registered items by checking user permissions
-    allowed_items = []
-    for item in REGISTERED_NAV_ITEMS:
-        required_perm = item.get('permission')
+    # Get the name of the current URL to determine the active item/group
+    current_url_name = resolve(context['request'].path_info).url_name
 
-        # If no permission is listed, or if the user has the required permission, show the item.
-        if not required_perm or user.has_perm(required_perm):
-            allowed_items.append(item)
+    # Filter items based on user permissions
+    allowed_items = [
+        item for item in REGISTERED_NAV_ITEMS
+        if not item.get('permission') or user.has_perm(item['permission'])
+    ]
 
-    # --- The rest of the function for sorting and grouping remains the same ---
-    allowed_items.sort(key=lambda x: x.get('order', 99))
-
-    items_by_group = {}
+    # This will hold the final structure for each main group
+    items_by_group = defaultdict(lambda: {'direct_items': [], 'subgroups': defaultdict(list)})
     ungrouped_items = []
+
     for item in allowed_items:
         group_id = item.get('group')
         if group_id:
-            if group_id not in items_by_group:
-                items_by_group[group_id] = []
-            items_by_group[group_id].append(item)
+            subgroup_id = SUBGROUP_MAPPING.get(item['url_name'])
+            if subgroup_id:
+                items_by_group[group_id]['subgroups'][subgroup_id].append(item)
+            else:
+                items_by_group[group_id]['direct_items'].append(item)
         else:
             ungrouped_items.append(item)
 
     final_nav = []
-    final_nav.extend(ungrouped_items)
+    final_nav.extend(sorted(ungrouped_items, key=lambda x: x.get('order', 99)))
 
     for group_def in NAVIGATION_GROUPS:
-        # We only show a group if it has visible items inside it for the current user
-        if group_def['id'] in items_by_group:
+        group_id = group_def['id']
+        if group_id in items_by_group:
+            group_content = items_by_group[group_id]
+
+            # Process collapsible subgroups
+            processed_subgroups = []
+            for subgroup_id, items in group_content['subgroups'].items():
+                subgroup_def = SUBGROUP_DEFINITIONS.get(subgroup_id, {})
+                is_subgroup_active = any(item['url_name'] == current_url_name for item in items)
+                processed_subgroups.append({
+                    'id': f"subgroup-{group_id}-{subgroup_id}",
+                    'title': subgroup_def.get('title', 'Subgroup'),
+                    'order': subgroup_def.get('order', 99),
+                    'items': sorted(items, key=lambda x: x.get('order', 99)),
+                    'is_active': is_subgroup_active
+                })
+            processed_subgroups.sort(key=lambda x: x['order'])
+
+            # Process direct items
+            direct_items = sorted(group_content['direct_items'], key=lambda x: x.get('order', 99))
+
+            # Determine if the main group should be active
+            is_main_group_active = (
+                any(item['url_name'] == current_url_name for item in direct_items) or
+                any(sg['is_active'] for sg in processed_subgroups)
+            )
+
+            # Create the final structure for this main group
             group_copy = group_def.copy()
-            group_copy['submenu'] = items_by_group[group_def['id']]
+            group_copy['is_active'] = is_main_group_active
+            group_copy['submenu_content'] = {
+                'direct_items': direct_items,
+                'subgroups': processed_subgroups
+            }
             final_nav.append(group_copy)
 
     final_nav.sort(key=lambda x: x.get('order', 0))
     return final_nav
-
-@register.filter(name='get_item')
-def get_item(dictionary, key):
-    """
-    Custom template filter to allow dictionary key lookup with a variable.
-    Usage: {{ my_dict|get_item:my_key }}
-    """
-    if isinstance(dictionary, dict):
-        return dictionary.get(key)
-    return None

@@ -4,91 +4,101 @@
 {% block title %}Bulk Import Users{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <h1>Bulk Import Students</h1>
-            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
-                <ol class="breadcrumb pt-0">
-                    <li class="breadcrumb-item">
-                        <a href="{% url 'accounts:home' %}">Home</a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href="#">User Management</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Bulk Import</li>
-                </ol>
-            </nav>
-            <div class="separator mb-5"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>Bulk Import Students</h1>
+                <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                    <ol class="breadcrumb pt-0">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'accounts:home' %}">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="#">User Management</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Bulk Import</li>
+                    </ol>
+                </nav>
+                <div class="separator mb-5"></div>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Upload CSV File</h5>
-                    <p>Upload a CSV file with student data to create multiple accounts at once. Please ensure the CSV file has the correct headers by downloading the template.</p>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Upload CSV File</h5>
+                        <p>Upload a CSV file with student data to create multiple accounts at once. Please ensure the
+                            CSV file has the correct headers by downloading the template.</p>
 
-                    <form method="post" enctype="multipart/form-data" class="mt-4">
-                        {% csrf_token %}
-                        <label for="id_file">Select CSV File</label>
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Upload</span>
+                        <form method="post" enctype="multipart/form-data" class="mt-4">
+                            {% csrf_token %}
+                            <label for="id_file">Select CSV File</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Upload</span>
+                                </div>
+                                <div class="custom-file">
+                                    {{ form.file }}
+                                    <label class="custom-file-label" for="id_file">Choose file...</label>
+                                </div>
                             </div>
-                            <div class="custom-file">
-                                {{ form.file }}
-                                <label class="custom-file-label" for="id_file">Choose file...</label>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary mt-2">Upload and Import</button>
-                    </form>
+                            <button type="submit" class="btn btn-primary mt-2">Upload and Import</button>
+                        </form>
 
-                    {% if errors %}
-                        <div class="alert alert-danger mt-4">
-                            <strong>Import Failed for the following rows:</strong>
-                            <ul class="mb-0">
-                            {% for error in errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
+                        {% if errors %}
+                            <div class="alert alert-danger mt-4">
+                                <strong>Import Failed for the following rows:</strong>
+                                <ul class="mb-0">
+                                    {% for error in errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">CSV File Format</h5>
+                        <p>The first row of your CSV file must contain these exact headers in order:</p>
+
+                        {# --- UPDATED HEADER LIST --- #}
+                        <p><code>username,password,first_name,last_name,email,student_id_number,contact_number,student_group_name,address,father_name,father_phone,mother_name,mother_phone</code>
+                        </p>
+                        <hr>
+
+                        <a href="{% url 'accounts:download_csv_template' %}"
+                           class="btn btn-outline-secondary btn-block">
+                            <i class="simple-icon-cloud-download"></i> Download Template
+                        </a>
+
+                        <p class="text-muted mt-4"><strong>Important:</strong></p>
+                        <ul>
+                            <li class="text-muted">The <strong>username</strong> must be unique.</li>
+                            <li class="text-muted">The <strong>student_group_name</strong> must exactly match the name
+                                of an existing class in the system.
+                            </li>
+                            <li class="text-muted">The <strong>photo</strong> field cannot be imported via CSV and must
+                                be added manually by editing the profile.
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">CSV File Format</h5>
-                    <p>The first row of your CSV file must contain these exact headers:</p>
-                    <p><code>username,password,first_name,last_name,email,student_id_number,contact_number,student_group_name</code></p>
-                    <hr>
-
-                    <a href="{% url 'accounts:download_csv_template' %}" class="btn btn-outline-secondary btn-block">
-                        <i class="simple-icon-cloud-download"></i> Download Template
-                    </a>
-
-                    <p class="text-muted mt-4"><strong>Important:</strong></p>
-                    <ul>
-                        <li class="text-muted">The `username` must be unique.</li>
-                        <li class="text-muted">The `student_group_name` must exactly match the name of an existing class in the system.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
     </div>
-</div>
 {% endblock %}
 
 {% block page_scripts %}
-<script>
-    $(document).ready(function () {
-        // This script updates the custom file input label with the selected file name
-        $('.custom-file-input').on('change', function (event) {
-            var inputFile = event.currentTarget;
-            $(inputFile).parent().find('.custom-file-label').html(inputFile.files[0].name);
+    <script>
+        $(document).ready(function () {
+            // This script updates the custom file input label with the selected file name
+            $('.custom-file-input').on('change', function (event) {
+                var inputFile = event.currentTarget;
+                $(inputFile).parent().find('.custom-file-label').html(inputFile.files[0].name);
+            });
         });
-    });
-</script>
+    </script>
 {% endblock page_scripts %}

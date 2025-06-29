@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load nav_helpers %}
 
-{% block page_title %}Edit Permissions{% endblock page_title %}
+{% block title %}Edit Permissions{% endblock title %}
 {% block main_page_title %}Edit Permissions for {{ group.name }}{% endblock main_page_title %}
 
 {% block breadcrumbs %}
@@ -63,20 +63,32 @@
                     </div>
                 </div>
                 {% if other_permissions %}
-                    <h5 class="mb-4 mt-5">Other Permissions</h5>
-                    <ul class="card">
-                        {% for perm in other_permissions %}
-                            <li class="card-body d-flex justify-content-between align-items-center">
-                                {{ perm.name }}
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="perm_{{ perm.id }}"
-                                           name="permissions" value="{{ perm.id }}"
-                                           {% if perm in group_permissions %}checked{% endif %}>
-                                    <label class="custom-control-label" for="perm_{{ perm.id }}"></label>
+
+                    <div class="mt-4">
+                        <h5>Other Permissions</h5>
+                        <hr>
+                        <div class="row">
+                            {% for perm in other_permissions %}
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    {# --- NEW CARD-BASED LAYOUT --- #}
+                                    <div class="card mb-2">
+                                        <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                                            <label class="form-check-label m-0" for="perm_{{ perm.pk }}">
+                                                {{ perm.name }}
+                                            </label>
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input" type="checkbox" name="permissions"
+                                                       value="{{ perm.pk }}" id="perm_{{ perm.pk }}"
+                                                       {% if perm in group_permissions %}checked{% endif %}>
+                                                <label class="custom-control-label" for="perm_{{ perm.pk }}"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {# --------------------------- #}
                                 </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                            {% endfor %}
+                        </div>
+                    </div>
                 {% endif %}
 
                 <div class="text-right mt-4">

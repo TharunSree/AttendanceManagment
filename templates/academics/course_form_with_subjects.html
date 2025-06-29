@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block page_title %}{{ form_title }}{% endblock page_title %}
+{% block title %}{{ form_title }}{% endblock title %}
 
 {% block main_page_title %}{{ form_title }}{% endblock main_page_title %}
 
@@ -17,6 +17,7 @@
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-
+
                             {% if message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show"
                          role="alert">
                         {{ message }}
@@ -77,6 +78,15 @@
                             {{ form.description }}
                             {% for error in form.description.errors %}
                                 <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="form-group">
+                            <label>Marking Scheme</label>
+                            {{ form.marking_scheme }}
+                            {% if form.marking_scheme.errors %}
+                                <div class="text-danger small mt-1">{{ form.marking_scheme.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">Select the grading scheme that will apply to this
+                                course.</small>
                         </div>
                     </div>
                 </div>

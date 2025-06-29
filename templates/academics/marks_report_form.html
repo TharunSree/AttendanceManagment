@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Download Marks Report{% endblock %}
+
+{% block main_page_title %}Marks Report{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Download Mark Sheet</h5>
+                <p>Select a class and semester to download the corresponding mark sheet as an Excel file.</p>
+                <hr>
+                <form method="get" action="{% url 'academics:download_marks_report' %}">
+                    <div class="form-group">
+                        <label for="{{ form.student_group.id_for_label }}">Class</label>
+                        {{ form.student_group }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.semester.id_for_label }}">Semester</label>
+                        {{ form.semester }}
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Download Report</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

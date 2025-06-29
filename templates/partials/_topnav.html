@@ -28,10 +28,11 @@
         </div>
     </div>
 
-    <a class="navbar-logo" href="{% url 'accounts:home' %}">
-        <span class="logo d-none d-xs-block"></span>
-        <span class="logo-mobile d-block d-xs-none"></span>
-    </a>
+    <div class="navbar-logo-container">
+        <a class="text-center" href="{% url 'accounts:home' %}">
+            <h1 class="mb-0" style="font-family: 'JetBrains Mono ExtraBold'; line-height: 1;">SIHM-K</h1>
+        </a>
+    </div>
 
     <div class="navbar-right">
         <div class="header-icons d-inline-block align-middle">
@@ -81,8 +82,16 @@
         <div class="user d-inline-block">
             <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
-                <span class="name">{{ user.get_full_name|default:user.username }}</span>
-                <span><img alt="Profile Picture" src="{% static 'img/profiles/l-1.jpg' %}"/></span>
+                <span class="name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
+                <span>
+            {# --- UPDATE THIS IMG TAG --- #}
+                    {% if request.user.profile.photo and request.user.profile.photo.url %}
+                        <img alt="Profile Picture" src="{{ request.user.profile.photo.url }}"/>
+                    {% else %}
+                        <img alt="Profile Picture" src="{% static 'img/profiles/l-1.jpg' %}"/>
+                    {% endif %}
+                    {# ------------------------- #}
+        </span>
             </button>
             <div class="dropdown-menu dropdown-menu-right mt-3">
                 <a class="dropdown-item" href="{% url 'accounts:account_view' %}">Account</a>

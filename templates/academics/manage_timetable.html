@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load nav_helpers %}
 
-{% block page_title %}Manage Timetable{% endblock page_title %}
+{% block title %}Manage Timetable{% endblock title %}
 {% block main_page_title %}Manage Timetable{% endblock main_page_title %}
 
 {% block page_styles %}
@@ -81,8 +81,8 @@
                                 <tbody>
                                 {% for slot in timeslots %}
                                     <tr>
-                                        <td class="{% if not slot.is_schedulable %}text-muted{% endif %}">{{ slot }}</td>
-                                        {% if slot.is_schedulable %}
+                                    {% if slot.is_schedulable %}
+                                        <td class="text-muted">{{ slot }}</td>
                                             {% for day in days_of_week %}
                                                 <td class="timetable-cell"
                                                     data-day="{{ day }}"

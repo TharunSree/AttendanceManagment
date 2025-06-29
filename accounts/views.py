@@ -1,6 +1,7 @@
 import csv
 import json
 
+from django.apps import apps
 from django.utils import timezone
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -14,7 +15,7 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.contrib import messages
 
 from academics.models import Course, StudentGroup, Subject, Timetable, AttendanceRecord, DailySubstitution, \
-    ClassCancellation, AttendanceSettings, CourseSubject
+    ClassCancellation, AttendanceSettings, CourseSubject, Mark, Criterion, MarkingScheme
 from .decorators import nav_item
 from .forms import AddTeacherForm, EditTeacherForm, UserUpdateForm, ProfileUpdateForm, BulkImportForm
 from .models import Profile, Notification
@@ -29,7 +30,7 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('accounts:home')
 
     # Get the 'next' parameter from the GET request
     next_url = request.GET.get('next')
@@ -97,7 +98,7 @@ def teacher_list_view(request):
 @transaction.atomic
 def teacher_create_view(request):
     if request.method == 'POST':
-        form = AddTeacherForm(request.POST)
+        form = AddTeacherForm(request.POST,request.FILES)
         if form.is_valid():
             user = User.objects.create_user(
                 username=form.cleaned_data['username'],
@@ -134,7 +135,7 @@ def teacher_delete_view(request, pk):
 def teacher_update_view(request, pk):
     teacher_user = get_object_or_404(User, pk=pk, profile__role='faculty')
     if request.method == 'POST':
-        form = EditTeacherForm(request.POST, instance=teacher_user.profile)
+        form = EditTeacherForm(request.POST,request.FILES, instance=teacher_user.profile)
         if form.is_valid():
             form.save()
             teacher_user.first_name = form.cleaned_data['first_name']
@@ -174,21 +175,23 @@ def group_permission_list_view(request):
 def group_permission_edit_view(request, group_id):
     group = get_object_or_404(Group, pk=group_id)
 
+    # --- Using a direct list of models is more reliable ---
+    # I've added the new Mark, Criterion, and MarkingScheme models here.
     managed_models = [
-        Course, Subject, StudentGroup, User,
-        Timetable, AttendanceRecord, DailySubstitution, ClassCancellation,
-        AttendanceSettings
+        User, Course, Subject, StudentGroup, Timetable, AttendanceRecord,
+        ClassCancellation, DailySubstitution, AttendanceSettings,
+        Mark, Criterion, MarkingScheme,Profile
     ]
-    # Use the ContentType manager to get the content types for your models
-    content_types = ContentType.objects.get_for_models(*managed_models).values()
-    all_permissions = Permission.objects.filter(content_type__in=content_types)
+    # --------------------------------------------------------
+
+    content_types = ContentType.objects.get_for_models(*managed_models)
+    all_permissions = Permission.objects.filter(content_type__in=content_types.values())
     group_permissions = group.permissions.all()
 
-    # --- MODIFICATION START ---
     permissions_by_model = []
-    other_permissions = []  # A new list to hold any non-standard permissions
+    other_permissions = []
 
-    for ct in content_types:
+    for ct in content_types.values():
         model_class = ct.model_class()
         if not model_class:
             continue
@@ -196,7 +199,6 @@ def group_permission_edit_view(request, group_id):
         model_name_lower = model_class._meta.model_name
         perms_for_model = all_permissions.filter(content_type=ct)
 
-        # Keep the existing structure for the main table
         model_perms = {
             'name': model_class._meta.verbose_name_plural.title(),
             'view': perms_for_model.filter(codename=f'view_{model_name_lower}').first(),
@@ -206,14 +208,12 @@ def group_permission_edit_view(request, group_id):
         }
         permissions_by_model.append(model_perms)
 
-        # Now, find any permission that is NOT a standard one and add it to our new list
         standard_codenames = {
             f'view_{model_name_lower}', f'add_{model_name_lower}',
             f'change_{model_name_lower}', f'delete_{model_name_lower}'
         }
         custom_perms_for_model = perms_for_model.exclude(codename__in=standard_codenames)
         other_permissions.extend(list(custom_perms_for_model))
-    # --- MODIFICATION END ---
 
     if request.method == 'POST':
         selected_permission_ids = request.POST.getlist('permissions')
@@ -224,14 +224,13 @@ def group_permission_edit_view(request, group_id):
 
     context = {
         'group': group,
-        'permissions_by_model': permissions_by_model,
-        'other_permissions': other_permissions,  # Add the new list to the context
+        'permissions_by_model': sorted(permissions_by_model, key=lambda x: x['name']),
+        'other_permissions': sorted(other_permissions, key=lambda x: x.name),
         'group_permissions': group_permissions,
         'actions': ["View", "Add", "Update", "Delete"],
         'action_codes': ["view", "add", "change", "delete"],
     }
     return render(request, 'accounts/group_permission_edit.html', context)
-
 
 @login_required
 @permission_required('auth.view_user')
@@ -452,7 +451,7 @@ def account_view(request):
 
 
 @login_required
-@permission_required('auth.add_user')  # Admin permission
+@permission_required('auth.add_user')
 @nav_item(title="Bulk Import Users", icon="iconsminds-up", url_name="accounts:bulk_user_import",
           permission='auth.add_user', group='admin_management')
 def bulk_user_import_view(request):
@@ -460,8 +459,6 @@ def bulk_user_import_view(request):
         form = BulkImportForm(request.POST, request.FILES)
         if form.is_valid():
             csv_file = request.FILES['file']
-
-            # Read CSV file in memory
             decoded_file = csv_file.read().decode('utf-8').splitlines()
             reader = csv.DictReader(decoded_file)
 
@@ -472,10 +469,12 @@ def bulk_user_import_view(request):
                 with transaction.atomic():
                     for row_num, row in enumerate(reader, 2):
                         username = row.get('username')
-                        password = row.get('password')
                         student_group_name = row.get('student_group_name')
 
-                        # Basic Validation
+                        if not username or not student_group_name:
+                            error_list.append(f"Row {row_num}: 'username' and 'student_group_name' are required.")
+                            continue
+
                         if User.objects.filter(username=username).exists():
                             error_list.append(f"Row {row_num}: User '{username}' already exists.")
                             continue
@@ -489,31 +488,38 @@ def bulk_user_import_view(request):
                         # Create User and Profile
                         user = User.objects.create_user(
                             username=username,
-                            password=password,
+                            password=row.get('password'),
                             first_name=row.get('first_name'),
                             last_name=row.get('last_name'),
                             email=row.get('email')
                         )
-                        user.profile.role = 'student'
-                        user.profile.student_id_number = row.get('student_id_number')
-                        user.profile.contact_number = row.get('contact_number')
-                        user.profile.student_group = student_group
-                        user.profile.save()
+                        # --- UPDATE PROFILE WITH NEW FIELDS ---
+                        profile = user.profile
+                        profile.role = 'student'
+                        profile.student_id_number = row.get('student_id_number')
+                        profile.contact_number = row.get('contact_number')
+                        profile.student_group = student_group
+                        profile.address = row.get('address')
+                        profile.father_name = row.get('father_name')
+                        profile.father_phone = row.get('father_phone')
+                        profile.mother_name = row.get('mother_name')
+                        profile.mother_phone = row.get('mother_phone')
+                        profile.save()
+                        # ------------------------------------
                         success_count += 1
 
-                if not error_list:
-                    messages.success(request, f"Successfully imported {success_count} students.")
-                else:
-                    messages.warning(request,
-                                     f"Import completed with errors. Successfully imported: {success_count}. Failed: {len(error_list)}.")
+                if error_list:
+                     raise Exception("Import failed, rolling back transaction.")
 
             except Exception as e:
-                messages.error(request,
-                               f"An unexpected error occurred during import: {e}. The transaction was rolled back.")
+                 messages.error(request, f"An error occurred during import: {e}. The transaction was rolled back.")
 
-            # Pass errors to be displayed in the template
+            if not error_list:
+                messages.success(request, f"Successfully imported {success_count} students.")
+            else:
+                messages.warning(request, f"Import completed with errors. Successfully imported: {success_count}. Failed: {len(error_list)}.")
+
             return render(request, 'accounts/bulk_user_import.html', {'form': BulkImportForm(), 'errors': error_list})
-
     else:
         form = BulkImportForm()
     return render(request, 'accounts/bulk_user_import.html', {'form': form})
@@ -523,15 +529,18 @@ def bulk_user_import_view(request):
 @permission_required('auth.add_user')
 def download_csv_template_view(request):
     """
-    Generates and serves a blank CSV template for bulk user import.
+    Generates and serves a blank CSV template for bulk user import, including new profile fields.
     """
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="student_import_template.csv"'
 
     writer = csv.writer(response)
-    # Write the exact header row needed for the import to work
-    writer.writerow(['username', 'password', 'first_name', 'last_name', 'email', 'student_id_number', 'contact_number',
-                     'student_group_name'])
+    # --- UPDATED HEADER ROW ---
+    writer.writerow([
+        'username', 'password', 'first_name', 'last_name', 'email',
+        'student_id_number', 'contact_number', 'student_group_name',
+        'address', 'father_name', 'father_phone', 'mother_name', 'mother_phone'
+    ])
 
     return response
 

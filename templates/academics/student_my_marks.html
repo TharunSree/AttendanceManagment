@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block page_title %}My Marks{% endblock %}
+
+{% block main_page_title %}My Marks{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="form-inline">
+                    <div class="form-group">
+                        <label for="semester" class="mr-2">View Semester:</label>
+                        <select name="semester" id="semester" class="form-control" onchange="this.form.submit()">
+                            {% for sem in available_semesters %}
+                                <option value="{{ sem }}" {% if sem == selected_semester %}selected{% endif %}>{{ sem }}</option>
+                            {% empty %}
+                                <option>No Semesters Found</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if marks_data %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Semester {{ selected_semester }} Mark Sheet</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Criteria</th>
+                                <th class="text-right">Marks Obtained</th>
+                                <th class="text-right">Max Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subject, data in marks_data.items %}
+                                {% for criterion in data.criteria %}
+                                    <tr>
+                                        {% if forloop.first %}
+                                            <td rowspan="{{ data.criteria|length }}" class="align-middle">
+                                                <strong>{{ subject }}</strong>
+                                            </td>
+                                        {% endif %}
+                                        <td>{{ criterion.name }}</td>
+                                        <td class="text-right">{{ criterion.marks_obtained|floatformat:2 }}</td>
+                                        <td class="text-right">{{ criterion.max_marks }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr class="table-active">
+                                    <td colspan="2" class="text-right"><strong>Subject Total</strong></td>
+                                    <td class="text-right"><strong>{{ data.total_marks|floatformat:2 }}</strong></td>
+                                    <td class="text-right"><strong>{{ data.max_total }}</strong></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% elif selected_semester %}
+        <div class="alert alert-info">
+            No marks have been entered for Semester {{ selected_semester }} yet.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

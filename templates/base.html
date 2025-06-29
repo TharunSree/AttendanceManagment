@@ -4,7 +4,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}SIHM Attendance{% endblock title %} - Dore Theme</title>
+    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}"/>
+    <title>{% block title %}SIHM Attendance Management System{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <script>
@@ -76,26 +77,26 @@
 </main>
 
 <div class="modal fade" id="announcementModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="announcementModalTitle">
-                        <i class="simple-icon-speech mr-2"></i> Announcement
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h4 class="text-center mb-3" id="announcementModalTitleContent"></h4>
-                    <p id="announcementModalBodyContent"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">I Understand</button>
-                </div>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="announcementModalTitle">
+                    <i class="simple-icon-speech mr-2"></i> Announcement
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4 class="text-center mb-3" id="announcementModalTitleContent"></h4>
+                <p id="announcementModalBodyContent"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">I Understand</button>
             </div>
         </div>
     </div>
+</div>
 
 {% include 'partials/_footer.html' %}
 
@@ -134,12 +135,12 @@
         });
     </script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             function fetchAnnouncement() {
                 $.ajax({
                     url: "{% url 'academics:check_announcements' %}",
                     type: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         if (response.found) {
                             // An unseen announcement was found, let's populate and show the modal
                             $('#announcementModalTitleContent').text(response.title);
@@ -147,7 +148,7 @@
                             $('#announcementModal').modal('show');
                         }
                     },
-                    error: function() {
+                    error: function () {
                         // Silently fail to avoid interrupting the user
                         console.log("Could not check for announcements.");
                     }

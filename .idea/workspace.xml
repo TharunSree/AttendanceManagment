@@ -5,49 +5,72 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="feat(academics): Create substitution management page&#10;&#10;Adds a new interface for managing faculty substitutions for scheduled classes.&#10;&#10;This new page allows administrative users to:&#10;- Select a specific date using a date picker to view the class schedule.&#10;- For each scheduled class, assign a substitute faculty from a dropdown list.&#10;- View the currently assigned substitute for a class.&#10;- Cancel an existing substitution, making the slot available again.&#10;&#10;The interface provides clear, inline forms for both assigning and canceling substitutions on a per-class basis.">
-      <change afterPath="$PROJECT_DIR$/accounts/context_processors.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/announcement_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/announcement_list.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/attendance_report_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/previous_attendance.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/search_results.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/student_my_attendance.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/student_timetable.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/accounts/account_view.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/accounts/admin_dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/accounts/bulk_user_import.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/accounts/faculty_dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/accounts/password_change_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/accounts/student_dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/partials/_search_result_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/img/favicon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/img/logo-mobile.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/img/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/bulk_marks_import.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/late_comers.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/marks_entry_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/marks_report_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/scheme_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/scheme_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/student_my_marks.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/student_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AttendanceManagement/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AttendanceManagement/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academics/templatetags/nav_helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/templatetags/nav_helpers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/signals.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/logos/black.svg" beforeDir="false" afterPath="$PROJECT_DIR$/static/logos/black.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticfiles/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticfiles/img/profiles/default-profile.png" beforeDir="false" afterPath="$PROJECT_DIR$/student_photos/default.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticfiles/logos/black.svg" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/logos/black.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/admin_select_class.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_select_class.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/admin_settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_settings.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/admin_student_attendance_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_student_attendance_detail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/admin_student_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_student_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/confirm_delete.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/confirm_delete.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/course_confirm_delete.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/course_confirm_delete.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/course_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/course_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/course_form_with_subjects.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/course_form_with_subjects.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/course_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/course_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/daily_attendance_log.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/daily_attendance_log.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/daily_log_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/daily_log_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/faculty_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/faculty_schedule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/manage_substitutions.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/manage_substitutions.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/manage_timetable.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/manage_timetable.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/mark_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/mark_attendance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/previous_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/previous_attendance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/student_confirm_delete.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_confirm_delete.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/student_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/student_group_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_group_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/student_my_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_my_attendance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/subject_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/subject_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/subject_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/subject_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/accounts/Login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/Login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/account_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/account_view.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/bulk_user_import.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/bulk_user_import.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/faculty_dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/faculty_dashboard.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/accounts/group_permission_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/group_permission_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/group_permission_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/group_permission_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/password_reset_complete.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/password_reset_complete.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/accounts/password_reset_confirm.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/password_reset_confirm.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/accounts/password_reset_done.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/password_reset_done.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/accounts/password_reset_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/password_reset_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/teacher_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/teacher_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/accounts/teacher_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/teacher_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base_minimal.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base_minimal.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/coming_soon.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/coming_soon.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/partials/_topnav.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/_topnav.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/partials/modal_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/modal_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/registration/password_reset_email.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/password_reset_email.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -98,40 +121,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Django Server.AttendanceManagement.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
-    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/AttendanceManagement&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Django Server.AttendanceManagement.executor": "Run",
+    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
+    "django.template.preview.state": "SHOW_EDITOR",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/AttendanceManagement/static/logos",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\AttendanceManagement\static\logos" />
+      <recent name="D:\AttendanceManagement\staticfiles\logos" />
+      <recent name="D:\AttendanceManagement\static\img" />
       <recent name="D:\AttendanceManagement\templates\accounts" />
       <recent name="D:\AttendanceManagement\static\css" />
-      <recent name="D:\AttendanceManagement\static" />
-      <recent name="D:\AttendanceManagement\templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\AttendanceManagement\student_photos" />
+      <recent name="D:\AttendanceManagement\student_photos\default.png" />
       <recent name="D:\AttendanceManagement\academics" />
       <recent name="D:\AttendanceManagement\templates\accounts" />
       <recent name="D:\AttendanceManagement\templates\academics" />
-      <recent name="D:\AttendanceManagement\accounts" />
-      <recent name="D:\AttendanceManagement\templates\Auth" />
     </key>
   </component>
   <component name="RunManager">
@@ -197,7 +221,8 @@
       <workItem from="1750739040350" duration="2240000" />
       <workItem from="1751104287119" duration="8777000" />
       <workItem from="1751121010365" duration="1050000" />
-      <workItem from="1751134355356" duration="552000" />
+      <workItem from="1751134355356" duration="16649000" />
+      <workItem from="1751176518848" duration="12579000" />
     </task>
     <task id="LOCAL-00001" summary="Add initial project configuration files and user profile signal handling">
       <option name="closed" value="true" />
@@ -295,7 +320,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750585948756</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="feat(academics): Create substitution management page&#10;&#10;Adds a new interface for managing faculty substitutions for scheduled classes.&#10;&#10;This new page allows administrative users to:&#10;- Select a specific date using a date picker to view the class schedule.&#10;- For each scheduled class, assign a substitute faculty from a dropdown list.&#10;- View the currently assigned substitute for a class.&#10;- Cancel an existing substitution, making the slot available again.&#10;&#10;The interface provides clear, inline forms for both assigning and canceling substitutions on a per-class basis.">
+      <option name="closed" value="true" />
+      <created>1751136758762</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1751136758762</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

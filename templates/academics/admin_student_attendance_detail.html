@@ -1,141 +1,292 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block page_title %}My Attendance{% endblock page_title %}
+{% block title %}{{ student.get_full_name }} - Attendance Details{% endblock title %}
 
-{% block main_page_title %}My Attendance{% endblock main_page_title %}
+{% block main_page_title %}
+    {{ student.get_full_name }}
+    <span class="text-muted font-weight-light">- {{ student.profile.student_id_number }}</span>
+{% endblock main_page_title %}
 
 {% block content %}
     <div class="row">
-        {# Semester Filter Card #}
+        {# Filters Card #}
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-body">
-                    <form method="get" action="" class="form-inline">
+                    <form method="get" action="" class="form-inline" id="filterForm">
+                        <input type="hidden" name="view_type" value="{{ view_type }}">
+
                         <div class="form-group mr-3">
-                            <label for="semesterFilter" class="mr-2"><strong>View Semester</strong></label>
-                            <select id="semesterFilter" name="semester" class="form-control custom-select" onchange="this.form.submit()">
+                            <label for="semesterFilter" class="mr-2"><strong>Semester</strong></label>
+                            <select id="semesterFilter" name="semester" class="form-control custom-select">
                                 {% for sem in available_semesters %}
-                                    <option value="{{ sem }}" {% if sem == selected_semester %}selected{% endif %}>
-                                        Semester {{ sem }}
-                                    </option>
-                                {% empty %}
-                                     <option>No Semesters Found</option>
-                                {% endfor %}
+                                    <option value="{{ sem }}"
+                                            {% if sem == selected_semester %}selected{% endif %}>{{ sem }}</option>{% endfor %}
                             </select>
                         </div>
+
+                        {% if view_type == 'monthly' %}
+                            <div class="form-group mr-3">
+                                <label for="monthFilter" class="mr-2"><strong>Month</strong></label>
+                                <select id="monthFilter" name="month" class="form-control custom-select">
+                                    {% for m in available_months %}
+                                        <option value="{{ m.month|date:'Y-m' }}"
+                                                {% if m.month|date:'Y-m' == selected_month %}selected{% endif %}>{{ m.month|date:"F Y" }}</option>{% endfor %}
+                                </select>
+                            </div>
+                        {% endif %}
+
+                        {% if view_type == 'daily' %}
+                            <div class="form-group mr-3">
+                                <label for="dateFilter" class="mr-2"><strong>Date</strong></label>
+                                <input type="date" id="dateFilter" name="date" class="form-control"
+                                       value="{{ selected_date }}">
+                            </div>
+                        {% endif %}
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    {# Overall Attendance Chart #}
-    <div class="row">
-        <div class="col-12 mb-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5 class="card-title">
-                        Overall Attendance (Semester {{ selected_semester|default:'N/A' }})
-                    </h5>
-                    <div class="chart-container" style="height: 300px;">
-                        <canvas id="overallDoughnutChart"></canvas>
-                    </div>
-                </div>
-            </div>
+    {# Tab Navigation #}
+    <div class="row mt-2">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="attendance-tabs" role="tablist">
+                <li class="nav-item"><a class="nav-link {% if view_type == 'semester' %}active{% endif %}"
+                                        href="?semester={{ selected_semester }}&view_type=semester">Semester</a></li>
+                <li class="nav-item"><a class="nav-link {% if view_type == 'monthly' %}active{% endif %}"
+                                        href="?semester={{ selected_semester }}&view_type=monthly">Monthly</a></li>
+                <li class="nav-item"><a class="nav-link {% if view_type == 'daily' %}active{% endif %}"
+                                        href="?semester={{ selected_semester }}&view_type=daily">Daily</a></li>
+            </ul>
         </div>
     </div>
 
-    {# Subject-wise Attendance Charts #}
-    <div class="row">
-        {% for item in subject_attendance_data %}
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ item.subject_name }}</h5>
-                        <p class="text-muted text-small">Total Classes: {{ item.total_classes }}</p>
-                        <div class="chart-container" style="height: 250px;">
-                            <canvas id="doughnutChart{{ item.subject_pk }}"></canvas>
+    <div class="tab-content">
+        {# Semester View Pane #}
+        <div class="tab-pane fade {% if view_type == 'semester' %}show active{% endif %}" role="tabpanel">
+            <div class="row mt-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body text-center"><h5 class="card-title">Overall Attendance
+                            (Semester {{ selected_semester|default:'N/A' }})</h5>
+                            <div class="chart-container" style="height: 300px;">
+                                <canvas id="overallDoughnutChartSem"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info">
-                    <p class="mb-0">No attendance data is available for this semester.</p>
+            <div class="row">
+                {% for item in subject_attendance_data %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <div class="card">
+                            <div class="card-body"><h5 class="card-title">{{ item.subject_name }}</h5>
+                                <p class="text-muted text-small">Total Classes: {{ item.total_classes }}</p>
+                                <div class="chart-container" style="height: 250px;">
+                                    <canvas id="doughnutChartSem{{ item.subject_pk }}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 mt-4">
+                        <div class="alert alert-info"><p class="mb-0">No attendance data found for this semester.</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {# Monthly View Pane #}
+        <div class="tab-pane fade {% if view_type == 'monthly' %}show active{% endif %}" role="tabpanel">
+            <div class="row mt-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body text-center"><h5 class="card-title">Overall Attendance
+                            ({{ selected_month|date:"F Y" }})</h5>
+                            <div class="chart-container" style="height: 300px;">
+                                <canvas id="overallDoughnutChartMonth"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        {% endfor %}
+            <div class="row">
+                {% for item in monthly_subject_data %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <div class="card">
+                            <div class="card-body"><h5 class="card-title">{{ item.subject_name }}</h5>
+                                <p class="text-muted text-small">Total Classes: {{ item.total_classes }}</p>
+                                <div class="chart-container" style="height: 250px;">
+                                    <canvas id="doughnutChartMonth{{ item.subject_pk }}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 mt-4">
+                        <div class="alert alert-info"><p class="mb-0">No attendance data found for this month.</p></div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {# Daily View Pane #}
+        <div class="tab-pane fade {% if view_type == 'daily' %}show active{% endif %}" role="tabpanel">
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Daily Attendance Log for {{ selected_date|date:"F d, Y" }}</h5>
+
+                    {# --- FIX: Only render the table if there is data --- #}
+                    {% if daily_attendance_data %}
+                        <table class="data-table data-table-scrollable responsive nowrap">
+                            <thead>
+                            <tr>
+                                <th class="text-center">Time</th>
+                                <th class="text-center">Subject</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for record in daily_attendance_data %}
+                                <tr>
+                                    <td class="text-center">{{ record.timetable.time_slot.start_time|time:"h:i A" }}</td>
+                                    <td class="text-center">{{ record.timetable.subject.subject.name }}</td>
+                                    <td class="text-center"><span
+                                            class="badge badge-pill badge-{% if record.status == 'Present' %}success{% elif record.is_late %}warning{% else %}danger{% endif %}">{% if record.is_late %}
+                                        Late{% else %}{{ record.status }}{% endif %}</span></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        {# If no data, show a simple message instead of an empty table #}
+                        <div class="alert alert-info text-center mb-0">
+                            No records found for this date.
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     </div>
 {% endblock content %}
-
 
 {% block page_scripts %}
     <script src="{% static 'js/vendor/Chart.bundle.min.js' %}"></script>
     <script src="{% static 'js/vendor/chartjs-plugin-datalabels.js' %}"></script>
-
+    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
     <script>
         $(document).ready(function () {
-            // --- Global Chart Config & Plugins (for consistency) ---
+            // --- Charting Logic ---
             var rootStyle = getComputedStyle(document.body);
             var primaryColor = rootStyle.getPropertyValue("--primary-color").trim();
-            if (typeof Chart !== "undefined") { Chart.defaults.global.defaultFontFamily = "'JetBrains Mono', sans-serif"; Chart.defaults.DoughnutWithShadow = Chart.defaults.doughnut; Chart.controllers.DoughnutWithShadow = Chart.controllers.doughnut.extend({ draw: function (ease) { Chart.controllers.doughnut.prototype.draw.call(this, ease); let ctx = this.chart.chart.ctx; ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.15)"; ctx.shadowBlur = 10; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 10; ctx.responsive = true; Chart.controllers.doughnut.prototype.draw.apply(this, arguments); ctx.restore(); } });}
-            var centerTextPlugin = { beforeDraw: function (chart) { var width = chart.chartArea.right; var height = chart.chartArea.bottom; var ctx = chart.chart.ctx; ctx.restore(); var officialPercentage = chart.options.centerText ? chart.options.centerText.percentage : 0; ctx.font = "36px" + " Nunito, sans-serif"; ctx.fillStyle = primaryColor; ctx.textBaseline = "middle"; var text = officialPercentage.toFixed(1) + "%", textX = Math.round((width - ctx.measureText(text).width) / 2), textY = height / 2; ctx.fillText(text, textX, textY); ctx.save(); } };
-            var chartTooltip = {backgroundColor: getComputedStyle(document.body).getPropertyValue("--foreground-color").trim(), titleFontColor: primaryColor, borderColor: getComputedStyle(document.body).getPropertyValue("--separator-color").trim(), borderWidth: 0.5, bodyFontColor: primaryColor, bodySpacing: 10, xPadding: 15, yPadding: 15, cornerRadius: 0.15, displayColors: false };
+            if (typeof Chart !== "undefined") {
+                Chart.defaults.global.defaultFontFamily = "'JetBrains Mono', sans-serif";
+                Chart.defaults.DoughnutWithShadow = Chart.defaults.doughnut;
+                Chart.controllers.DoughnutWithShadow = Chart.controllers.doughnut.extend({
+                    draw: function (ease) {
+                        Chart.controllers.doughnut.prototype.draw.call(this, ease);
+                        let ctx = this.chart.chart.ctx;
+                        ctx.save();
+                        ctx.shadowColor = "rgba(0,0,0,0.15)";
+                        ctx.shadowBlur = 10;
+                        ctx.shadowOffsetX = 0;
+                        ctx.shadowOffsetY = 10;
+                        ctx.responsive = true;
+                        Chart.controllers.doughnut.prototype.draw.apply(this, arguments);
+                        ctx.restore();
+                    }
+                });
+            }
+            var centerTextPlugin = {
+                beforeDraw: function (chart) {
+                    var width = chart.chartArea.right;
+                    var height = chart.chartArea.bottom;
+                    var ctx = chart.chart.ctx;
+                    ctx.restore();
+                    var officialPercentage = chart.options.centerText ? chart.options.centerText.percentage : 0;
+                    ctx.font = "36px" + " Nunito, sans-serif";
+                    ctx.fillStyle = primaryColor;
+                    ctx.textBaseline = "middle";
+                    var text = officialPercentage.toFixed(1) + "%",
+                        textX = Math.round((width - ctx.measureText(text).width) / 2), textY = height / 2;
+                    ctx.fillText(text, textX, textY);
+                    ctx.save();
+                }
+            };
 
-            // --- Reusable Chart Initialization Function ---
-            function initializeChart(canvasId, present, absent, onDuty, officialPercentage) {
+            function initializeChart(canvasId, present, absent, officialPercentage) {
                 const ctx = document.getElementById(canvasId)?.getContext('2d');
                 if (!ctx) return;
-
-                const total = present + absent + onDuty;
-                let labels = ['Present', 'Absent', 'On Duty'];
-                let data = [present, absent, onDuty];
-                let backgroundColors = ["rgba(40, 212, 69, 0.2)", "rgba(250, 4, 27, 0.2)", "rgba(150, 150, 150, 0.2)"];
-                let borderColors = ["rgba(40, 212, 69, 0.75)", "rgba(250, 4, 27, 0.75)", "rgba(150, 150, 150, 0.75)"];
-
+                const total = present + absent;
+                let labels = ['Present', 'Absent'];
+                let data = [present, absent];
+                let bgColors = ["rgba(40, 212, 69, 0.2)", "rgba(250, 4, 27, 0.2)"];
+                let borderColors = ["rgba(40, 212, 69, 0.75)", "rgba(250, 4, 27, 0.75)"];
                 if (total === 0) {
-                    labels = ['No Data']; data = [1];
-                    backgroundColors = ["rgba(200, 200, 200, 0.2)"];
+                    labels = ['No Data'];
+                    data = [1];
+                    bgColors = ["rgba(200, 200, 200, 0.2)"];
                     borderColors = ["rgba(200, 200, 200, 0.75)"];
                 }
-
                 new Chart(ctx, {
                     type: 'DoughnutWithShadow',
-                    data: { labels, datasets: [{ data, backgroundColor: backgroundColors, borderColor: borderColors, borderWidth: 2 }] },
+                    data: {
+                        labels,
+                        datasets: [{data, backgroundColor: bgColors, borderColor: borderColors, borderWidth: 2}]
+                    },
                     options: {
-                        responsive: true, maintainAspectRatio: false, cutoutPercentage: 80,
-                        centerText: { percentage: officialPercentage },
-                        legend: { display: true, position: 'bottom', labels: { padding: 20, usePointStyle: true, generateLabels: (chart) => chart.data.labels.map((label, i) => ({ text: `${label} - ${chart.data.datasets[0].data[i]}`, fillStyle: chart.data.datasets[0].backgroundColor[i] })) } },
-                        tooltips: chartTooltip, plugins: { datalabels: { display: false } }
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutoutPercentage: 80,
+                        centerText: {percentage: officialPercentage},
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                generateLabels: (chart) => chart.data.labels.map((label, i) => ({
+                                    text: `${label} - ${chart.data.datasets[0].data[i]}`,
+                                    fillStyle: chart.data.datasets[0].backgroundColor[i]
+                                }))
+                            }
+                        },
+                        tooltips: {displayColors: false},
+                        plugins: {datalabels: {display: false}}
                     },
                     plugins: [centerTextPlugin]
                 });
             }
 
-            // --- Initialize All Charts Using Data from View ---
-
-            // 1. Overall Chart
-            initializeChart(
-                'overallDoughnutChart',
-                {{ overall_attended|default:0 }},
-                {{ overall_absent|default:0 }},
-                {{ overall_on_duty|default:0 }},
-                {{ overall_official_percentage|default:0 }}
-            );
-
-            // 2. Individual Subject Charts
-            const subjectData = JSON.parse('{{ subject_attendance_data_json|safe }}');
-            subjectData.forEach(item => {
-                initializeChart(
-                    `doughnutChart${item.subject_pk}`,
-                    item.attended_classes,
-                    item.absent_classes,
-                    item.on_duty_classes,
-                    item.official_percentage
-                );
+            // --- Filter Form Submission ---
+            $('#semesterFilter, #monthFilter, #dateFilter').on('change', function () {
+                $('#filterForm').submit();
             });
+
+            // --- Initialize Charts based on View Type ---
+            const viewType = '{{ view_type }}';
+            if (viewType === 'semester') {
+                initializeChart('overallDoughnutChartSem', {{ overall_attended_sem|default:0 }}, {{ overall_absent_sem|default:0 }}, {{ overall_percentage_sem|default:0 }});
+                const subjectData = JSON.parse('{{ subject_attendance_data_json|safe }}');
+                subjectData.forEach(item => {
+                    initializeChart(`doughnutChartSem${item.subject_pk}`, item.attended_classes, item.absent_classes, item.official_percentage);
+                });
+            } else if (viewType === 'monthly') {
+                initializeChart('overallDoughnutChartMonth', {{ overall_attended_month|default:0 }}, {{ overall_absent_month|default:0 }}, {{ overall_percentage_month|default:0 }});
+                const monthlyData = JSON.parse('{{ monthly_subject_data_json|safe }}');
+                monthlyData.forEach(item => {
+                    initializeChart(`doughnutChartMonth${item.subject_pk}`, item.attended_classes, item.absent_classes, item.official_percentage);
+                });
+            }
         });
     </script>
 {% endblock page_scripts %}

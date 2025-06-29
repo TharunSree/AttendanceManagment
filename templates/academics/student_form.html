@@ -1,89 +1,159 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block page_title %}{{ form_title }}{% endblock page_title %}
+{% block title %}{{ form_title }}{% endblock title %}
 {% block main_page_title %}{{ form_title }}{% endblock main_page_title %}
-
-{% block breadcrumbs %}
-    {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'academics:admin_student_list' student_group.id %}">{{ student_group.name }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Student</li>
-{% endblock breadcrumbs %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form method="post" novalidate>
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            {% for error in form.non_field_errors %}<p class="mb-0">{{ error }}</p>{% endfor %}
-                        </div>
-                    {% endif %}
+                    <h5 class="mb-4">Student Profile Photo</h5>
 
-                    {# Username Field - Only shown for 'AddStudentForm' #}
-                    {% if form.username %}
-                    <div class="form-group">
-                        <label>{{ form.username.label_tag }}</label>
-                        {{ form.username }}
-                        {% for error in form.username.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                    <div class="dropzone-wrapper">
+                        <div class="aspect-ratio-container">
+                            <label class="dropzone-area" for="{{ form.photo.id_for_label }}" id="dropzone-label">
+                                <div class="dropzone-text" id="dropzone-text" style="display: {% if form.instance.photo and form.instance.photo.url %}none{% else %}block{% endif %};">
+                                    <i class="simple-icon-cloud-upload"></i>
+                                    <p>Drop image here or click to upload</p>
+                                </div>
+                                <img id="image_preview"
+                                     src="{% if form.instance.photo and form.instance.photo.url %}{{ form.instance.photo.url }}{% endif %}"
+                                     alt="Image preview"
+                                     style="display: {% if form.instance.photo and form.instance.photo.url %}block{% else %}none{% endif %};" />
+                            </label>
+                        </div>
                     </div>
-                    {% endif %}
+                    <div style="display: none;">{{ form.photo }}</div>
+                    {% if form.photo.errors %}<div class="text-danger small mt-1 text-center">{{ form.photo.errors }}</div>{% endif %}
+
+                    <div class="separator mb-4 mt-4"></div>
+                    <h5 class="mb-4">Basic & Academic Information</h5>
 
                     <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>{{ form.first_name.label_tag }}</label>
-                            {{ form.first_name }}
-                            {% for error in form.first_name.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>{{ form.last_name.label_tag }}</label>
-                            {{ form.last_name }}
-                             {% for error in form.last_name.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                        </div>
+                        <div class="col-md-6"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">First Name</span></div>{{ form.first_name }}</div></div>
+                        <div class="col-md-6"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">Last Name</span></div>{{ form.last_name }}</div></div>
                     </div>
-
-                    <div class="form-group">
-                        <label>{{ form.email.label_tag }}</label>
-                        {{ form.email }}
-                        {% for error in form.email.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                    </div>
-
-                    {# Password Field - Only shown for 'AddStudentForm' #}
-                    {% if form.password %}
-                     <div class="form-group">
-                        <label>{{ form.password.label_tag }}</label>
-                        {{ form.password }}
-                        {% for error in form.password.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                    </div>
-                    {% endif %}
-
-                    <hr>
-                    <h5 class="card-title mt-4">Profile Details</h5>
-
                     <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>{{ form.student_id_number.label_tag }}</label>
-                            {{ form.student_id_number }}
-                            {% for error in form.student_id_number.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>{{ form.contact_number.label_tag }}</label>
-                            {{ form.contact_number }}
-                            {% for error in form.contact_number.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                        </div>
+                        <div class="col-md-6"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">Username</span></div>{{ form.username }}</div>{% if form.username.errors %}<div class="text-danger small mt-1">{{ form.username.errors }}</div>{% endif %}</div>
+                        {% if 'password' in form.fields %}
+                        <div class="col-md-6"><div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">Password</span></div>{{ form.password }}</div>{% if form.password.errors %}<div class="text-danger small mt-1">{{ form.password.errors }}</div>{% endif %}</div>
+                        {% endif %}
                     </div>
+                    <div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">Email</span></div>{{ form.email }}</div>{% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors }}</div>{% endif %}
+                    <div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">Student ID</span></div>{{ form.student_id_number }}</div>
+                    <div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">Contact No.</span></div>{{ form.contact_number }}</div>
 
-                    <hr>
-                    <a href="{% url 'academics:admin_student_list' student_group.id %}" class="btn btn-outline-secondary">Cancel</a>
-                    <button type="submit" name="_addanother" class="btn btn-secondary">Save and add another</button>
-                    <button type="submit" class="btn btn-primary">Save Student</button>
+                    <div class="separator mb-4 mt-4"></div>
+                    <h5 class="mb-4">Family & Address Information</h5>
+                    <div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">Father's Name</span></div>{{ form.father_name }}</div>
+                    <div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">Father's Phone</span></div>{{ form.father_phone }}</div>
+                    <div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">Mother's Name</span></div>{{ form.mother_name }}</div>
+                    <div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text">Mother's Phone</span></div>{{ form.mother_phone }}</div>
+                    <div class="form-group"><label>Address</label>{{ form.address }}</div>
+
+                    <div class="text-right">
+                        <a href="{% if student.profile.student_group %}{% url 'academics:student_profile' student.pk %}{% elif student_group %}{% url 'academics:admin_student_list' student_group.pk %}{% else %}{% url 'academics:admin_select_class' %}{% endif %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
 {% endblock content %}
+
+{% block page_scripts %}
+<style>
+    .dropzone-wrapper {
+        max-width: 250px; /* Controls the size of the component */
+        margin: 0 auto 20px auto; /* Centers the component */
+    }
+    .aspect-ratio-container {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* This creates a 1:1 aspect ratio (a square) */
+    }
+    .dropzone-area {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        border: 2px dashed #ccc;
+        border-radius: 50%; /* Make it a circle */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.2s, border-color 0.2s;
+        overflow: hidden;
+    }
+    .dropzone-area:hover, .dropzone-area.dragover {
+        background-color: #f8f9fa;
+        border-color: #007bff;
+    }
+    .dropzone-area .dropzone-text {
+        color: #888;
+        font-size: 0.9rem;
+    }
+    .dropzone-area .dropzone-text i {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 5px;
+    }
+    .dropzone-area img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Changed to 'cover' for a better look in a circle */
+    }
+</style>
+
+<script>
+$(document).ready(function() {
+    const dropzoneLabel = $('#dropzone-label');
+    const fileInput = $('#{{ form.photo.id_for_label }}');
+    const previewImage = $('#image_preview');
+    const dropzoneText = $('#dropzone-text');
+
+    function showPreview(file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            previewImage.attr('src', e.target.result).show();
+            dropzoneText.hide();
+        }
+        reader.readAsDataURL(file);
+    }
+
+    fileInput.on('change', function(event) {
+        if (event.target.files && event.target.files[0]) {
+            showPreview(event.target.files[0]);
+        }
+    });
+
+    dropzoneLabel.on('dragover', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).addClass('dragover');
+    }).on('dragleave', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass('dragover');
+    }).on('drop', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass('dragover');
+        const files = e.originalEvent.dataTransfer.files;
+        if (files.length) {
+            fileInput.prop('files', files);
+            showPreview(files[0]);
+        }
+    });
+});
+</script>
+{% endblock %}

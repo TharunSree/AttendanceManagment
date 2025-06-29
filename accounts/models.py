@@ -17,24 +17,47 @@ class Profile(models.Model):
     student_id_number = models.CharField(max_length=20, unique=True, null=True, blank=True)
     contact_number = models.CharField(max_length=15, null=True, blank=True)
 
-    # --- ADD THIS FOREIGN KEY to link a student to ONE class ---
     student_group = models.ForeignKey(
         'academics.StudentGroup',
-        on_delete=models.SET_NULL,  # If class is deleted, student is not deleted
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='students'  # We can now get students via student_group.students.all()
+        related_name='students'
     )
 
-    # ... (field_of_expertise for faculty remains the same) ...
     field_of_expertise = models.ManyToManyField(
         Subject,
-        blank=True,  # A teacher can be created without immediately assigning subjects
+        blank=True,
         help_text="For Faculty/HOD roles. Select the subjects this teacher specializes in."
     )
 
+    # --- NEW FIELDS TO ADD ---
+    photo = models.ImageField(upload_to='student_photos/', null=True, blank=True, default='student_photos/default.png')
+    father_name = models.CharField(max_length=100, blank=True)
+    father_phone = models.CharField(max_length=15, blank=True)
+    mother_name = models.CharField(max_length=100, blank=True)
+    mother_phone = models.CharField(max_length=15, blank=True)
+    address = models.TextField(blank=True)
+
+    # -------------------------
+    class Meta:
+        permissions = [
+            ("view_own_profile", "Can view own profile"),
+        ]
     def __str__(self):
         return f"{self.user.username} - {self.get_role_display()}"
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                old_instance = Profile.objects.get(pk=self.pk)
+                if old_instance.photo and self.photo and old_instance.photo != self.photo:
+                    # Check that we are not deleting the default photo
+                    if 'default.png' not in old_instance.photo.path:
+                        old_instance.photo.delete(save=False)
+            except Profile.DoesNotExist:
+                pass  # New object, nothing to delete.
+        super().save(*args, **kwargs)
 
 
 class Notification(models.Model):

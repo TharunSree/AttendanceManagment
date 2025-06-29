@@ -3,12 +3,14 @@
 {% get_sidebar_nav as nav_items %}
 
 <div class="menu">
+    <!-- Main Menu (Left Pane with Icons) -->
     <div class="main-menu">
         <div class="scroll">
             <ul class="list-unstyled">
                 {% for item in nav_items %}
-                    <li>
-                        <a href="{% if item.submenu %}#{{ item.id }}{% else %}{% url item.url_name %}{% endif %}">
+                    <li class="{% if item.is_active %}active{% endif %}">
+                        {# This link activates the sub-menu via its href matching the sub-menu ul's data-link #}
+                        <a href="{% if item.submenu_content %}#{{ item.id }}{% else %}{% url item.url_name %}{% endif %}">
                             <i class="{{ item.icon }}"></i>
                             <span>{{ item.title }}</span>
                         </a>
@@ -18,17 +20,42 @@
             </ul>
         </div>
     </div>
+
+    <!-- Sub Menu (Right Pane with details and nested accordions) -->
     <div class="sub-menu">
         <div class="scroll">
             {% for item in nav_items %}
-                {% if item.submenu %}
+                {% if item.submenu_content %}
                     <ul class="list-unstyled" data-link="{{ item.id }}">
-                        {% for sub_item in item.submenu %}
-                            <li>
+
+                        {# Render direct items that are not in any subgroup #}
+                        {% for sub_item in item.submenu_content.direct_items %}
+                            <li class="{% if sub_item.url_name == request.resolver_match.url_name %}active{% endif %}">
                                 <a href="{% url sub_item.url_name %}">
                                     <i class="{{ sub_item.icon }}"></i>
                                     <span class="d-inline-block">{{ sub_item.title }}</span>
                                 </a>
+                            </li>
+                        {% endfor %}
+
+                        {# Render the collapsible subgroups #}
+                        {% for subgroup in item.submenu_content.subgroups %}
+                            <li>
+                                <a href="#" data-toggle="collapse" data-target="#{{ subgroup.id }}" aria-expanded="{{ subgroup.is_active|yesno:'true,false' }}" class="rotate-arrow-icon opacity-50">
+                                    <i class="simple-icon-arrow-down"></i> <span class="d-inline-block">{{ subgroup.title }}</span>
+                                </a>
+                                <div id="{{ subgroup.id }}" class="collapse {% if subgroup.is_active %}show{% endif %}">
+                                    <ul class="list-unstyled inner-level-menu">
+                                        {% for sub_sub_item in subgroup.items %}
+                                            <li class="{% if sub_sub_item.url_name == request.resolver_match.url_name %}active{% endif %}">
+                                                <a href="{% url sub_sub_item.url_name %}">
+                                                    <i class="{{ sub_sub_item.icon }}"></i>
+                                                    <span class="d-inline-block">{{ sub_sub_item.title }}</span>
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </li>
                         {% endfor %}
                     </ul>

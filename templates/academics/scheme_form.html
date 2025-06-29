@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ form_title }}{% endblock %}
+
+{% block main_page_title %}{{ form_title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ formset.management_form }}
+
+                    <div class="form-group">
+                        <label>Scheme Name</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}<div class="text-danger small mt-1">{{ form.name.errors }}</div>{% endif %}
+                    </div>
+
+                    <div class="separator mb-4 mt-4"></div>
+                    <h5 class="mb-4">Criteria</h5>
+
+                    <div id="criteria-formset">
+                        {% for form in formset %}
+                        <div class="form-row align-items-end criterion-form mb-3">
+                            {{ form.id }}
+                            {# This is the hidden checkbox that Django uses to process the deletion #}
+                            <div style="display: none;">{{ form.DELETE }}</div>
+
+                            <div class="col-md-5">
+                                <label>Criterion Name</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text"><i class="simple-icon-check"></i></span></div>
+                                    {{ form.name }}
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                 <label>Max Marks</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text">Marks</span></div>
+                                    {{ form.max_marks }}
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                {# This is the new button that the user sees #}
+                                <button type="button" class="btn btn-outline-danger btn-sm mb-1 remove-form-row">Delete</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div id="empty-form" style="display:none;">
+                        <div class="form-row align-items-end criterion-form mb-3">
+                            {{ formset.empty_form.id }}
+                            <div style="display: none;">{{ formset.empty_form.DELETE }}</div>
+                            <div class="col-md-5">
+                                <label>Criterion Name</label>
+                                <div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="simple-icon-check"></i></span></div>{{ formset.empty_form.name }}</div>
+                            </div>
+                            <div class="col-md-5">
+                                <label>Max Marks</label>
+                                <div class="input-group"><div class="input-group-prepend"><span class="input-group-text">Marks</span></div>{{ formset.empty_form.max_marks }}</div>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-outline-danger btn-sm mb-1 remove-form-row">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="add-form" class="btn btn-outline-secondary btn-sm mb-4">Add Another Criterion</button>
+                    <hr>
+                    <div class="text-right">
+                        <a href="{% url 'academics:scheme_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Scheme</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+$(document).ready(function() {
+    // Add a new form row
+    $('#add-form').click(function() {
+        var form_idx = $('#id_criteria-TOTAL_FORMS').val();
+        var empty_form_html = $('#empty-form').html().replace(/__prefix__/g, form_idx);
+        $('#criteria-formset').append(empty_form_html);
+        $('#id_criteria-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+    });
+
+    // --- UPDATED SCRIPT FOR THE DELETE BUTTON ---
+    // Use event delegation to handle clicks on buttons for rows that are added dynamically
+    $('#criteria-formset').on('click', '.remove-form-row', function() {
+        var formRow = $(this).closest('.criterion-form');
+        // Find the hidden DELETE checkbox within this row and check it
+        formRow.find('input[type="checkbox"][id$="-DELETE"]').prop('checked', true);
+        // Hide the row from the user
+        formRow.hide();
+    });
+});
+</script>
+{% endblock %}

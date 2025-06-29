@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block page_title %}Student List - {{ student_group.name }}{% endblock page_title %}
+{% block title %}Student List - {{ student_group.name }}{% endblock title %}
 
 {% block vendor_styles %}
     {# These are the required CSS files for the styled datatable #}
@@ -72,7 +72,7 @@
                                     {# Added text-center class to all data cells #}
                                     <td class="text-center">{{ item.student.profile.student_id_number|default:"N/A" }}</td>
                                     <td class="text-center">
-                                        <a href="{% url 'academics:admin_student_attendance_detail' item.student.pk %}">
+                                        <a href="{% url 'academics:student_profile' item.student.pk %}">
                                             {{ item.student.get_full_name|default:item.student.username }}
                                         </a>
                                     </td>
@@ -88,6 +88,8 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
+                                            <a href="{% url 'academics:admin_student_attendance_detail' item.student.pk %}"
+                                               class="btn btn-outline-dark btn-xs">View Attendance</a>
                                             <a href="{% url 'academics:student_update' item.student.pk %}"
                                                class="btn btn-outline-primary btn-xs">Edit</a>
                                             <a href="{% url 'academics:student_delete' item.student.pk %}"

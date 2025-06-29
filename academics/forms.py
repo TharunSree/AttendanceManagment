@@ -2,9 +2,11 @@ from django import forms
 from django.contrib.auth.models import User, Group
 import datetime
 
+from django.forms import inlineformset_factory
+
 from accounts.models import Profile
 from .models import Course, StudentGroup, Subject, AttendanceRecord, CourseSubject, AttendanceSettings, TimeSlot, \
-    Timetable, Announcement
+    Timetable, Announcement, MarkingScheme, Criterion
 
 from django import forms
 from django.contrib.auth.models import User
@@ -32,7 +34,7 @@ class StudentGroupForm(forms.ModelForm):
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['name', 'course_type', 'duration_years', 'required_hours_per_semester', 'description']
+        fields = ['name', 'course_type', 'duration_years', 'required_hours_per_semester', 'description','marking_scheme']
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -40,6 +42,7 @@ class CourseForm(forms.ModelForm):
             'duration_years': forms.NumberInput(attrs={'class': 'form-control'}),
             'required_hours_per_semester': forms.NumberInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'marking_scheme': forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -54,6 +57,20 @@ class AddStudentForm(forms.Form):
                                         widget=forms.TextInput(attrs={'class': 'form-control'}))
     contact_number = forms.CharField(max_length=15, required=False,
                                      widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    # --- NEW FIELDS TO ADD ---
+    photo = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+    father_name = forms.CharField(max_length=100, required=False,
+                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
+    father_phone = forms.CharField(max_length=15, required=False,
+                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
+    mother_name = forms.CharField(max_length=100, required=False,
+                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
+    mother_phone = forms.CharField(max_length=15, required=False,
+                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
+    address = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
+
+    # -------------------------
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -90,6 +107,7 @@ class MarkAttendanceForm(forms.Form):
         widget=forms.RadioSelect(attrs={'class': 'custom-control-input'}),
         required=True
     )
+    is_late = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     student_id = forms.IntegerField(widget=forms.HiddenInput())
 
 
@@ -100,10 +118,19 @@ class EditStudentForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['student_id_number', 'contact_number']
+        # --- UPDATED FIELDS LIST ---
+        fields = ['photo', 'student_id_number', 'contact_number', 'father_name', 'father_phone', 'mother_name',
+                  'mother_phone', 'address']
+        # ---------------------------
         widgets = {
             'student_id_number': forms.TextInput(attrs={'class': 'form-control'}),
             'contact_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'photo': forms.FileInput(attrs={'class': 'form-control-file'}),
+            'father_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'father_phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'mother_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'mother_phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
 
 
@@ -214,3 +241,70 @@ class AnnouncementForm(forms.ModelForm):
             'send_to_all_students': forms.CheckboxInput(attrs={'class': 'custom-control-input'}),
             'send_to_all_faculty': forms.CheckboxInput(attrs={'class': 'custom-control-input'}),
         }
+
+
+class MarkingSchemeForm(forms.ModelForm):
+    class Meta:
+        model = MarkingScheme
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class CriterionForm(forms.ModelForm):
+    class Meta:
+        model = Criterion
+        fields = ['name', 'max_marks']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., Internal Exam'}),
+            'max_marks': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g., 50'}),
+        }
+
+
+# This creates a formset to manage multiple Criterion objects on the same page as the MarkingScheme
+CriterionFormSet = inlineformset_factory(
+    MarkingScheme,
+    Criterion,
+    form=CriterionForm,
+    extra=1,  # Start with one extra form for a new criterion
+    can_delete=True,
+    can_delete_extra=True
+)
+
+
+class MarkSelectForm(forms.Form):
+    student_group = forms.ModelChoiceField(
+        queryset=StudentGroup.objects.none(),
+        label="Class",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    course_subject = forms.ModelChoiceField(
+        queryset=CourseSubject.objects.none(),
+        label="Subject",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    def __init__(self, *args, **kwargs):
+        # Pop the custom querysets from the kwargs before calling super()
+        groups_queryset = kwargs.pop('groups_queryset', None)
+        subjects_queryset = kwargs.pop('subjects_queryset', None)
+        super(MarkSelectForm, self).__init__(*args, **kwargs)
+
+        # Now, assign the querysets to the fields
+        if groups_queryset is not None:
+            self.fields['student_group'].queryset = groups_queryset
+        if subjects_queryset is not None:
+            self.fields['course_subject'].queryset = subjects_queryset
+
+class BulkMarksImportForm(forms.Form):
+    file = forms.FileField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}))
+
+class MarksReportForm(forms.Form):
+    student_group = forms.ModelChoiceField(
+        queryset=StudentGroup.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    semester = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
+    )

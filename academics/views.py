@@ -1,4 +1,5 @@
 # In academics/views.py
+import csv
 import json
 import calendar
 from datetime import datetime
@@ -7,7 +8,9 @@ from itertools import chain
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db import transaction
+from django.db.models import Count, Sum
 from django.db.models import ExpressionWrapper, fields, F, Q
+from django.db.models.functions import TruncMonth
 from django.forms import inlineformset_factory, formset_factory
 from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -18,12 +21,13 @@ from django.urls import reverse
 from django.utils import timezone
 
 from academics.forms import EditStudentForm, AttendanceSettingsForm, TimeSlotForm, MarkAttendanceForm, \
-    TimetableEntryForm, SubstitutionForm, AttendanceReportForm, AnnouncementForm
+    TimetableEntryForm, SubstitutionForm, AttendanceReportForm, AnnouncementForm, CriterionFormSet, MarkingSchemeForm, \
+    MarkSelectForm, BulkMarksImportForm, MarksReportForm
 from accounts.models import Profile
 from .forms import StudentGroupForm, CourseForm, AddStudentForm, SubjectForm
 from .models import StudentGroup, AttendanceSettings, Course, Subject, \
     Timetable, AttendanceRecord, CourseSubject, TimeSlot, ClassCancellation, DailySubstitution, Announcement, \
-    UserNotificationStatus
+    UserNotificationStatus, MarkingScheme, Mark, Criterion
 from accounts.decorators import nav_item
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
@@ -99,10 +103,8 @@ def admin_student_list_view(request, group_id):
                 student=student, timetable__subject__in=subjects_for_semester
             )
             present_count = student_records.filter(status='Present').count()
-            on_duty_count = student_records.filter(status='On Duty').count()
 
-            effective_total = total_classes - on_duty_count
-            percentage = (present_count / effective_total * 100) if effective_total > 0 else None
+            percentage = (present_count / total_classes * 100) if total_classes > 0 else None
 
             students_with_attendance.append({
                 'student': student,
@@ -158,84 +160,134 @@ def admin_select_class_view(request):
 
 
 @login_required
-@permission_required('academics.view_attendancerecord', raise_exception=True)
+@permission_required('academics.view_attendancerecord')  # Or a more general permission
 def admin_student_attendance_detail_view(request, student_id):
-    student = get_object_or_404(User, pk=student_id)
+    student = get_object_or_404(User, pk=student_id, profile__role='student')
     student_group = student.profile.student_group if hasattr(student, 'profile') else None
 
-    subject_attendance_data = []
-    available_semesters = []
+    # --- Get view type and filters from request ---
+    view_type = request.GET.get('view_type', 'semester')
     selected_semester = request.GET.get('semester')
+    selected_month_str = request.GET.get('month')
+    selected_date_str = request.GET.get('date', timezone.now().strftime('%Y-%m-%d'))
+
+    # --- Initialize context dictionary ---
+    context = {
+        'student': student, 'student_group': student_group, 'view_type': view_type,
+        'available_semesters': [], 'selected_semester': None,
+        'subject_attendance_data': [], 'subject_attendance_data_json': '[]',
+        'overall_attended_sem': 0, 'overall_absent_sem': 0, 'overall_percentage_sem': 0,
+        'monthly_subject_data': [], 'monthly_subject_data_json': '[]',
+        'available_months': [], 'selected_month': selected_month_str,
+        'overall_attended_month': 0, 'overall_absent_month': 0, 'overall_percentage_month': 0,
+        'daily_attendance_data': [], 'selected_date': selected_date_str,
+        'marks_data': {}
+    }
 
     if student_group and student_group.course:
-        # ... (semester filtering logic is the same)
         all_course_subjects_qs = CourseSubject.objects.filter(course=student_group.course)
-        available_semesters = all_course_subjects_qs.values_list('semester', flat=True).distinct().order_by('semester')
+        context['available_semesters'] = all_course_subjects_qs.values_list('semester', flat=True).distinct().order_by(
+            'semester')
 
-        if selected_semester is None and available_semesters:
-            selected_semester = available_semesters.last()
+        if not selected_semester and context['available_semesters']:
+            selected_semester = context['available_semesters'].last()
+        context['selected_semester'] = int(selected_semester) if selected_semester and str(
+            selected_semester).isdigit() else None
 
-        subjects_for_semester = all_course_subjects_qs
-        if selected_semester and str(selected_semester).isdigit():
-            subjects_for_semester = all_course_subjects_qs.filter(semester=selected_semester)
-        # ...
-
-        for course_subject in subjects_for_semester:
-            # --- NEW: Correctly calculate total classes held for the group ---
-            total_classes = AttendanceRecord.objects.filter(
-                timetable__student_group=student_group,
-                timetable__subject=course_subject
-            ).values('date', 'timetable_id').distinct().count()
-
-            # --- Now get this specific student's records for that subject ---
-            student_records = AttendanceRecord.objects.filter(
-                student=student,
-                timetable__student_group=student_group,
-                timetable__subject=course_subject
+        if context['selected_semester']:
+            student_records_sem = AttendanceRecord.objects.filter(
+                student=student, timetable__subject__semester=context['selected_semester']
             )
-            present_count = student_records.filter(status='Present').count()
-            on_duty_count = student_records.filter(status='On Duty').count()
 
-            # Calculate absent for visualization (Total - P - OD)
-            absent_count = total_classes - (present_count + on_duty_count)
+            if view_type == 'semester':
+                subjects_for_semester = all_course_subjects_qs.filter(semester=context['selected_semester'])
+                for cs in subjects_for_semester:
+                    total_classes = AttendanceRecord.objects.filter(
+                        timetable__student_group=student_group, timetable__subject=cs
+                    ).values('date', 'timetable__time_slot').distinct().count()
 
-            # Official percentage calculation
-            effective_total = total_classes - on_duty_count
-            official_percentage = (present_count / effective_total * 100) if effective_total > 0 else 0
-            # --- END NEW LOGIC ---
+                    if total_classes > 0:
+                        present_count = student_records_sem.filter(
+                            timetable__subject=cs, status__in=['Present', 'Late']
+                        ).count()
+                        absent_count = total_classes - present_count
+                        context['subject_attendance_data'].append({
+                            'subject_pk': cs.subject.pk, 'subject_name': cs.subject.name,
+                            'attended_classes': present_count, 'absent_classes': absent_count,
+                            'total_classes': total_classes,
+                            'official_percentage': round(
+                                (present_count / total_classes * 100) if total_classes > 0 else 0, 2)
+                        })
+                context['overall_attended_sem'] = sum(d['attended_classes'] for d in context['subject_attendance_data'])
+                total_sem = sum(d['total_classes'] for d in context['subject_attendance_data'])
+                context['overall_absent_sem'] = total_sem - context['overall_attended_sem']
+                context['overall_percentage_sem'] = round(
+                    (context['overall_attended_sem'] / total_sem * 100) if total_sem > 0 else 0, 2)
+                context['subject_attendance_data_json'] = json.dumps(context['subject_attendance_data'])
 
-            subject_attendance_data.append({
-                'subject_pk': course_subject.subject.pk,
-                'subject_name': course_subject.subject.name,
-                'attended_classes': present_count,
-                'absent_classes': absent_count if absent_count > 0 else 0,
-                'on_duty_classes': on_duty_count,
-                'official_percentage': round(official_percentage, 2),
-            })
+            elif view_type == 'monthly':
+                all_records_in_sem = AttendanceRecord.objects.filter(timetable__student_group=student_group,
+                                                                     timetable__subject__semester=context[
+                                                                         'selected_semester'])
+                context['available_months'] = all_records_in_sem.annotate(month=TruncMonth('date')).values(
+                    'month').distinct().order_by('-month')
+                if not selected_month_str and context['available_months']:
+                    selected_month_str = context['available_months'][0]['month'].strftime('%Y-%m')
+                context['selected_month'] = selected_month_str
 
-    # ... (the rest of the view logic to calculate overall totals is the same) ...
+                if selected_month_str:
+                    year, month = map(int, selected_month_str.split('-'))
+                    subjects_for_semester = all_course_subjects_qs.filter(semester=context['selected_semester'])
+                    for cs in subjects_for_semester:
+                        total_classes_month = AttendanceRecord.objects.filter(
+                            timetable__student_group=student_group, timetable__subject=cs, date__year=year,
+                            date__month=month
+                        ).values('date', 'timetable__time_slot').distinct().count()
+                        if total_classes_month > 0:
+                            present_count_month = student_records_sem.filter(
+                                timetable__subject=cs, status__in=['Present', 'Late'], date__year=year,
+                                date__month=month
+                            ).count()
+                            absent_count_month = total_classes_month - present_count_month
+                            context['monthly_subject_data'].append({
+                                'subject_pk': cs.subject.pk, 'subject_name': cs.subject.name,
+                                'attended_classes': present_count_month, 'absent_classes': absent_count_month,
+                                'total_classes': total_classes_month,
+                                'official_percentage': round(
+                                    (present_count_month / total_classes_month * 100) if total_classes_month > 0 else 0,
+                                    2)
+                            })
+                    context['overall_attended_month'] = sum(
+                        d['attended_classes'] for d in context['monthly_subject_data'])
+                    total_month = sum(d['total_classes'] for d in context['monthly_subject_data'])
+                    context['overall_absent_month'] = total_month - context['overall_attended_month']
+                    context['overall_percentage_month'] = round(
+                        (context['overall_attended_month'] / total_month * 100) if total_month > 0 else 0, 2)
+                    context['monthly_subject_data_json'] = json.dumps(context['monthly_subject_data'])
 
-    # Calculate Overall data
-    overall_attended = sum(item['attended_classes'] for item in subject_attendance_data)
-    overall_absent = sum(item['absent_classes'] for item in subject_attendance_data)
-    overall_on_duty = sum(item['on_duty_classes'] for item in subject_attendance_data)
-    overall_total = overall_attended + overall_absent + overall_on_duty
-    overall_effective_total = overall_total - overall_on_duty
-    overall_official_percentage = (
-            overall_attended / overall_effective_total * 100) if overall_effective_total > 0 else 0
+            elif view_type == 'daily':
+                try:
+                    selected_date = datetime.strptime(selected_date_str, '%Y-%m-%d').date()
+                    context['daily_attendance_data'] = student_records_sem.filter(date=selected_date).select_related(
+                        'timetable__subject__subject', 'timetable__time_slot').order_by(
+                        'timetable__time_slot__start_time')
+                except (ValueError, TypeError):
+                    pass
 
-    context = {
-        'student': student,
-        'student_group': student_group,
-        'subject_attendance_data': subject_attendance_data,
-        'subject_attendance_data_json': json.dumps(subject_attendance_data),
-        'available_semesters': available_semesters,
-        'selected_semester': int(selected_semester) if selected_semester and str(selected_semester).isdigit() else None,
-        'overall_attended': overall_attended,
-        'overall_absent': overall_absent,
-        'overall_on_duty': overall_on_duty,
-        'overall_official_percentage': round(overall_official_percentage, 2)
-    }
+            elif view_type == 'marks':
+                marks_qs = Mark.objects.filter(student=student,
+                                               subject__semester=context['selected_semester']).select_related(
+                    'subject__subject', 'criterion')
+                for mark in marks_qs:
+                    subject_name = mark.subject.subject.name
+                    if subject_name not in context['marks_data']:
+                        context['marks_data'][subject_name] = {'criteria': [], 'total_marks': 0, 'max_total': 0}
+                    context['marks_data'][subject_name]['criteria'].append(
+                        {'name': mark.criterion.name, 'marks_obtained': mark.marks_obtained,
+                         'max_marks': mark.criterion.max_marks})
+                    context['marks_data'][subject_name]['total_marks'] += mark.marks_obtained
+                    context['marks_data'][subject_name]['max_total'] += mark.criterion.max_marks
+
     return render(request, 'academics/admin_student_attendance_detail.html', context)
 
 
@@ -390,42 +442,33 @@ def student_group_delete_view(request, pk):
 def student_create_view(request, group_id):
     student_group = get_object_or_404(StudentGroup, pk=group_id)
     if request.method == 'POST':
-        form = AddStudentForm(request.POST)
+        form = AddStudentForm(request.POST, request.FILES)
         if form.is_valid():
             user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                email=form.cleaned_data['email'],
-                password=form.cleaned_data['password'],
-                first_name=form.cleaned_data['first_name'],
+                username=form.cleaned_data['username'], email=form.cleaned_data['email'],
+                password=form.cleaned_data['password'], first_name=form.cleaned_data['first_name'],
                 last_name=form.cleaned_data['last_name']
             )
-            # The signal creates the Profile. Now we update it.
-            user.profile.role = 'student'
-            user.profile.student_id_number = form.cleaned_data['student_id_number']
-            user.profile.contact_number = form.cleaned_data['contact_number']
-
-            # --- THIS IS THE FIX ---
-            # Assign the student's profile to the current student_group
-            user.profile.student_group = student_group
-
-            user.profile.save()
-
-            messages.success(request, f"Student '{user.username}' created and added to {student_group.name}.")
+            profile = user.profile
+            profile.role = 'student'
+            profile.student_id_number = form.cleaned_data['student_id_number']
+            profile.contact_number = form.cleaned_data['contact_number']
+            profile.student_group = student_group
+            profile.photo = form.cleaned_data.get('photo')
+            profile.father_name = form.cleaned_data.get('father_name')
+            profile.father_phone = form.cleaned_data.get('father_phone')
+            profile.mother_name = form.cleaned_data.get('mother_name')
+            profile.mother_phone = form.cleaned_data.get('mother_phone')
+            profile.address = form.cleaned_data.get('address')
+            profile.save()
+            messages.success(request, f"Student '{user.username}' created.")
             if '_addanother' in request.POST:
-                # Redirect back to the same (empty) create form
                 return redirect('academics:student_create', group_id=group_id)
             else:
                 return redirect('academics:admin_student_list', group_id=group_id)
-        else:
-            messages.error(request, 'Please correct the errors below.')
     else:
         form = AddStudentForm()
-
-    context = {
-        'form': form,
-        'form_title': f'Add New Student to {student_group.name}',
-        'student_group': student_group
-    }
+    context = {'form': form, 'form_title': f'Add New Student to {student_group.name}', 'student_group': student_group}
     return render(request, 'academics/student_form.html', context)
 
 
@@ -527,41 +570,22 @@ def subject_delete_view(request, pk):
 @login_required
 @permission_required('academics.update_student', raise_exception=True)
 def student_update_view(request, pk):
-    # Get the user and their associated profile
     student_user = get_object_or_404(User, pk=pk, profile__role='student')
-
     if request.method == 'POST':
-        # We pass the 'instance' to pre-fill the Profile part of the form
-        form = EditStudentForm(request.POST, instance=student_user.profile)
+        form = EditStudentForm(request.POST, request.FILES, instance=student_user.profile)
         if form.is_valid():
-            # Save the Profile part of the form
             form.save()
-            # Manually update and save the User part
             student_user.first_name = form.cleaned_data['first_name']
             student_user.last_name = form.cleaned_data['last_name']
             student_user.email = form.cleaned_data['email']
             student_user.save()
-
             messages.success(request, 'Student details updated successfully.')
-            student_group = student_user.student_groups.first()
-            if student_group:
-                return redirect('academics:admin_student_list', group_id=student_group.id)
-            else:
-                return redirect('home')  # Fallback redirect if student is not in a group
+            return redirect('academics:student_profile', student_id=student_user.pk)
     else:
-        # Pre-fill the form with the student's existing data
-        form = EditStudentForm(instance=student_user.profile,
-                               initial={
-                                   'first_name': student_user.first_name,
-                                   'last_name': student_user.last_name,
-                                   'email': student_user.email
-                               })
-
-    context = {
-        'form': form,
-        'form_title': f'Edit Student: {student_user.get_full_name()}',
-        'student_group': student_user.student_groups.first()  # For the cancel button link
-    }
+        form = EditStudentForm(instance=student_user.profile, initial={
+            'first_name': student_user.first_name, 'last_name': student_user.last_name, 'email': student_user.email
+        })
+    context = {'form': form, 'form_title': f'Edit Student: {student_user.get_full_name()}', 'student': student_user}
     return render(request, 'academics/student_form.html', context)
 
 
@@ -665,37 +689,35 @@ def mark_attendance_view(request, timetable_id, date_str=None):
                 for form in formset:
                     student_id = form.cleaned_data['student_id']
                     status = form.cleaned_data['status']
+                    is_late = form.cleaned_data.get('is_late', False)  # Get the checkbox value
                     student = User.objects.get(pk=student_id)
 
-                    # --- THIS IS THE FIX ---
-                    # We now use get_or_create to fetch the object first.
                     record, created = AttendanceRecord.objects.get_or_create(
                         student=student,
                         timetable=timetable_entry,
                         date=current_date,
-                        defaults={'status': status, 'marked_by': request.user}
+                        defaults={'status': status, 'is_late': is_late, 'marked_by': request.user}
                     )
 
-                    # If the record was not new (i.e., it already existed), we are editing it.
                     if not created:
                         record.status = status
+                        record.is_late = is_late  # Update the is_late field on edit
                         record.marked_by = request.user
-                        # This explicit .save() call is what updates the `updated_at` timestamp.
                         record.save()
-                    # --- END FIX ---
 
             messages.success(request, "Attendance has been marked successfully.")
             return redirect('academics:faculty_schedule')
     else:
-        # The GET request logic for pre-filling the form remains the same
+        # This logic now also fetches the is_late status to pre-fill the form
         initial_data = []
         existing_records = AttendanceRecord.objects.filter(timetable=timetable_entry, date=current_date)
-        status_map = {record.student_id: record.status for record in existing_records}
+        status_map = {record.student_id: (record.status, record.is_late) for record in existing_records}
         for student in students:
-            saved_status = status_map.get(student.id)
+            saved_status, saved_is_late = status_map.get(student.id, ('Present', False))
             initial_data.append({
                 'student_id': student.id,
-                'status': saved_status if saved_status else 'Present'
+                'status': saved_status,
+                'is_late': saved_is_late,
             })
         formset = MarkAttendanceFormSet(initial=initial_data)
 
@@ -1003,18 +1025,16 @@ def student_my_attendance_view(request):
                 timetable__subject=course_subject
             )
             present_count = student_records.filter(status='Present').count()
-            on_duty_count = student_records.filter(status='On Duty').count()
 
-            absent_count = total_classes - (present_count + on_duty_count)
-            effective_total = total_classes - on_duty_count
-            official_percentage = (present_count / effective_total * 100) if effective_total > 0 else 0
+            absent_count = total_classes - present_count
+            official_percentage = (present_count / total_classes * 100) if total_classes > 0 else 0
 
             subject_attendance_data.append({
                 'subject_pk': course_subject.subject.pk,
                 'subject_name': course_subject.subject.name,
                 'attended_classes': present_count,
                 'absent_classes': absent_count if absent_count >= 0 else 0,
-                'on_duty_classes': on_duty_count,
+                'on_duty_classes': 0,
                 'total_classes': total_classes,
                 'official_percentage': round(official_percentage, 2),
             })
@@ -1022,7 +1042,7 @@ def student_my_attendance_view(request):
     # Calculate Overall data
     overall_attended = sum(item['attended_classes'] for item in subject_attendance_data)
     overall_absent = sum(item['absent_classes'] for item in subject_attendance_data)
-    overall_on_duty = sum(item['on_duty_classes'] for item in subject_attendance_data)
+    overall_on_duty = 0
     overall_official_percentage = ((overall_attended / (overall_attended + overall_absent)) * 100) if (
                                                                                                               overall_attended + overall_absent) > 0 else 0
 
@@ -1256,7 +1276,8 @@ def global_search_view(request):
         # Search for students by name, username, or student ID
         students_found = User.objects.filter(
             Q(profile__role='student') &
-            (Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query) | Q(profile__student_id_number__icontains=query))
+            (Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query) | Q(
+                profile__student_id_number__icontains=query))
         ).distinct()
 
         # Search for faculty by name or username
@@ -1278,3 +1299,557 @@ def global_search_view(request):
         'result_count': len(students_found) + len(faculty_found) + len(subjects_found)
     }
     return render(request, 'academics/search_results.html', context)
+
+
+@login_required
+@permission_required('academics.view_attendancerecord', raise_exception=True)
+@nav_item(title="Late Comers", icon="simple-icon-clock", url_name="academics:late_comers",
+          permission='academics.view_attendancerecord', group='admin_management', order=60)
+def late_comers_view(request):
+    student_groups = StudentGroup.objects.all()
+    selected_group_id = request.GET.get('student_group')
+    selected_month = request.GET.get('month', str(timezone.now().month))
+    selected_year = request.GET.get('year', str(timezone.now().year))
+
+    late_comers_data = []
+    if selected_group_id:
+        student_group = get_object_or_404(StudentGroup, pk=selected_group_id)
+        late_records = AttendanceRecord.objects.filter(
+            timetable__student_group=student_group,
+            is_late=True,  # This is the correct filter
+            date__month=selected_month,
+            date__year=selected_year
+        ).values('student__id', 'student__first_name', 'student__last_name').annotate(late_count=Count('student'))
+
+        for record in late_records:
+            late_comers_data.append({
+                'student_name': f"{record['student__first_name']} {record['student__last_name']}",
+                'late_count': record['late_count']
+            })
+
+    context = {
+        'student_groups': student_groups,
+        'selected_group_id': int(selected_group_id) if selected_group_id else None,
+        'selected_month': int(selected_month),
+        'selected_year': int(selected_year),
+        'months': [(i, calendar.month_name[i]) for i in range(1, 13)],
+        'years': range(timezone.now().year, timezone.now().year - 5, -1),
+        'late_comers_data': late_comers_data
+    }
+    return render(request, 'academics/late_comers.html', context)
+
+
+@login_required
+@permission_required('auth.view_user')
+def student_profile_view(request, student_id):
+    student = get_object_or_404(User, pk=student_id, profile__role='student')
+
+    # --- Initialize all context variables ---
+    overall_attendance, total_subjects, current_semester = 0, 0, None
+    overall_marks_percentage = 0
+    marks_summary = {}
+
+    student_group = student.profile.student_group
+    if student_group:
+        latest_semester_instance = CourseSubject.objects.filter(
+            course=student_group.course
+        ).order_by('-semester').first()
+
+        if latest_semester_instance:
+            current_semester = latest_semester_instance.semester
+            subjects_for_semester = CourseSubject.objects.filter(
+                course=student_group.course, semester=current_semester
+            )
+            total_subjects = subjects_for_semester.count()
+
+            # --- Attendance Calculation ---
+            total_classes = AttendanceRecord.objects.filter(
+                timetable__student_group=student_group,
+                timetable__subject__in=subjects_for_semester
+            ).values('date', 'timetable__time_slot').distinct().count()
+            present_count = AttendanceRecord.objects.filter(
+                student=student,
+                timetable__subject__in=subjects_for_semester,
+                status__in=['Present', 'Late']
+            ).count()
+            if total_classes > 0:
+                overall_attendance = round((present_count / total_classes) * 100, 1)
+
+            # --- Marks Calculation ---
+            marks_qs = Mark.objects.filter(student=student, subject__in=subjects_for_semester)
+            total_marks_obtained = marks_qs.aggregate(total=Sum('marks_obtained'))['total'] or 0
+            total_max_marks = marks_qs.aggregate(total=Sum('criterion__max_marks'))['total'] or 0
+            if total_max_marks > 0:
+                overall_marks_percentage = round((total_marks_obtained / total_max_marks) * 100, 1)
+
+            # --- Structure Marks Data for the Template ---
+            for mark in marks_qs.select_related('subject__subject', 'criterion').order_by('subject__subject__name'):
+                subject_name = mark.subject.subject.name
+                if subject_name not in marks_summary:
+                    marks_summary[subject_name] = {'criteria': [], 'total_obtained': 0, 'total_max': 0}
+
+                marks_summary[subject_name]['criteria'].append({
+                    'name': mark.criterion.name, 'marks': mark.marks_obtained, 'max': mark.criterion.max_marks
+                })
+                marks_summary[subject_name]['total_obtained'] += mark.marks_obtained
+                marks_summary[subject_name]['total_max'] += mark.criterion.max_marks
+
+    context = {
+        'student': student, 'overall_attendance': overall_attendance, 'total_subjects': total_subjects,
+        'current_semester': current_semester, 'overall_marks_percentage': overall_marks_percentage,
+        'marks_summary': marks_summary
+    }
+    return render(request, 'academics/student_profile.html', context)
+
+
+@login_required
+@permission_required('academics.view_markingscheme')
+@nav_item(title="Marking Schemes", icon="iconsminds-testimonal", url_name="academics:scheme_list",
+          permission='academics.view_markingscheme', group='admin_management', order=50)
+def scheme_list_view(request):
+    schemes = MarkingScheme.objects.all()
+    return render(request, 'academics/scheme_list.html', {'schemes': schemes})
+
+
+@login_required
+@permission_required('academics.add_markingscheme')
+def scheme_create_view(request):
+    if request.method == 'POST':
+        form = MarkingSchemeForm(request.POST)
+        formset = CriterionFormSet(request.POST)
+        if form.is_valid() and formset.is_valid():
+            scheme = form.save()
+            formset.instance = scheme
+            formset.save()
+            messages.success(request, 'Marking scheme created successfully.')
+            return redirect('academics:scheme_list')
+    else:
+        form = MarkingSchemeForm()
+        formset = CriterionFormSet()
+
+    context = {
+        'form': form,
+        'formset': formset,
+        'form_title': 'Create New Marking Scheme'
+    }
+    return render(request, 'academics/scheme_form.html', context)
+
+
+@login_required
+@permission_required('academics.change_markingscheme')
+def scheme_update_view(request, pk):
+    scheme = get_object_or_404(MarkingScheme, pk=pk)
+    if request.method == 'POST':
+        form = MarkingSchemeForm(request.POST, instance=scheme)
+        formset = CriterionFormSet(request.POST, instance=scheme)
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            messages.success(request, 'Marking scheme updated successfully.')
+            return redirect('academics:scheme_list')
+    else:
+        form = MarkingSchemeForm(instance=scheme)
+        formset = CriterionFormSet(instance=scheme)
+
+    context = {
+        'form': form,
+        'formset': formset,
+        'form_title': f'Edit Marking Scheme: {scheme.name}'
+    }
+    return render(request, 'academics/scheme_form.html', context)
+
+
+@login_required
+@permission_required('academics.delete_markingscheme')
+def scheme_delete_view(request, pk):
+    scheme = get_object_or_404(MarkingScheme, pk=pk)
+    if request.method == 'POST':
+        scheme.delete()
+        messages.success(request, 'Marking scheme has been deleted.')
+        return redirect('academics:scheme_list')
+    return render(request, 'academics/confirm_delete.html', {'item': scheme, 'type': 'Marking Scheme'})
+
+
+@login_required
+@permission_required('academics.add_mark')
+@nav_item(title="Enter Marks", icon="simple-icon-note", url_name="academics:marks_entry",
+          permission='academics.add_mark', group='faculty_tools', order=30)
+def marks_entry_view(request):
+    # Get all unique classes the faculty teaches
+    taught_entries = Timetable.objects.filter(faculty=request.user).select_related('student_group',
+                                                                                   'subject__subject').distinct()
+    group_ids = taught_entries.values_list('student_group_id', flat=True).distinct()
+    groups_queryset = StudentGroup.objects.filter(id__in=group_ids)
+
+    # Initialize the form with an empty subjects queryset, as it will be populated dynamically
+    subjects_queryset = CourseSubject.objects.none()
+    form = MarkSelectForm(request.GET or None, groups_queryset=groups_queryset, subjects_queryset=subjects_queryset)
+
+    # --- MODIFICATION STARTS HERE ---
+    # Create a map of groups to their current semester's subjects for the dynamic dropdown
+    group_subject_map = {}
+    # Eager load the course to avoid extra queries inside the loop
+    for group in groups_queryset.select_related('course'):
+        # Find the latest (current) semester for the group's course
+        latest_semester_num = CourseSubject.objects.filter(
+            course=group.course
+        ).order_by('-semester').values_list('semester', flat=True).first()
+
+        # If no semester is defined for the course, there are no subjects to show
+        if not latest_semester_num:
+            group_subject_map[group.id] = []
+            continue
+
+        # Get all subject IDs the faculty teaches for this specific group
+        subject_ids = taught_entries.filter(
+            student_group=group
+        ).values_list('subject_id', flat=True).distinct()
+
+        # Filter the subjects to only include those from the current semester
+        current_semester_subjects = CourseSubject.objects.filter(
+            id__in=subject_ids,
+            semester=latest_semester_num
+        ).select_related('subject')
+
+        # Build the map for the dependent dropdown
+        group_subject_map[group.id] = [
+            {'id': s.id, 'name': s.subject.name} for s in current_semester_subjects
+        ]
+    # --- MODIFICATION ENDS HERE ---
+
+    students, criteria, existing_marks = None, None, {}
+    student_group_id = request.GET.get('student_group')
+    course_subject_id = request.GET.get('course_subject')
+
+    if student_group_id and course_subject_id:
+        students = User.objects.filter(profile__student_group_id=student_group_id, profile__role='student').order_by(
+            'first_name')
+        course_subject = get_object_or_404(CourseSubject, pk=course_subject_id)
+        active_scheme = course_subject.course.marking_scheme
+
+        if active_scheme:
+            criteria = active_scheme.criteria.all()
+            marks_qs = Mark.objects.filter(
+                student__in=students,
+                subject=course_subject,
+                criterion__in=criteria
+            )
+            # Create a nested dictionary for easy lookup in the template
+            for mark in marks_qs:
+                if mark.student_id not in existing_marks:
+                    existing_marks[mark.student_id] = {}
+                existing_marks[mark.student_id][mark.criterion_id] = mark.marks_obtained
+
+    if request.method == 'POST':
+        subject = get_object_or_404(CourseSubject, pk=course_subject_id)
+        active_scheme = subject.course.marking_scheme
+        if active_scheme and students:
+            for student in students:
+                for criterion in active_scheme.criteria.all():
+                    input_name = f'marks-{student.id}-{criterion.id}'
+                    marks_val = request.POST.get(input_name)
+                    if marks_val:
+                        Mark.objects.update_or_create(
+                            student=student, subject=subject, criterion=criterion,
+                            defaults={'marks_obtained': marks_val}
+                        )
+            messages.success(request, "Marks have been saved successfully.")
+            return redirect(request.get_full_path())
+
+    context = {
+        'form': form,
+        'students': students,
+        'criteria': criteria,
+        'existing_marks': existing_marks,
+        'selected_group': student_group_id,
+        'selected_subject': course_subject_id,
+        'group_subject_map_json': json.dumps(group_subject_map)
+    }
+    return render(request, 'academics/marks_entry_form.html', context)
+@login_required
+@permission_required('academics.add_mark')
+def download_marks_template_view(request):
+    """
+    Generates and serves a blank CSV template for bulk marks import.
+    """
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="marks_import_template.csv"'
+
+    writer = csv.writer(response)
+    # These are the required headers for the import to work
+    writer.writerow(['student_username', 'subject_code', 'criterion_name', 'marks_obtained'])
+
+    return response
+
+
+@login_required
+@permission_required('academics.add_mark')
+@nav_item(title="Bulk Import Marks", icon="iconsminds-up", url_name="academics:bulk_marks_import",
+          permission='academics.add_mark', group='faculty_tools')
+def bulk_marks_import_view(request):
+    if request.method == 'POST':
+        form = BulkMarksImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = request.FILES['file']
+            decoded_file = csv_file.read().decode('utf-8').splitlines()
+            reader = csv.DictReader(decoded_file)
+
+            success_count = 0
+            error_list = []
+
+            try:
+                with transaction.atomic():
+                    for row_num, row in enumerate(reader, 2):
+                        username = row.get('student_username')
+                        subject_code = row.get('subject_code')
+                        criterion_name = row.get('criterion_name')
+                        marks = row.get('marks_obtained')
+
+                        try:
+                            student = User.objects.get(username=username)
+                            subject = CourseSubject.objects.get(subject__code=subject_code)
+                            criterion = Criterion.objects.get(name=criterion_name)
+
+                            Mark.objects.update_or_create(
+                                student=student,
+                                subject=subject,
+                                criterion=criterion,
+                                defaults={'marks_obtained': marks}
+                            )
+                            success_count += 1
+
+                        except User.DoesNotExist:
+                            error_list.append(f"Row {row_num}: Student '{username}' not found.")
+                        except CourseSubject.DoesNotExist:
+                            error_list.append(f"Row {row_num}: Subject with code '{subject_code}' not found.")
+                        except Criterion.DoesNotExist:
+                            error_list.append(f"Row {row_num}: Criterion '{criterion_name}' not found.")
+                        except Exception as e:
+                            error_list.append(f"Row {row_num}: An unexpected error occurred - {e}")
+
+                    if error_list:
+                        raise Exception("Import failed, rolling back transaction.")
+
+            except Exception as e:
+                messages.error(request, str(e))
+
+            if not error_list:
+                messages.success(request, f"Successfully imported marks for {success_count} records.")
+            else:
+                messages.warning(request,
+                                 f"Import completed with errors. Successfully imported: {success_count}. Failed: {len(error_list)}.")
+
+            return render(request, 'academics/bulk_marks_import.html',
+                          {'form': BulkMarksImportForm(), 'errors': error_list})
+    else:
+        form = BulkMarksImportForm()
+
+    return render(request, 'academics/bulk_marks_import.html', {'form': form})
+
+
+@login_required
+@permission_required('academics.view_own_marks')  # Assuming this permission
+@nav_item(title="My Marks", icon="simple-icon-graduation", url_name="academics:student_my_marks",
+          permission='academics.view_own_marks', group='my_academics', order=3)
+def student_my_marks_view(request):
+    student = request.user
+
+    # Get available semesters for the student's course
+    available_semesters = []
+    if student.profile.student_group:
+        available_semesters = CourseSubject.objects.filter(
+            course=student.profile.student_group.course
+        ).values_list('semester', flat=True).distinct().order_by('semester')
+
+    # Get the selected semester from the request, or default to the latest one
+    selected_semester = request.GET.get('semester')
+    if not selected_semester and available_semesters:
+        selected_semester = available_semesters.last()
+
+    marks_data = {}
+    if selected_semester:
+        selected_semester = int(selected_semester)
+        # Fetch all marks for the student in the selected semester
+        marks_qs = Mark.objects.filter(
+            student=student,
+            subject__semester=selected_semester
+        ).select_related('subject__subject', 'criterion')
+
+        # Process the marks into a dictionary grouped by subject
+        for mark in marks_qs:
+            subject_name = mark.subject.subject.name
+            if subject_name not in marks_data:
+                marks_data[subject_name] = {
+                    'criteria': [],
+                    'total_marks': 0,
+                    'max_total': 0
+                }
+
+            marks_data[subject_name]['criteria'].append({
+                'name': mark.criterion.name,
+                'marks_obtained': mark.marks_obtained,
+                'max_marks': mark.criterion.max_marks
+            })
+            marks_data[subject_name]['total_marks'] += mark.marks_obtained
+            marks_data[subject_name]['max_total'] += mark.criterion.max_marks
+
+    context = {
+        'marks_data': marks_data,
+        'available_semesters': available_semesters,
+        'selected_semester': selected_semester,
+    }
+    return render(request, 'academics/student_my_marks.html', context)
+
+
+@login_required
+@permission_required('academics.view_mark')
+@nav_item(title="Marks Reports", icon="simple-icon-printer", url_name="academics:marks_report",
+          permission='academics.view_mark', group='admin_management')
+def marks_report_view(request):
+    """
+    Displays a form to select criteria for the marks report.
+    """
+    form = MarksReportForm()
+    return render(request, 'academics/marks_report_form.html', {'form': form})
+
+
+@login_required
+@permission_required('academics.view_mark')
+def download_marks_report_view(request):
+    """
+    Generates and serves an Excel file containing the marks for the selected class and semester.
+    """
+    group_id = request.GET.get('student_group')
+    semester = request.GET.get('semester')
+
+    if not group_id or not semester:
+        return HttpResponse("Please select a class and semester.", status=400)
+
+    student_group = get_object_or_404(StudentGroup, pk=group_id)
+    students = User.objects.filter(profile__student_group=student_group).order_by('first_name')
+    course_subjects = CourseSubject.objects.filter(
+        course=student_group.course,
+        semester=semester
+    ).select_related('subject')
+
+    # Create an in-memory workbook
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = f"Sem {semester} Marks - {student_group.name}"
+
+    # --- Create Header Row ---
+    headers = ["Student Name", "Student ID"] + [cs.subject.name for cs in course_subjects]
+    sheet.append(headers)
+    for cell in sheet[1]:  # Style the header row
+        cell.font = Font(bold=True)
+        cell.alignment = Alignment(horizontal='center')
+
+    # --- Prepare data ---
+    # Get all marks for the selected students and subjects in one query
+    all_marks = Mark.objects.filter(
+        student__in=students,
+        subject__in=course_subjects
+    ).values(
+        'student_id', 'subject_id'
+    ).annotate(
+        total_marks=Sum('marks_obtained')
+    )
+
+    # Pivot the data for easy lookup
+    marks_pivot = {}
+    for mark in all_marks:
+        if mark['student_id'] not in marks_pivot:
+            marks_pivot[mark['student_id']] = {}
+        marks_pivot[mark['student_id']][mark['subject_id']] = mark['total_marks']
+
+    # --- Populate Data Rows ---
+    for student in students:
+        row_data = [student.get_full_name(), student.profile.student_id_number]
+        student_marks = marks_pivot.get(student.id, {})
+        for cs in course_subjects:
+            marks = student_marks.get(cs.id, 0)  # Default to 0 if no mark found
+            row_data.append(marks)
+        sheet.append(row_data)
+
+    # --- Prepare the response ---
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename="Marks_{student_group.name}_Sem_{semester}.xlsx"'
+    workbook.save(response)
+
+    return response
+
+
+@login_required
+@permission_required('accounts.view_own_profile')  # Assuming a base permission
+@nav_item(title="My Profile", icon="simple-icon-user", url_name="academics:my_profile",
+          permission='accounts.view_own_profile', group='my_academics', order=0)
+def my_profile_view(request):
+    """
+    Displays the profile page for the currently logged-in user.
+    """
+    student = request.user
+
+    # --- FIX STARTS HERE: Added full logic to fetch profile data ---
+    overall_attendance, total_subjects, current_semester = 0, 0, None
+    overall_marks_percentage = 0
+    marks_summary = {}
+
+    # Ensure the user is a student with a profile before calculating
+    if hasattr(student, 'profile') and student.profile.role == 'student':
+        student_group = student.profile.student_group
+        if student_group:
+            latest_semester_instance = CourseSubject.objects.filter(
+                course=student_group.course
+            ).order_by('-semester').first()
+
+            if latest_semester_instance:
+                current_semester = latest_semester_instance.semester
+                subjects_for_semester = CourseSubject.objects.filter(
+                    course=student_group.course, semester=current_semester
+                )
+                total_subjects = subjects_for_semester.count()
+
+                # --- Attendance Calculation ---
+                total_classes = AttendanceRecord.objects.filter(
+                    timetable__student_group=student_group,
+                    timetable__subject__in=subjects_for_semester
+                ).values('date', 'timetable__time_slot').distinct().count()
+                present_count = AttendanceRecord.objects.filter(
+                    student=student,
+                    timetable__subject__in=subjects_for_semester,
+                    status__in=['Present', 'Late']
+                ).count()
+                if total_classes > 0:
+                    overall_attendance = round((present_count / total_classes) * 100, 1)
+
+                # --- Marks Calculation ---
+                marks_qs = Mark.objects.filter(student=student, subject__in=subjects_for_semester)
+                total_marks_obtained = marks_qs.aggregate(total=Sum('marks_obtained'))['total'] or 0
+                total_max_marks = marks_qs.aggregate(total=Sum('criterion__max_marks'))['total'] or 0
+                if total_max_marks > 0:
+                    overall_marks_percentage = round((total_marks_obtained / total_max_marks) * 100, 1)
+
+                # --- Structure Marks Data for the Template ---
+                for mark in marks_qs.select_related('subject__subject', 'criterion').order_by('subject__subject__name'):
+                    subject_name = mark.subject.subject.name
+                    if subject_name not in marks_summary:
+                        marks_summary[subject_name] = {'criteria': [], 'total_obtained': 0, 'total_max': 0}
+
+                    marks_summary[subject_name]['criteria'].append({
+                        'name': mark.criterion.name, 'marks': mark.marks_obtained, 'max': mark.criterion.max_marks
+                    })
+                    marks_summary[subject_name]['total_obtained'] += mark.marks_obtained
+                    marks_summary[subject_name]['total_max'] += mark.criterion.max_marks
+
+    context = {
+        'student': student,
+        'overall_attendance': overall_attendance,
+        'total_subjects': total_subjects,
+        'current_semester': current_semester,
+        'overall_marks_percentage': overall_marks_percentage,
+        'marks_summary': marks_summary
+    }
+    # --- FIX ENDS HERE ---
+
+    # We can reuse the same template as the admin-facing profile view
+    return render(request, 'academics/student_profile.html', context)

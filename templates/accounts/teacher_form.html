@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block page_title %}{{ form_title }}{% endblock page_title %}
+{% block title %}{{ form_title }}{% endblock title %}
 
 {% block vendor_styles %}
     {# These are for the 'Field of Expertise' multi-select dropdown #}
-    <link rel="stylesheet" href="{% static 'css/vendor/select2.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/vendor/select2-bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/vendor/select2.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/vendor/select2-bootstrap.min.css' %}"/>
 {% endblock vendor_styles %}
 
 {% block main_page_title %}{{ form_title }}{% endblock main_page_title %}
@@ -18,86 +18,228 @@
 {% endblock breadcrumbs %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <form method="post" novalidate>
-                    {% csrf_token %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <h5 class="mb-4">Profile Photo</h5>
 
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            {% for error in form.non_field_errors %}<p class="mb-0">{{ error }}</p>{% endfor %}
+                        <div class="dropzone-wrapper">
+                            <div class="aspect-ratio-container">
+                                <label class="dropzone-area" for="{{ form.photo.id_for_label }}" id="dropzone-label">
+                                    <div class="dropzone-text" id="dropzone-text"
+                                         style="display: {% if form.instance.photo and form.instance.photo.url %}none{% else %}block{% endif %};">
+                                        <i class="simple-icon-cloud-upload"></i>
+                                        <p>Drop image here or click to upload</p>
+                                    </div>
+                                    <img id="image_preview"
+                                         src="
+                                                 {% if form.instance.photo and form.instance.photo.url %}{{ form.instance.photo.url }}{% endif %}"
+                                         alt="Image preview"
+                                         style="display: {% if form.instance.photo and form.instance.photo.url %}block{% else %}none{% endif %};"/>
+                                </label>
+                            </div>
                         </div>
-                    {% endif %}
+                        <div style="display: none;">{{ form.photo }}</div>
+                        {% if form.photo.errors %}
+                            <div class="text-danger small mt-1 text-center">{{ form.photo.errors }}</div>{% endif %}
 
-                    <h5 class="card-title">Account Details</h5>
+                        <div class="separator mb-4 mt-4"></div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}<p class="mb-0">{{ error }}</p>{% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <h5 class="card-title">Account Details</h5>
 
 
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>First Name</label>
-                            <div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="simple-icon-user"></i></span></div>{{ form.first_name }}</div>
-                            {% for error in form.first_name.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>First Name</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text"><i
+                                            class="simple-icon-user"></i></span></div>
+                                    {{ form.first_name }}</div>
+                                {% for error in form.first_name.errors %}
+                                    <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Last Name</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text"><i
+                                            class="simple-icon-user"></i></span></div>
+                                    {{ form.last_name }}</div>
+                                {% for error in form.last_name.errors %}
+                                    <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                            </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label>Last Name</label>
-                            <div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="simple-icon-user"></i></span></div>{{ form.last_name }}</div>
-                             {% for error in form.last_name.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+
+                        {% if form.username %}
+                            <div class="form-group">
+                                <label>Username</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text">@</span></div>
+                                    {{ form.username }}</div>
+                                {% for error in form.username.errors %}
+                                    <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text"><i
+                                        class="iconsminds-mail-read"></i></span></div>
+                                {{ form.email }}</div>
+                            {% for error in form.email.errors %}
+                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
                         </div>
-                    </div>
 
-                    {% if form.username %}
-                    <div class="form-group">
-                        <label>Username</label>
-                        <div class="input-group"><div class="input-group-prepend"><span class="input-group-text">@</span></div>{{ form.username }}</div>
-                        {% for error in form.username.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                    </div>
-                    {% endif %}
+                        {% if form.password %}
+                            <div class="form-group">
+                                <label>Password</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text"><i
+                                            class="iconsminds-key"></i></span></div>
+                                    {{ form.password }}</div>
+                                {% for error in form.password.errors %}
+                                    <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                            </div>
+                        {% endif %}
 
-                    <div class="form-group">
-                        <label>Email</label>
-                        <div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="iconsminds-mail-read"></i></span></div>{{ form.email }}</div>
-                        {% for error in form.email.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                    </div>
-
-                    {% if form.password %}
-                     <div class="form-group">
-                        <label>Password</label>
-                        <div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="iconsminds-key"></i></span></div>{{ form.password }}</div>
-                        {% for error in form.password.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                    </div>
-                    {% endif %}
-
-                    <h5 class="card-title mt-4">Profile Details</h5>
+                        <h5 class="card-title mt-4">Profile Details</h5>
 
 
-                    <div class="form-group">
-                        <label>Contact Number</label>
-                        <div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="simple-icon-phone"></i></span></div>{{ form.contact_number }}</div>
-                        {% for error in form.contact_number.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                    </div>
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text"><i
+                                        class="simple-icon-phone"></i></span></div>
+                                {{ form.contact_number }}</div>
+                            {% for error in form.contact_number.errors %}
+                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
 
-                    <div class="form-group">
-                        <label>{{ form.field_of_expertise.label }}</label>
-                        {{ form.field_of_expertise }}
-                        <small class="form-text text-muted">{{ form.field_of_expertise.help_text }}</small>
-                        {% for error in form.field_of_expertise.errors %}<div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
-                    </div>
+                        <div class="form-group">
+                            <label>{{ form.field_of_expertise.label }}</label>
+                            {{ form.field_of_expertise }}
+                            <small class="form-text text-muted">{{ form.field_of_expertise.help_text }}</small>
+                            {% for error in form.field_of_expertise.errors %}
+                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                        </div>
 
-                    <hr>
-                    <a href="{% url 'accounts:teacher_list' %}" class="btn btn-outline-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                    {% if not form.instance.pk %}
-                    <button type="submit" name="_addanother" class="btn btn-secondary">Save and add another</button>
-                    {% endif %}
-                </form>
+                        <hr>
+                        <a href="{% url 'accounts:teacher_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        {% if not form.instance.pk %}
+                            <button type="submit" name="_addanother" class="btn btn-secondary">Save and add another
+                            </button>
+                        {% endif %}
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock content %}
 
 {% block vendor_scripts %}
     <script src="{% static 'js/vendor/select2.full.js' %}"></script>
+    <style>
+        .dropzone-wrapper {
+            max-width: 250px; /* Controls the size of the component */
+            margin: 0 auto 20px auto; /* Centers the component */
+        }
+
+        .aspect-ratio-container {
+            position: relative;
+            width: 100%;
+            padding-top: 100%; /* This creates a 1:1 aspect ratio (a square) */
+        }
+
+        .dropzone-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            border: 2px dashed #ccc;
+            border-radius: 50%; /* Make it a circle */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            overflow: hidden;
+        }
+
+        .dropzone-area:hover, .dropzone-area.dragover {
+            background-color: #f8f9fa;
+            border-color: #007bff;
+        }
+
+        .dropzone-area .dropzone-text {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .dropzone-area .dropzone-text i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .dropzone-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Changed to 'cover' for a better look in a circle */
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            const dropzoneLabel = $('#dropzone-label');
+            const fileInput = $('#{{ form.photo.id_for_label }}');
+            const previewImage = $('#image_preview');
+            const dropzoneText = $('#dropzone-text');
+
+            function showPreview(file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.attr('src', e.target.result).show();
+                    dropzoneText.hide();
+                }
+                reader.readAsDataURL(file);
+            }
+
+            fileInput.on('change', function (event) {
+                if (event.target.files && event.target.files[0]) {
+                    showPreview(event.target.files[0]);
+                }
+            });
+
+            dropzoneLabel.on('dragover', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).addClass('dragover');
+            }).on('dragleave', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).removeClass('dragover');
+            }).on('drop', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).removeClass('dragover');
+                const files = e.originalEvent.dataTransfer.files;
+                if (files.length) {
+                    fileInput.prop('files', files);
+                    showPreview(files[0]);
+                }
+            });
+        });
+    </script>
 {% endblock vendor_scripts %}

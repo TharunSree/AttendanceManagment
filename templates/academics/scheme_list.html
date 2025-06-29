@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Marking Schemes{% endblock title %}
+
+{% block main_page_title %}
+    Manage Marking Schemes
+    <a href="{% url 'academics:scheme_create' %}" class="btn btn-primary btn-sm ml-3">Add New Scheme</a>
+
+{% endblock main_page_title %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">Marking Schema
+                        </h5>
+                        <a href="{% url 'academics:scheme_create' %}" class="btn btn-primary btn-sm ml-3">Add New
+                            Scheme</a>
+                    </div>
+                    <table class="data-table data-table-scrollable responsive nowrap">
+                        <thead>
+                        <tr>
+                            <th class="text-center">Scheme Name</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for scheme in schemes %}
+                            <tr>
+                                <td class="text-center">{{ scheme.name }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'academics:scheme_update' scheme.pk %}"
+                                       class="btn btn-xs btn-primary">Edit</a>
+                                    <a href="{% url 'academics:scheme_delete' scheme.pk %}"
+                                       class="btn btn-xs btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block vendor_scripts %}
+    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
+{% endblock vendor_scripts %}

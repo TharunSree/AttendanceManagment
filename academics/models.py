@@ -68,6 +68,13 @@ class Course(models.Model):
     # --- ADD THIS NEW FIELD ---
     description = models.TextField(blank=True, null=True)
     subjects = models.ManyToManyField(Subject, blank=True, related_name='courses')
+    marking_scheme = models.ForeignKey(
+        'MarkingScheme',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="The grading scheme used for this course."
+    )
 
     def __str__(self):
         return self.name
@@ -174,9 +181,6 @@ class AttendanceRecord(models.Model):
     STATUS_CHOICES = [
         ('Present', 'Present'),
         ('Absent', 'Absent'),
-        ('Late', 'Late'),
-        ('On Duty', 'On Duty'),
-        ('Excused', 'Excused'),
     ]
 
     student = models.ForeignKey(
@@ -192,6 +196,7 @@ class AttendanceRecord(models.Model):
     )
     date = models.DateField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
+    is_late = models.BooleanField(default=False)
     marked_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -271,6 +276,7 @@ class Announcement(models.Model):
     def __str__(self):
         return self.title
 
+
 class UserNotificationStatus(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
@@ -278,3 +284,55 @@ class UserNotificationStatus(models.Model):
 
     class Meta:
         unique_together = ('user', 'announcement')
+
+
+class MarkingScheme(models.Model):
+    """
+    A scheme designed by the admin, containing various criteria for evaluation.
+    e.g., "Semester End Exam Scheme"
+    """
+    name = models.CharField(max_length=100, unique=True, help_text="e.g., 'Default Grading Scheme'")
+
+    def __str__(self):
+        return self.name
+
+
+class Criterion(models.Model):
+    """
+    A specific criterion within a marking scheme, like 'Internal Exam' or 'Assignment'.
+    """
+    name = models.CharField(max_length=100)
+    scheme = models.ForeignKey(MarkingScheme, on_delete=models.CASCADE, related_name='criteria')
+    max_marks = models.PositiveIntegerField(default=100)
+
+    class Meta:
+        unique_together = ('scheme', 'name')
+
+    def __str__(self):
+        return f"{self.name} ({self.max_marks} marks)"
+
+
+class Mark(models.Model):
+    """
+    Stores the marks obtained by a student for a specific criterion in a subject.
+    """
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='marks',
+        limit_choices_to={'profile__role': 'student'}
+    )
+    subject = models.ForeignKey(CourseSubject, on_delete=models.CASCADE, related_name='marks')
+    criterion = models.ForeignKey(Criterion, on_delete=models.CASCADE, related_name='marks')
+    marks_obtained = models.DecimalField(max_digits=5, decimal_places=2,
+                                         validators=[MinValueValidator(0.0)])
+
+    class Meta:
+        unique_together = ('student', 'subject', 'criterion')
+        ordering = ['subject', 'criterion']
+        permissions = [
+            ("view_own_marks", "Can view own marks"),
+        ]
+
+    def __str__(self):
+        return f"Mark for {self.student.username} in {self.subject.subject.name} ({self.criterion.name})"
