@@ -6,7 +6,7 @@ from django.forms import inlineformset_factory
 
 from accounts.models import Profile
 from .models import Course, StudentGroup, Subject, AttendanceRecord, CourseSubject, AttendanceSettings, TimeSlot, \
-    Timetable, Announcement, MarkingScheme, Criterion
+    Timetable, Announcement, MarkingScheme, Criterion, ExtraClass
 
 from django import forms
 from django.contrib.auth.models import User
@@ -34,7 +34,8 @@ class StudentGroupForm(forms.ModelForm):
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['name', 'course_type', 'duration_years', 'required_hours_per_semester', 'description','marking_scheme']
+        fields = ['name', 'course_type', 'duration_years', 'required_hours_per_semester', 'description',
+                  'marking_scheme']
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -297,8 +298,10 @@ class MarkSelectForm(forms.Form):
         if subjects_queryset is not None:
             self.fields['course_subject'].queryset = subjects_queryset
 
+
 class BulkMarksImportForm(forms.Form):
     file = forms.FileField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}))
+
 
 class MarksReportForm(forms.Form):
     student_group = forms.ModelChoiceField(
@@ -308,3 +311,102 @@ class MarksReportForm(forms.Form):
     semester = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': 'form-control'})
     )
+
+
+# In academics/forms.py
+
+class ExtraClassForm(forms.ModelForm):
+    # ... (Meta class is unchanged) ...
+    class Meta:
+        model = ExtraClass
+        fields = ['teacher', 'class_group', 'subject', 'date', 'time_slot']
+        widgets = {
+            'teacher': forms.Select(attrs={'class': 'form-control'}),
+            'class_group': forms.Select(attrs={'class': 'form-control'}),
+            'subject': forms.Select(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'time_slot': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        is_faculty = self.user and hasattr(self.user, 'profile') and self.user.profile.role == 'faculty'
+
+        self.fields['subject'].queryset = CourseSubject.objects.none()
+        self.fields['time_slot'].queryset = TimeSlot.objects.filter(is_schedulable=True)
+
+        teacher_to_filter = None
+
+        if is_faculty:
+            self.fields['teacher'].widget = forms.HiddenInput()
+            self.initial['teacher'] = self.user.pk
+            self.fields['teacher'].queryset = User.objects.filter(pk=self.user.pk)
+            teacher_to_filter = self.user
+        else:  # Admin logic
+            self.fields['teacher'].queryset = User.objects.filter(profile__role='faculty').order_by('first_name')
+
+            # --- FIX: Correctly determine the teacher to filter by ---
+            # Priority: 1. POST data -> 2. GET filter data -> 3. Saved instance data
+            teacher_id = None
+            if self.is_bound and 'teacher' in self.data:
+                teacher_id = self.data.get('teacher')
+            elif 'teacher' in self.initial:
+                teacher_id = self.initial.get('teacher')
+            elif self.instance and self.instance.pk:
+                teacher_id = self.instance.teacher_id
+
+            if teacher_id:
+                try:
+                    teacher_to_filter = User.objects.get(pk=int(teacher_id))
+                except (ValueError, TypeError, User.DoesNotExist):
+                    pass  # teacher_to_filter will remain None, resulting in an empty subject list
+            # --- END FIX ---
+
+        # Now, populate the subjects dropdown if we have a teacher
+        if teacher_to_filter:
+            self.fields['subject'].queryset = CourseSubject.objects.filter(
+                timetable_entries__faculty=teacher_to_filter
+            ).select_related('subject', 'course').distinct().order_by('subject__name')
+
+    # ... (The clean method is unchanged and correct) ...
+    def clean(self):
+        cleaned_data = super().clean()
+        teacher = cleaned_data.get('teacher')
+        subject = cleaned_data.get('subject')
+        class_group = cleaned_data.get('class_group')
+        date = cleaned_data.get('date')
+        time_slot = cleaned_data.get('time_slot')
+
+        if not all([teacher, subject, class_group, date, time_slot]):
+            return cleaned_data
+
+        day_of_week = date.strftime('%A')
+
+        # Check for conflict with the regular timetable
+        if Timetable.objects.filter(faculty=teacher, day_of_week=day_of_week, time_slot=time_slot).exists():
+            self.add_error('time_slot', f"{teacher.get_full_name()} already has a scheduled class at this time.")
+
+        if Timetable.objects.filter(student_group=class_group, day_of_week=day_of_week, time_slot=time_slot).exists():
+            self.add_error('time_slot', f"{class_group.name} already has a scheduled class at this time.")
+
+        # Build a base queryset for checking conflicts with other Extra Classes
+        extra_class_conflicts = ExtraClass.objects.filter(date=date, time_slot=time_slot)
+
+        # If we are editing an existing instance, we must exclude it from the conflict check
+        if self.instance and self.instance.pk:
+            extra_class_conflicts = extra_class_conflicts.exclude(pk=self.instance.pk)
+
+        # Now, check for conflicts using the prepared queryset
+        if extra_class_conflicts.filter(teacher=teacher).exists():
+            self.add_error('time_slot', f"{teacher.get_full_name()} already has another extra class at this time.")
+        if extra_class_conflicts.filter(class_group=class_group).exists():
+            self.add_error('time_slot', f"{class_group.name} already has another extra class at this time.")
+
+        # The existing validation for subject assignment is still relevant and correct
+        if not CourseSubject.objects.filter(course=class_group.course, pk=subject.pk).exists():
+            self.add_error('subject',
+                           f"The subject '{subject.subject.name}' is not part of the '{class_group.course.name}' course.")
+
+        return cleaned_data

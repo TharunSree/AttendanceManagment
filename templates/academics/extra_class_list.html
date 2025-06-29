@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_styles %}
+    <link rel="stylesheet" href="{% static 'css/vendor/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vendor/datatables.responsive.bootstrap4.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="card-title mb-0">Extra Classes
+        </h5>
+
+            <a href="{% url 'academics:schedule_extra_class' %}" class="btn btn-outline-primary">Schedule Extra Class</a>
+
+    </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <table class="data-table data-table-scrollable responsive nowrap" data-order="[[ 1, &quot;desc&quot; ]]">
+                <thead>
+                <tr>
+                    <th>Teacher</th>
+                    <th>Class</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for extra_class in extra_classes %}
+                    <tr>
+                        <td>{{ extra_class.teacher.get_full_name }}</td>
+                        <td>{{ extra_class.class_group }}</td>
+                        <td>{{ extra_class.subject }}</td>
+                        <td>{{ extra_class.date }}</td>
+                        <td>{{ extra_class.time_slot }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                            <a href="{% url 'academics:extra_class_update' extra_class.pk %}" class="btn btn-outline-primary btn-sm">Edit</a>
+                            <a href="{% url 'academics:extra_class_delete' extra_class.pk %}"
+                               class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_scripts %}
+    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
+{% endblock %}

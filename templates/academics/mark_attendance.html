@@ -1,16 +1,25 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Mark Attendance{% endblock title %}
+{# ================================================================== #}
+{# BLOCK DEFINITIONS - These will be injected into base.html         #}
+{# ================================================================== #}
+
+{% block title %}Mark Attendance - {{ session_object.subject.subject.name }}{% endblock title %}
 
 {% block main_page_title %}
     Mark Attendance
-    <span class="text-muted font-weight-light">- {{ timetable_entry.subject.subject.name }} | {{ timetable_entry.student_group.name }}</span>
+    <span class="text-muted font-weight-light">- {{ session_object.subject.subject.name }} | {% if is_extra_class %}{{ session_object.class_group.name }}{% else %}{{ session_object.student_group.name }}{% endif %}</span>
 {% endblock main_page_title %}
 
 {% block content %}
-    {# Main form for submitting attendance #}
-    <form method="post" id="main-attendance-form" action="{% if date %}{% url 'academics:mark_attendance_for_date' timetable_entry.pk date|date:'Y-m-d' %}{% else %}{% url 'academics:mark_attendance' timetable_entry.pk %}{% endif %}">
+    {# The form's action URL will now resolve correctly because 'session_object' is used directly from the view's context. #}
+    <form method="post" id="main-attendance-form" action="
+        {% if is_extra_class %}
+            {% url 'academics:mark_extra_class_attendance' session_object.pk %}
+        {% else %}
+            {% url 'academics:mark_attendance' session_object.pk date|date:'Y-m-d' %}
+        {% endif %}">
         {% csrf_token %}
         {{ formset.management_form }}
 
@@ -18,77 +27,82 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Student List</h5>
+                        <h5 class="card-title">Student List for {% if is_extra_class %}{{ session_object.class_group.name }}{% else %}{{ session_object.student_group.name }}{% endif %}</h5>
+                        <p class="card-subtitle mb-4">Date: {{ date|date:"F d, Y" }}</p>
 
                         <table class="data-table data-table-scrollable responsive nowrap" data-order="[]">
-    <thead>
-    <tr>
-        <th>Mark All As:</th>
-        <th class="text-center">
-            <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="markAllPresent"
-                       name="markAll" value="Present">
-                <label class="custom-control-label" for="markAllPresent"></label>
-            </div>
-        </th>
-        <th class="text-center">
-            <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="markAllAbsent"
-                       name="markAll" value="Absent">
-                <label class="custom-control-label" for="markAllAbsent"></label>
-            </div>
-        </th>
-        <th></th>
-    </tr>
-    <tr>
-        <th scope="col">Student Name</th>
-        <th scope="col" class="text-center">Present</th>
-        <th scope="col" class="text-center">Absent</th>
-        <th scope="col" class="text-center">Late</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for student, form in student_forms %}
-        <tr>
-            <td>
-                <p class="list-item-heading">{{ student.get_full_name }}</p>
-                {{ form.student_id }}
-            </td>
-            {% for radio in form.status %}
-            <td class="text-center">
-                <div class="custom-control custom-radio">
-                    {{ radio.tag }}
-                    <label class="custom-control-label"
-                           for="{{ radio.id_for_label }}"></label>
-                </div>
-            </td>
-            {% endfor %}
-            <td class="text-center">
-                <div class="form-check">
-                    {{ form.is_late }}
-                </div>
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+                            <thead>
+                            <tr>
+                                <th>Mark All As:</th>
+                                <th class="text-center">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" id="markAllPresent"
+                                               name="markAll" value="Present">
+                                        <label class="custom-control-label" for="markAllPresent">Present</label>
+                                    </div>
+                                </th>
+                                <th class="text-center">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" id="markAllAbsent"
+                                               name="markAll" value="Absent">
+                                        <label class="custom-control-label" for="markAllAbsent">Absent</label>
+                                    </div>
+                                </th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <th scope="col">Student Name</th>
+                                <th scope="col" class="text-center">Present</th>
+                                <th scope="col" class="text-center">Absent</th>
+                                <th scope="col" class="text-center">Late</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for student, form in student_forms %}
+                                <tr>
+                                    <td>
+                                        <p class="list-item-heading mb-0">{{ student.get_full_name }}</p>
+                                        <p class="text-muted text-small mb-0">{{ student.profile.student_id_number }}</p>
+                                        {{ form.student_id }}
+                                    </td>
+                                    {% for radio in form.status %}
+                                        <td class="text-center">
+                                            <div class="custom-control custom-radio">
+                                                {{ radio.tag }}
+                                                <label class="custom-control-label"
+                                                       for="{{ radio.id_for_label }}"></label>
+                                            </div>
+                                        </td>
+                                    {% endfor %}
+                                    <td class="text-center">
+                                        <div class="form-check">
+                                            {{ form.is_late }}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </form>
 
-    {# --- FIX: Combined button container --- #}
+    {# Button container at the bottom of the page #}
     <div class="row mt-4">
         <div class="col-12 text-right">
 
-            <form action="{% url 'academics:cancel_class' timetable_entry.pk %}" method="post" class="d-inline mr-2">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger"
-                        onclick="return confirm('Are you sure you want to mark this class as not conducted? This cannot be undone.');">
-                    Class Not Conducted
-                </button>
-            </form>
+            {# Only show the "Class Not Conducted" button for regular timetable entries #}
+            {% if not is_extra_class %}
+                <form action="{% url 'academics:class_cancellation' session_object.pk %}" method="post" class="d-inline mr-2">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Are you sure you want to mark this class as not conducted? This cannot be undone.');">
+                        Class Not Conducted
+                    </button>
+                </form>
+            {% endif %}
 
             <button type="submit" form="main-attendance-form" class="btn btn-primary btn-lg">Submit Attendance</button>
 
@@ -97,15 +111,15 @@
 
 {% endblock content %}
 
-{% block vendor_scripts %}
-    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
-{% endblock vendor_scripts %}
+
 {% block page_scripts %}
     <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
     <script>
         $(document).ready(function () {
+            // Logic for the "Mark All" radio buttons
             $('input[name="markAll"]').on('change', function () {
                 var status = $(this).val();
+                // Find all radio buttons with the chosen value and check them
                 $('.data-table tbody input[type="radio"][value="' + status + '"]').prop('checked', true);
             });
         });

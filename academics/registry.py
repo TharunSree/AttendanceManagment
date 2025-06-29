@@ -4,7 +4,7 @@ REGISTERED_NAV_ITEMS = []
 
 # The definition of the collapsible groups still lives here.
 NAVIGATION_GROUPS = [
-{
+    {
         'id': 'dashboard',
         'title': 'Dashboard',
         'icon': 'iconsminds-shop-4',
@@ -25,9 +25,9 @@ NAVIGATION_GROUPS = [
         'icon': 'iconsminds-gears',
     },
     {
-        'id':'my_academics',
-        'title' : 'My Academics',
-        'icon' : 'simple-icon-user',
+        'id': 'my_academics',
+        'title': 'My Academics',
+        'icon': 'simple-icon-user',
     }
 ]
 
@@ -44,7 +44,7 @@ SUBGROUP_DEFINITIONS = {
     },
     'reporting': {
         'title': 'Reports & Logs',
-        'icon': 'simple-icon-printer', # You can change this icon
+        'icon': 'simple-icon-printer',  # You can change this icon
         'order': 30
     }
 }
@@ -64,6 +64,7 @@ SUBGROUP_MAPPING = {
     # Subgroup: 'user_management'
     'academics:admin_select_class': 'user_management',
     'academics:manage_substitutions': 'user_management',
+    'academics:extra_class_list': 'user_management',
 
     # Subgroup: 'reporting'
     'academics:daily_log': 'reporting',

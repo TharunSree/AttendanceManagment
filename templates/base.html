@@ -76,23 +76,22 @@
     </div>
 </main>
 
-<div class="modal fade" id="announcementModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="announcementModal" tabindex="-1" role="dialog" aria-labelledby="announcementModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="announcementModalTitle">
-                    <i class="simple-icon-speech mr-2"></i> Announcement
-                </h5>
+                <h5 class="modal-title" id="announcementModalLabel">New Announcement</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <h4 class="text-center mb-3" id="announcementModalTitleContent"></h4>
-                <p id="announcementModalBodyContent"></p>
+                <p id="announcementContent"></p>
+                <small class="text-muted" id="announcementTimestamp"></small>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">I Understand</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -112,56 +111,29 @@
 
 
 {% block page_scripts %}
-    <script>
-        $(document).ready(function () {
-            $('#notificationButton').on('click', function () {
-                // If there are unread notifications, send a request to mark them as read
-                if (parseInt($('.count', this).text()) > 0) {
-                    $.ajax({
-                        url: "{% url 'accounts:mark_notifications_as_read' %}",
-                        type: 'POST',
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-                        },
-                        success: function (response) {
-                            if (response.status === 'success') {
-                                // Hide the count badge immediately for better UX
-                                $('#notificationButton .count').hide();
-                            }
+    <!-- In your base.html, just before the closing </body> tag -->
+    {% if user.is_authenticated %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // This script runs once on page load to check for a new announcement
+                const checkUrl = "{% url 'academics:check_announcements' %}";
+
+                fetch(checkUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.announcement) {
+                            // If the server sends an announcement, populate and show the modal
+                            const modal = $('#announcementModal');
+                            modal.find('#announcementModalLabel').text(data.announcement.title);
+                            modal.find('#announcementContent').html(data.announcement.content.replace(/\n/g, '<br>'));
+                            modal.find('#announcementTimestamp').text('Sent: ' + data.announcement.timestamp);
+                            modal.modal('show');
                         }
-                    });
-                }
+                    })
+                    .catch(error => console.error('Error checking for announcements:', error));
             });
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            function fetchAnnouncement() {
-                $.ajax({
-                    url: "{% url 'academics:check_announcements' %}",
-                    type: 'GET',
-                    success: function (response) {
-                        if (response.found) {
-                            // An unseen announcement was found, let's populate and show the modal
-                            $('#announcementModalTitleContent').text(response.title);
-                            $('#announcementModalBodyContent').html(response.content.replace(/\n/g, '<br>'));
-                            $('#announcementModal').modal('show');
-                        }
-                    },
-                    error: function () {
-                        // Silently fail to avoid interrupting the user
-                        console.log("Could not check for announcements.");
-                    }
-                });
-            }
-
-            // Check for an announcement 3 seconds after the page loads
-            setTimeout(fetchAnnouncement, 3000);
-
-            // Then, check again every 30 seconds to provide real-time pop-ups
-            setInterval(fetchAnnouncement, 30000);
-        });
-    </script>
+        </script>
+    {% endif %}
 {% endblock page_scripts %} {# For page-specific JS #}
 
 </body>

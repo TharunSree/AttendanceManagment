@@ -15,7 +15,7 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.contrib import messages
 
 from academics.models import Course, StudentGroup, Subject, Timetable, AttendanceRecord, DailySubstitution, \
-    ClassCancellation, AttendanceSettings, CourseSubject, Mark, Criterion, MarkingScheme
+    ClassCancellation, AttendanceSettings, CourseSubject, Mark, Criterion, MarkingScheme, ExtraClass
 from .decorators import nav_item
 from .forms import AddTeacherForm, EditTeacherForm, UserUpdateForm, ProfileUpdateForm, BulkImportForm
 from .models import Profile, Notification
@@ -180,7 +180,7 @@ def group_permission_edit_view(request, group_id):
     managed_models = [
         User, Course, Subject, StudentGroup, Timetable, AttendanceRecord,
         ClassCancellation, DailySubstitution, AttendanceSettings,
-        Mark, Criterion, MarkingScheme,Profile
+        Mark, Criterion, MarkingScheme,Profile,ExtraClass
     ]
     # --------------------------------------------------------
 

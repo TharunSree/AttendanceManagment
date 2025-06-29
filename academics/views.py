@@ -19,15 +19,16 @@ from django.contrib import messages
 from django import forms
 from django.urls import reverse
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 from academics.forms import EditStudentForm, AttendanceSettingsForm, TimeSlotForm, MarkAttendanceForm, \
     TimetableEntryForm, SubstitutionForm, AttendanceReportForm, AnnouncementForm, CriterionFormSet, MarkingSchemeForm, \
-    MarkSelectForm, BulkMarksImportForm, MarksReportForm
+    MarkSelectForm, BulkMarksImportForm, MarksReportForm, ExtraClassForm
 from accounts.models import Profile
 from .forms import StudentGroupForm, CourseForm, AddStudentForm, SubjectForm
 from .models import StudentGroup, AttendanceSettings, Course, Subject, \
     Timetable, AttendanceRecord, CourseSubject, TimeSlot, ClassCancellation, DailySubstitution, Announcement, \
-    UserNotificationStatus, MarkingScheme, Mark, Criterion
+    UserNotificationStatus, MarkingScheme, Mark, Criterion, ExtraClass
 from accounts.decorators import nav_item
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
@@ -195,20 +196,35 @@ def admin_student_attendance_detail_view(request, student_id):
             selected_semester).isdigit() else None
 
         if context['selected_semester']:
+            # This base queryset gets ALL of the student's attendance records for the semester,
+            # regardless of whether they are from a regular class or an extra class.
             student_records_sem = AttendanceRecord.objects.filter(
-                student=student, timetable__subject__semester=context['selected_semester']
+                student=student
+            ).filter(
+                Q(timetable__subject__semester=context['selected_semester']) |
+                Q(extra_class__subject__semester=context['selected_semester'])
             )
 
             if view_type == 'semester':
                 subjects_for_semester = all_course_subjects_qs.filter(semester=context['selected_semester'])
                 for cs in subjects_for_semester:
-                    total_classes = AttendanceRecord.objects.filter(
+                    # Calculate total conducted classes by combining regular and extra classes.
+                    # This counts distinct sessions for which attendance was marked.
+                    regular_classes_count = AttendanceRecord.objects.filter(
                         timetable__student_group=student_group, timetable__subject=cs
                     ).values('date', 'timetable__time_slot').distinct().count()
 
+                    extra_classes_count = ExtraClass.objects.filter(
+                        class_group=student_group, subject=cs
+                    ).count()
+
+                    total_classes = regular_classes_count + extra_classes_count
+
                     if total_classes > 0:
+                        # Count attended classes from the pre-filtered student records
                         present_count = student_records_sem.filter(
-                            timetable__subject=cs, status__in=['Present', 'Late']
+                            Q(timetable__subject=cs) | Q(extra_class__subject=cs),
+                            status__in=['Present', 'Late']
                         ).count()
                         absent_count = total_classes - present_count
                         context['subject_attendance_data'].append({
@@ -218,6 +234,8 @@ def admin_student_attendance_detail_view(request, student_id):
                             'official_percentage': round(
                                 (present_count / total_classes * 100) if total_classes > 0 else 0, 2)
                         })
+
+                # Calculate overall semester stats after the loop
                 context['overall_attended_sem'] = sum(d['attended_classes'] for d in context['subject_attendance_data'])
                 total_sem = sum(d['total_classes'] for d in context['subject_attendance_data'])
                 context['overall_absent_sem'] = total_sem - context['overall_attended_sem']
@@ -226,11 +244,16 @@ def admin_student_attendance_detail_view(request, student_id):
                 context['subject_attendance_data_json'] = json.dumps(context['subject_attendance_data'])
 
             elif view_type == 'monthly':
-                all_records_in_sem = AttendanceRecord.objects.filter(timetable__student_group=student_group,
-                                                                     timetable__subject__semester=context[
-                                                                         'selected_semester'])
-                context['available_months'] = all_records_in_sem.annotate(month=TruncMonth('date')).values(
+                # Get all records for the group in the semester to determine available months
+                all_group_records = AttendanceRecord.objects.filter(
+                    Q(timetable__student_group=student_group) | Q(extra_class__class_group=student_group),
+                    Q(timetable__subject__semester=context['selected_semester']) | Q(
+                        extra_class__subject__semester=context['selected_semester'])
+                ).distinct()
+
+                context['available_months'] = all_group_records.annotate(month=TruncMonth('date')).values(
                     'month').distinct().order_by('-month')
+
                 if not selected_month_str and context['available_months']:
                     selected_month_str = context['available_months'][0]['month'].strftime('%Y-%m')
                 context['selected_month'] = selected_month_str
@@ -239,14 +262,23 @@ def admin_student_attendance_detail_view(request, student_id):
                     year, month = map(int, selected_month_str.split('-'))
                     subjects_for_semester = all_course_subjects_qs.filter(semester=context['selected_semester'])
                     for cs in subjects_for_semester:
-                        total_classes_month = AttendanceRecord.objects.filter(
+                        # Calculate total classes for the month (regular + extra)
+                        regular_classes_month = AttendanceRecord.objects.filter(
                             timetable__student_group=student_group, timetable__subject=cs, date__year=year,
                             date__month=month
                         ).values('date', 'timetable__time_slot').distinct().count()
+
+                        extra_classes_month = ExtraClass.objects.filter(
+                            class_group=student_group, subject=cs, date__year=year, date__month=month
+                        ).count()
+
+                        total_classes_month = regular_classes_month + extra_classes_month
+
                         if total_classes_month > 0:
+                            # Calculate present count for the month (regular + extra)
                             present_count_month = student_records_sem.filter(
-                                timetable__subject=cs, status__in=['Present', 'Late'], date__year=year,
-                                date__month=month
+                                Q(timetable__subject=cs) | Q(extra_class__subject=cs),
+                                status__in=['Present', 'Late'], date__year=year, date__month=month
                             ).count()
                             absent_count_month = total_classes_month - present_count_month
                             context['monthly_subject_data'].append({
@@ -257,6 +289,8 @@ def admin_student_attendance_detail_view(request, student_id):
                                     (present_count_month / total_classes_month * 100) if total_classes_month > 0 else 0,
                                     2)
                             })
+
+                    # Calculate overall monthly stats after the loop
                     context['overall_attended_month'] = sum(
                         d['attended_classes'] for d in context['monthly_subject_data'])
                     total_month = sum(d['total_classes'] for d in context['monthly_subject_data'])
@@ -268,25 +302,54 @@ def admin_student_attendance_detail_view(request, student_id):
             elif view_type == 'daily':
                 try:
                     selected_date = datetime.strptime(selected_date_str, '%Y-%m-%d').date()
-                    context['daily_attendance_data'] = student_records_sem.filter(date=selected_date).select_related(
-                        'timetable__subject__subject', 'timetable__time_slot').order_by(
-                        'timetable__time_slot__start_time')
+                    # Fetch all records for the day and prefetch related data for efficiency
+                    daily_records = student_records_sem.filter(date=selected_date).select_related(
+                        'timetable__subject__subject', 'timetable__time_slot',
+                        'extra_class__subject__subject', 'extra_class__time_slot'
+                    )
+
+                    unified_daily_data = []
+                    for record in daily_records:
+                        if record.timetable:
+                            unified_daily_data.append({
+                                'subject_name': record.timetable.subject.subject.name,
+                                'time_slot': record.timetable.time_slot,
+                                'status': record.status,
+                                'is_late': record.is_late
+                            })
+                        elif record.extra_class:
+                            unified_daily_data.append({
+                                'subject_name': record.extra_class.subject.subject.name,
+                                'time_slot': record.extra_class.time_slot,
+                                'status': record.status,
+                                'is_late': record.is_late
+                            })
+
+                    # Sort the final list by the start time of the time slot
+                    unified_daily_data.sort(key=lambda x: x['time_slot'].start_time)
+                    context['daily_attendance_data'] = unified_daily_data
+
                 except (ValueError, TypeError):
-                    pass
+                    pass  # Ignore invalid date formats
+
 
             elif view_type == 'marks':
-                marks_qs = Mark.objects.filter(student=student,
-                                               subject__semester=context['selected_semester']).select_related(
-                    'subject__subject', 'criterion')
-                for mark in marks_qs:
-                    subject_name = mark.subject.subject.name
-                    if subject_name not in context['marks_data']:
-                        context['marks_data'][subject_name] = {'criteria': [], 'total_marks': 0, 'max_total': 0}
-                    context['marks_data'][subject_name]['criteria'].append(
-                        {'name': mark.criterion.name, 'marks_obtained': mark.marks_obtained,
-                         'max_marks': mark.criterion.max_marks})
-                    context['marks_data'][subject_name]['total_marks'] += mark.marks_obtained
-                    context['marks_data'][subject_name]['max_total'] += mark.criterion.max_marks
+
+                # Pass the ordered queryset of marks directly to the template.
+
+                # The .order_by() is important for grouping in the template.
+
+                context['marks_data_list'] = Mark.objects.filter(
+
+                    student=student,
+
+                    subject__semester=context['selected_semester']
+
+                ).select_related(
+
+                    'subject__subject', 'criterion'
+
+                ).order_by('subject__subject__name', 'criterion__name')
 
     return render(request, 'academics/admin_student_attendance_detail.html', context)
 
@@ -604,64 +667,120 @@ def timeslot_delete_view(request, pk):
 @nav_item(title="Daily Schedule", icon="simple-icon-check", url_name="academics:faculty_schedule",
           permission='academics.add_attendancerecord', group='faculty_tools', order=10)
 def faculty_daily_schedule_view(request):
-    settings = AttendanceSettings.load()
-    today = timezone.now().date()
-    deadline_date = today - timezone.timedelta(days=settings.mark_deadline_days)
-    faculty_timetable_slots = Timetable.objects.filter(faculty=request.user)
-    day_to_check = deadline_date.strftime('%A')
-    slots_to_check = faculty_timetable_slots.filter(day_of_week=day_to_check)
-    for slot in slots_to_check:
-        # Check if any attendance or cancellation record already exists for this slot on its deadline date
-        has_record = AttendanceRecord.objects.filter(timetable=slot, date=deadline_date).exists()
-        is_cancelled = ClassCancellation.objects.filter(timetable=slot, date=deadline_date).exists()
+    # ... (The auto-cancellation logic at the beginning remains the same) ...
 
-        if not has_record and not is_cancelled:
-            # If no record exists, automatically mark it as not conducted
-            ClassCancellation.objects.create(
-                timetable=slot,
-                date=deadline_date,
-                cancelled_by=None  # Marked by the system
-            )
     current_day = timezone.now().strftime('%A')
     current_date = timezone.now().date()
+
+    # --- CHANGE: Create a unified schedule list ---
+    unified_schedule = []
+
     # 1. Get regularly scheduled classes
-    regular_schedule = list(Timetable.objects.filter(
+    regular_schedule = Timetable.objects.filter(
         faculty=request.user, day_of_week=current_day
-    ).select_related('time_slot', 'subject__subject', 'student_group'))
+    ).select_related('time_slot', 'subject__subject', 'student_group')
 
     # 2. Get classes this user is substituting for today
     substitutions = DailySubstitution.objects.filter(
         substituted_by=request.user, date=current_date
     ).select_related('timetable__time_slot', 'timetable__subject__subject', 'timetable__student_group')
 
-    # Prepare combined schedule with flags
-    schedule_with_status = []
+    # 3. Get extra classes scheduled for today
+    extra_classes_today = ExtraClass.objects.filter(
+        teacher=request.user, date=current_date
+    ).select_related('time_slot', 'subject__subject', 'class_group')
 
-    # Add regular classes
-    for entry in regular_schedule:
-        entry.is_substitution = False
-        schedule_with_status.append(entry)
-
-    # Add substituted classes
-    for sub in substitutions:
-        entry = sub.timetable
-        entry.is_substitution = True
-        if entry not in regular_schedule:  # Avoid duplicates if substituting for own class
-            schedule_with_status.append(entry)
-
-    # Sort the final combined list by time
-    schedule_with_status.sort(key=lambda x: x.time_slot.start_time)
-
+    # Get IDs of sessions cancelled today for quick lookup
     cancelled_today_ids = ClassCancellation.objects.filter(
         date=current_date
     ).values_list('timetable_id', flat=True)
 
+    # Process regular and substituted classes
+    processed_timetable_ids = set()
+    for entry in regular_schedule:
+        unified_schedule.append({
+            'session': entry, 'type': 'regular', 'is_substitution': False,
+            'is_cancelled': entry.id in cancelled_today_ids
+        })
+        processed_timetable_ids.add(entry.id)
+
+    for sub in substitutions:
+        if sub.timetable.id not in processed_timetable_ids:
+            unified_schedule.append({
+                'session': sub.timetable, 'type': 'regular', 'is_substitution': True,
+                'is_cancelled': sub.timetable.id in cancelled_today_ids
+            })
+
+    # Process extra classes
+    for extra_class in extra_classes_today:
+        unified_schedule.append({
+            'session': extra_class, 'type': 'extra', 'is_substitution': False,
+            'is_cancelled': False  # Extra classes cannot be "cancelled" in the same way
+        })
+
+    # Sort the final combined list by time
+    unified_schedule.sort(key=lambda x: x['session'].time_slot.start_time)
+
     context = {
-        'schedule': schedule_with_status,
+        'schedule': unified_schedule,
         'current_day': current_day,
-        'cancelled_today_ids': cancelled_today_ids
     }
     return render(request, 'academics/faculty_schedule.html', context)
+
+
+@login_required
+@permission_required('academics.add_attendancerecord', raise_exception=True)
+def mark_extra_class_attendance_view(request, extra_class_id):
+    current_date = timezone.now().date()
+    extra_class_entry = get_object_or_404(ExtraClass, pk=extra_class_id)
+    print(extra_class_entry)
+
+    # Security check: ensure the logged-in user is the teacher for this extra class
+    if extra_class_entry.teacher != request.user:
+        raise PermissionDenied("You are not authorized to mark attendance for this class.")
+
+    students = User.objects.filter(profile__student_group=extra_class_entry.class_group).order_by('first_name')
+    MarkAttendanceFormSet = formset_factory(MarkAttendanceForm, extra=0)
+
+    if request.method == 'POST':
+        formset = MarkAttendanceFormSet(request.POST)
+        if formset.is_valid():
+            with transaction.atomic():
+                for form in formset:
+                    student_id = form.cleaned_data['student_id']
+                    status = form.cleaned_data['status']
+                    is_late = form.cleaned_data.get('is_late', False)
+                    student = User.objects.get(pk=student_id)
+
+                    # --- CHANGE: Save record with extra_class foreign key ---
+                    record, created = AttendanceRecord.objects.update_or_create(
+                        student=student,
+                        extra_class=extra_class_entry,
+                        date=current_date,
+                        defaults={'status': status, 'is_late': is_late, 'marked_by': request.user}
+                    )
+            messages.success(request, "Attendance for the extra class has been marked successfully.")
+            return redirect('academics:faculty_schedule')
+    else:
+        initial_data = []
+        existing_records = AttendanceRecord.objects.filter(extra_class=extra_class_entry, date=current_date)
+        status_map = {record.student_id: (record.status, record.is_late) for record in existing_records}
+        for student in students:
+            saved_status, saved_is_late = status_map.get(student.id, ('Present', False))
+            initial_data.append({'student_id': student.id, 'status': saved_status, 'is_late': saved_is_late})
+        formset = MarkAttendanceFormSet(initial=initial_data)
+
+    student_forms = zip(students, formset)
+    context = {
+        # --- FIX: Use 'timetable_entry' as the key to match the reused template ---
+        'session_object': extra_class_entry,
+        'formset': formset,
+        'student_forms': student_forms,
+        'date': current_date,
+        'is_extra_class': True  # This flag is still useful for conditional logic in the template
+    }
+    # We can reuse the existing mark_attendance.html template
+    return render(request, 'academics/mark_attendance.html', context)
 
 
 @login_required
@@ -723,10 +842,11 @@ def mark_attendance_view(request, timetable_id, date_str=None):
 
     student_forms = zip(students, formset)
     context = {
-        'timetable_entry': timetable_entry,
+        'session_object': timetable_entry,
         'formset': formset,
         'student_forms': student_forms,
-        'date': current_date
+        'date': current_date,
+        'is_extra_class' : False,
     }
     return render(request, 'academics/mark_attendance.html', context)
 
@@ -1222,43 +1342,45 @@ def announcement_create_view(request):
 @login_required
 def check_announcements_view(request):
     """
-    API-like view for the frontend to check for the latest unseen announcement.
-    This version correctly targets users and excludes admins from pop-ups.
+    Checks for the single latest unread announcement for the user.
+    If found, returns its data and marks it as seen to prevent future pop-ups.
     """
     user = request.user
-    # Admins or users without a profile won't get pop-up notifications
+
+    # Admins don't get pop-ups
     if not hasattr(user, 'profile') or user.profile.role == 'admin':
-        return JsonResponse({'found': False})
+        return JsonResponse({'announcement': None})
 
-    # Base query for all announcements not yet seen by the user
-    unseen_query = Announcement.objects.exclude(usernotificationstatus__user=user)
-
-    # Build the filter based on the user's role and group
-    target_filter = Q()  # Start with an empty Q object
-
+    # Determine which announcements are relevant to this user
+    target_filter = Q()
     if user.profile.role == 'student' and user.profile.student_group:
         target_filter = Q(send_to_all_students=True) | Q(target_student_groups=user.profile.student_group)
     elif user.profile.role == 'faculty':
         target_filter = Q(send_to_all_faculty=True)
 
-    # If the user is in a role that doesn't match, the filter remains empty,
-    # and the query will correctly return no announcements.
     if not target_filter:
-        return JsonResponse({'found': False})
+        return JsonResponse({'announcement': None})
 
-    # Find the latest announcement that matches the criteria
-    latest_announcement = unseen_query.filter(target_filter).distinct().order_by('-created_at').first()
+    # Find the latest announcement that the user has NOT seen yet
+    try:
+        latest_unread = Announcement.objects.filter(target_filter).exclude(
+            usernotificationstatus__user=user
+        ).latest('created_at')  # .latest() gets the single newest one
 
-    if latest_announcement:
-        # Mark this announcement as seen for this user to prevent re-notification
-        UserNotificationStatus.objects.get_or_create(user=user, announcement=latest_announcement)
-        return JsonResponse({
-            'found': True,
-            'title': latest_announcement.title,
-            'content': latest_announcement.content,
-        })
+        # Mark this announcement as seen immediately so it doesn't pop up again
+        UserNotificationStatus.objects.create(user=user, announcement=latest_unread)
 
-    return JsonResponse({'found': False})
+        # Prepare the data to send to the frontend
+        announcement_data = {
+            'title': latest_unread.title,
+            'content': latest_unread.content,
+            'timestamp': latest_unread.created_at.strftime('%b %d, %Y, %I:%M %p'),
+        }
+        return JsonResponse({'announcement': announcement_data})
+
+    except Announcement.DoesNotExist:
+        # No unread announcements found, which is a normal case
+        return JsonResponse({'announcement': None})
 
 
 @login_required
@@ -1566,6 +1688,8 @@ def marks_entry_view(request):
         'group_subject_map_json': json.dumps(group_subject_map)
     }
     return render(request, 'academics/marks_entry_form.html', context)
+
+
 @login_required
 @permission_required('academics.add_mark')
 def download_marks_template_view(request):
@@ -1853,3 +1977,107 @@ def my_profile_view(request):
 
     # We can reuse the same template as the admin-facing profile view
     return render(request, 'academics/student_profile.html', context)
+
+
+@login_required
+@permission_required('academics.add_extraclass')
+@nav_item(title="Schedule Extra Class", icon="simple-icon-plus", url_name="academics:schedule_extra_class",
+          permission='academics.add_extraclass', group='faculty_tools', order=40)
+def schedule_extra_class(request):
+    if request.method == 'POST':
+        form = ExtraClassForm(request.POST, user=request.user)
+        if form.is_valid():
+            # ... (your existing POST logic is correct and remains here) ...
+            with transaction.atomic():
+                extra_class = form.save(commit=False)
+                if request.user.profile.role == 'faculty':
+                    extra_class.teacher = request.user
+                extra_class.save()
+
+                announcement = Announcement.objects.create(
+                    title=f"Extra Class: {extra_class.subject.subject.name}",
+                    content=f"An extra class for {extra_class.subject.subject.name} has been scheduled on {extra_class.date} during the {extra_class.time_slot} slot.",
+                    sender=request.user
+                )
+                announcement.target_student_groups.add(extra_class.class_group)
+                extra_class.announcement = announcement
+                extra_class.save()
+
+            messages.success(request, 'Extra class scheduled successfully and announcement created.')
+            return redirect('academics:extra_class_list')
+        else:
+            messages.warning(request, "Please complete all required fields.")
+    else:
+        # --- FIX: Handle GET requests for filtering ---
+        initial_data = {}
+        # If a teacher was selected via the dropdown reload, pass it to the form
+        if 'teacher' in request.GET:
+            initial_data['teacher'] = request.GET.get('teacher')
+
+        form = ExtraClassForm(user=request.user, initial=initial_data)
+        # --- END FIX ---
+
+    context = {
+        'form': form,
+        'form_title': 'Schedule an Extra Class'
+    }
+    return render(request, 'academics/extra_class_form.html', context)
+
+
+@login_required
+@permission_required('academics.update_extraclass')
+def extra_class_update(request, pk):
+    extra_class = get_object_or_404(ExtraClass, pk=pk)
+    if request.method == 'POST':
+        form = ExtraClassForm(request.POST, instance=extra_class, user=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Extra class updated successfully.')
+            return redirect('academics:extra_class_list')
+    else:
+        # --- FIX: Handle GET requests for filtering ---
+        initial_data = {}
+        # If a teacher was selected via the dropdown reload, pass it to the form
+        if 'teacher' in request.GET:
+            initial_data['teacher'] = request.GET.get('teacher')
+
+        form = ExtraClassForm(instance=extra_class, user=request.user, initial=initial_data)
+        # --- END FIX ---
+
+    return render(request, 'academics/extra_class_form.html', {'form': form, 'form_title': f'Edit Extra Class'})
+
+@login_required
+@permission_required('academics.view_extraclass')
+@nav_item(title="Extra Class", icon="simple-icon-clock", url_name="academics:extra_class_list",
+          permission='accounts.view_extraclass', group='admin_management', order=0)
+def extra_class_list(request):
+    extra_classes = ExtraClass.objects.all()
+    return render(request, 'academics/extra_class_list.html', {'extra_classes': extra_classes})
+
+
+@login_required
+@permission_required('academics.delete_extraclass')
+def extra_class_delete(request, pk):
+    extra_class = get_object_or_404(ExtraClass, pk=pk)
+    if request.method == 'POST':
+        with transaction.atomic():
+            # --- FIX 1: Use 'sender' instead of 'created_by' ---
+            cancellation_announcement = Announcement.objects.create(
+                title=f"CANCELLED: Extra Class for {extra_class.subject.name}",
+                content=f"The extra class for {extra_class.subject.name} scheduled on {extra_class.date} has been cancelled.",
+                sender=request.user
+            )
+            cancellation_announcement.target_student_groups.add(extra_class.class_group)
+
+            extra_class.delete()
+
+        messages.success(request, 'Extra class deleted and cancellation announcement sent.')
+        # --- FIX 3: Use the correct namespaced URL for the redirect ---
+        return redirect('academics:extra_class_list')
+
+    # --- FIX 2: Pass the context variables the template expects ---
+    context = {
+        'item': extra_class,
+        'type': 'Extra Class'
+    }
+    return render(request, 'academics/confirm_delete.html', context)

@@ -60,6 +60,8 @@
                                         href="?semester={{ selected_semester }}&view_type=monthly">Monthly</a></li>
                 <li class="nav-item"><a class="nav-link {% if view_type == 'daily' %}active{% endif %}"
                                         href="?semester={{ selected_semester }}&view_type=daily">Daily</a></li>
+                <li class="nav-item"><a class="nav-link {% if view_type == 'marks' %}active{% endif %}"
+                                        href="?semester={{ selected_semester }}&view_type=marks">Marks</a></li>
             </ul>
         </div>
     </div>
@@ -136,46 +138,87 @@
 
         {# Daily View Pane #}
         <div class="tab-pane fade {% if view_type == 'daily' %}show active{% endif %}" role="tabpanel">
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Daily Attendance Log for {{ selected_date|date:"F d, Y" }}</h5>
-
-                    {# --- FIX: Only render the table if there is data --- #}
-                    {% if daily_attendance_data %}
-                        <table class="data-table data-table-scrollable responsive nowrap">
-                            <thead>
-                            <tr>
-                                <th class="text-center">Time</th>
-                                <th class="text-center">Subject</th>
-                                <th class="text-center">Status</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for record in daily_attendance_data %}
-                                <tr>
-                                    <td class="text-center">{{ record.timetable.time_slot.start_time|time:"h:i A" }}</td>
-                                    <td class="text-center">{{ record.timetable.subject.subject.name }}</td>
-                                    <td class="text-center"><span
-                                            class="badge badge-pill badge-{% if record.status == 'Present' %}success{% elif record.is_late %}warning{% else %}danger{% endif %}">{% if record.is_late %}
-                                        Late{% else %}{{ record.status }}{% endif %}</span></td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    {% else %}
-                        {# If no data, show a simple message instead of an empty table #}
-                        <div class="alert alert-info text-center mb-0">
-                            No records found for this date.
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Daily Attendance Log for {{ selected_date|date:"F d, Y" }}</h5>
+                            {% if daily_attendance_data %}
+                                <table class="data-table data-table-scrollable responsive nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">Time</th>
+                                        <th class="text-center">Subject</th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in daily_attendance_data %}
+                                        <tr>
+                                            <td class="text-center">{{ item.time_slot.start_time|time:"h:i A" }}</td>
+                                            <td class="text-center">{{ item.subject_name }}</td>
+                                            <td class="text-center">
+                                                <span class="badge badge-pill badge-{% if item.status == 'Present' %}success{% elif item.status == 'Late' %}warning{% else %}danger{% endif %}">
+                                                    {{ item.status }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="alert alert-info text-center mb-0">
+                                    No records found for this date.
+                                </div>
+                            {% endif %}
                         </div>
-                    {% endif %}
-
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+
+        {# --- FIX: Marks View Pane updated to a single table layout --- #}
+        <div class="tab-pane fade {% if view_type == 'marks' %}show active{% endif %}" role="tabpanel">
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Marks Details (Semester {{ selected_semester }})</h5>
+                            {% if marks_data_list %}
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Assessment</th>
+                                            <th class="text-center">Marks Obtained</th>
+                                            <th class="text-center">Max Marks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for mark in marks_data_list %}
+                                            {# Use ifchanged to create a group header for each new subject #}
+                                            {% ifchanged mark.subject.subject.name %}
+                                                <tr class="bg-light">
+                                                    <td colspan="4" class="font-weight-bold pt-3 pb-3">{{ mark.subject.subject.name }}</td>
+                                                </tr>
+                                            {% endifchanged %}
+                                            <tr>
+                                                <td></td> {# Empty cell for alignment under subject name #}
+                                                <td>{{ mark.criterion.name }}</td>
+                                                <td class="text-center">{{ mark.marks_obtained }}</td>
+                                                <td class="text-center">{{ mark.criterion.max_marks }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="alert alert-info">No marks have been entered for this student in the selected semester.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock content %}
 

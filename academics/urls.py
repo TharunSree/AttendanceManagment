@@ -55,7 +55,7 @@ urlpatterns = [
     path('reports/attendance/download/', views.download_attendance_report_view, name='download_attendance_report'),
     path('announcements/', views.announcement_list_view, name='announcement_list'),
     path('announcements/create/', views.announcement_create_view, name='announcement_create'),
-    path('announcements/check/', views.check_announcements_view, name='check_announcements'),
+    path('api/check-announcements/', views.check_announcements_view, name='check_announcements'),
     path('search/', views.global_search_view, name='global_search'),
     path('late-comers/', views.late_comers_view, name='late_comers'),
     path('student/<int:student_id>/profile/', views.student_profile_view, name='student_profile'),
@@ -70,6 +70,13 @@ urlpatterns = [
     path('reports/marks/', views.marks_report_view, name='marks_report'),
     path('reports/marks/download/', views.download_marks_report_view, name='download_marks_report'),
     path('my-profile/', views.my_profile_view, name='my_profile'),
+    path('extra-class/schedule/', views.schedule_extra_class, name='schedule_extra_class'),
+    path('extra-class/list/', views.extra_class_list, name='extra_class_list'),
+    path('extra-class/update/<int:pk>/', views.extra_class_update, name='extra_class_update'),
+    path('extra-class/delete/<int:pk>/', views.extra_class_delete, name='extra_class_delete'),
+    path('attendance/extra-class/<int:extra_class_id>/', views.mark_extra_class_attendance_view,
+         name='mark_extra_class_attendance'),
+
     # --- Academic Session Management URLs ---
 
 ]

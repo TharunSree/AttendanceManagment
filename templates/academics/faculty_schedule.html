@@ -12,21 +12,51 @@
                     <h5 class="card-title">Your Classes for Today</h5>
                     {% if schedule %}
                         <div class="list-group">
-                            {% for entry in schedule %}
-                                <a href="{% url 'academics:mark_attendance' entry.pk %}">
-                                    <div class="card card-body {% if not forloop.last %}mb-3{% endif %}">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1">{{ entry.subject.subject.name }}
-                                            {% if entry.is_substitution %}
-                    <span class="badge badge-pill badge-info ml-2">Substitution</span>
-                {% endif %}
-                                            </h6>
-                                            <small>{{ entry.time_slot }}</small>
-                                        </div>
-                                        <p class="mb-1">
-                                            {{ entry.student_group.name }} ({{ entry.student_group.course.name }})
-                                        </p>
+                            {% for item in schedule %}
+                                {% comment %}
+                                    First, determine the correct URL based on the session type.
+                                    This makes the link generation clean and readable.
+                                {% endcomment %}
+                                {% if item.type == 'extra' %}
+                                    {% url 'academics:mark_extra_class_attendance' item.session.pk as attendance_url %}
+                                {% else %}
+                                    {% url 'academics:mark_attendance' item.session.pk as attendance_url %}
+                                {% endif %}
+
+                                {% comment %}
+                                    The entire item is a link, but it's disabled if the class was cancelled.
+                                    This is a more accessible and user-friendly approach.
+                                {% endcomment %}
+                                <a href="{% if not item.is_cancelled %}{{ attendance_url }}{% else %}#{% endif %}"
+                                   class="list-group-item list-group-item-action {% if item.is_cancelled %}disabled text-muted{% endif %} {% if not forloop.last %}mb-2{% endif %}">
+
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">
+                                            {{ item.session.subject.subject.name }}
+
+                                            {% if item.type == 'extra' %}
+                                                <span class="badge badge-pill badge-warning ml-2">Extra Class</span>
+                                            {% elif item.is_substitution %}
+                                                <span class="badge badge-pill badge-info ml-2">Substitution</span>
+                                            {% endif %}
+
+                                            {% if item.is_cancelled %}
+                                                <span class="badge badge-pill badge-danger ml-2">Cancelled</span>
+                                            {% endif %}
+                                        </h6>
+                                        <small>{{ item.session.time_slot }}</small>
                                     </div>
+                                    <p class="mb-1">
+                                        {% comment %}
+                                            ExtraClass model uses 'class_group' while Timetable uses 'student_group'.
+                                            This conditional logic displays the correct one.
+                                        {% endcomment %}
+                                        {% if item.type == 'extra' %}
+                                            {{ item.session.class_group.name }} ({{ item.session.class_group.course.name }})
+                                        {% else %}
+                                            {{ item.session.student_group.name }} ({{ item.session.student_group.course.name }})
+                                        {% endif %}
+                                    </p>
                                 </a>
                             {% endfor %}
                         </div>

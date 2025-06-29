@@ -1,7 +1,8 @@
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.conf import settings  # To link to the User model
+from django.db.models import Q
 
 
 class AcademicSession(models.Model):
@@ -189,10 +190,21 @@ class AttendanceRecord(models.Model):
         related_name='attendance_records',
         limit_choices_to={'profile__role': 'student'}
     )
+    # --- CHANGE 1: Make timetable nullable ---
     timetable = models.ForeignKey(
-        'Timetable',  # Use a string to avoid circular import issues
+        'Timetable',
         on_delete=models.CASCADE,
-        related_name='attendance_records'
+        related_name='attendance_records',
+        null=True,  # Allow null
+        blank=True  # Allow blank in forms
+    )
+    # --- NEW: Add ForeignKey to ExtraClass ---
+    extra_class = models.ForeignKey(
+        'ExtraClass',
+        on_delete=models.CASCADE,
+        related_name='attendance_records',
+        null=True,  # Allow null
+        blank=True  # Allow blank in forms
     )
     date = models.DateField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
@@ -209,14 +221,30 @@ class AttendanceRecord(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        # A student can only have one attendance status for a specific class on a specific date
-        unique_together = ('student', 'timetable', 'date')
         permissions = [
             ("view_own_attendance", "Can view own attendance page"),
         ]
+        # --- CHANGE 2: Add constraints for data integrity ---
+        constraints = [
+            # Ensure that for each record, either timetable or extra_class is set, but not both.
+            models.CheckConstraint(
+                check=(
+                    (Q(timetable__isnull=False) & Q(extra_class__isnull=True)) |
+                    (Q(timetable__isnull=True) & Q(extra_class__isnull=False))
+                ),
+                name='one_of_timetable_or_extraclass'
+            ),
+            # New uniqueness constraints to replace the old unique_together
+            models.UniqueConstraint(fields=['student', 'timetable', 'date'], name='unique_student_timetable_date',
+                                    condition=Q(timetable__isnull=False)),
+            models.UniqueConstraint(fields=['student', 'extra_class', 'date'], name='unique_student_extraclass_date',
+                                    condition=Q(extra_class__isnull=False)),
+        ]
 
     def __str__(self):
-        return f"{self.student.username} on {self.date} - {self.status}"
+        session_type = "Timetable" if self.timetable else "Extra Class"
+        return f"{self.student.username} on {self.date} ({session_type}) - {self.status}"
+
 
 
 class ClassCancellation(models.Model):
@@ -336,3 +364,22 @@ class Mark(models.Model):
 
     def __str__(self):
         return f"Mark for {self.student.username} in {self.subject.subject.name} ({self.criterion.name})"
+
+
+class ExtraClass(models.Model):
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='extra_classes_taught')
+    class_group = models.ForeignKey('StudentGroup', on_delete=models.CASCADE, related_name='extra_classes')
+    # Use CourseSubject for consistency with Timetable
+    subject = models.ForeignKey('CourseSubject', on_delete=models.CASCADE)
+    date = models.DateField()
+    # Use TimeSlot instead of start/end times
+    time_slot = models.ForeignKey('TimeSlot', on_delete=models.CASCADE)
+    announcement = models.ForeignKey('Announcement', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = "Extra Classes"
+        # Prevent double booking a teacher or class for an extra class at the same time
+        unique_together = (('teacher', 'date', 'time_slot'), ('class_group', 'date', 'time_slot'))
+
+    def __str__(self):
+        return f'Extra Class: {self.subject.subject.name} on {self.date} for {self.class_group}'
