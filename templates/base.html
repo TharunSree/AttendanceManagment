@@ -76,8 +76,7 @@
     </div>
 </main>
 
-<div class="modal fade" id="announcementModal" tabindex="-1" role="dialog" aria-labelledby="announcementModalLabel"
-     aria-hidden="true">
+<div class="modal fade" id="announcementModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -87,7 +86,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p id="announcementContent"></p>
+                <div id="announcementContent" style="white-space: pre-wrap;">
+                    ...
+                </div>
+                <hr/>
                 <small class="text-muted" id="announcementTimestamp"></small>
             </div>
             <div class="modal-footer">
@@ -115,22 +117,27 @@
     {% if user.is_authenticated %}
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                // This script runs once on page load to check for a new announcement
                 const checkUrl = "{% url 'academics:check_announcements' %}";
+                const modal = $('#announcementModal');
 
-                fetch(checkUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.announcement) {
-                            // If the server sends an announcement, populate and show the modal
-                            const modal = $('#announcementModal');
-                            modal.find('#announcementModalLabel').text(data.announcement.title);
-                            modal.find('#announcementContent').html(data.announcement.content.replace(/\n/g, '<br>'));
-                            modal.find('#announcementTimestamp').text('Sent: ' + data.announcement.timestamp);
-                            modal.modal('show');
-                        }
-                    })
-                    .catch(error => console.error('Error checking for announcements:', error));
+                // This function fetches and displays a new announcement if one exists
+                function checkNewAnnouncement() {
+                    fetch(checkUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.announcement) {
+                                // If the server sends an announcement, populate and show the modal
+                                modal.find('#announcementModalLabel').text(data.announcement.title);
+                                modal.find('#announcementContent').html(data.announcement.content.replace(/\n/g, '<br>'));
+                                modal.find('#announcementTimestamp').text('Sent: ' + data.announcement.timestamp);
+                                modal.modal('show');
+                            }
+                        })
+                        .catch(error => console.error('Error checking for announcements:', error));
+                }
+
+                // Set the browser to call the checkNewAnnouncement function every 30 seconds
+                setInterval(checkNewAnnouncement, 30000);
             });
         </script>
     {% endif %}

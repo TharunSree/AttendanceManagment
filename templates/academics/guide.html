@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Application Guide{% endblock title %}
+{% block main_page_title %}Application Guide & Tutorials{% endblock main_page_title %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">For Administrators</h5>
+                <ul>
+                    <li><strong>Managing Courses & Subjects:</strong> Navigate to Admin Management > Manage Courses to add or edit courses and their subjects by semester.</li>
+                    <li><strong>Managing Classes:</strong> Go to Manage Classes to create new class groups (e.g., "BCA Section A") and assign them to a course.</li>
+                    <li><strong>Bulk User Import:</strong> Use the Bulk Import feature in User Management to quickly add multiple students or faculty from a CSV file.</li>
+                    <li><strong>Marking Schemes:</strong> Define how marks are calculated by creating criteria (e.g., "Internal Exam", "Assignment") under Marking Schemes.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">For Faculty</h5>
+                <ul>
+                    <li><strong>Daily Schedule:</strong> Your dashboard shows your daily schedule, including regular, substitution, and extra classes.</li>
+                    <li><strong>Marking Attendance:</strong> Click on a class from your schedule to mark attendance. You can also edit recent attendance records from the "Edit Past Attendance" page.</li>
+                    <li><strong>Scheduling Extra Classes:</strong> Use the "Schedule Extra Class" tool to create additional classes. An announcement will be automatically sent to the students.</li>
+                    <li><strong>Entering Marks:</strong> Go to "Enter Marks" to input student scores based on the active marking scheme for their course.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">For Students</h5>
+                <ul>
+                    <li><strong>My Timetable:</strong> View your weekly class schedule and any extra classes scheduled for the current day.</li>
+                    <li><strong>My Attendance:</strong> Check your subject-wise and overall attendance percentage for the current semester.</li>
+                    <li><strong>My Marks:</strong> View your marks for each subject, broken down by the criteria set by the administrator.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

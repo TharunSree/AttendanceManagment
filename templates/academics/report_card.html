@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}"/>
+    <title>{% block title %}SIHM Attendance Management System{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <script>
+        var STATIC_URL = "{% static '' %}";
+    </script>
+
+    {# <link rel="shortcut icon" href="{% static 'favicon.ico' %}" /> #}
+
+    <link rel="stylesheet" href="{% static 'font/iconsmind-s/css/iconsminds.css' %}"/>
+    <link rel="stylesheet" href="{% static 'font/simple-line-icons/css/simple-line-icons.css' %}"/>
+    {% block vendor_styles %}{% endblock vendor_styles %}
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/dore.light.bluenavy.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.rtl.only.min.css' %}"/>
+    {# If using RTL #}
+    <link rel="stylesheet" href="{% static 'css/vendor/component-custom-switch.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/vendor/perfect-scrollbar.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}"/>
+    <style>
+        /* PDF-specific styling to ensure it prints well */
+        body {
+            background-color: #fff;
+            font-family: "JetBrains Mono ExtraBold"/* White background for printing */
+        }
+
+        main {
+            padding-top: 2rem; /* Add some space at the top */
+        }
+
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #dee2e6 !important; /* Ensure table borders are visible */
+        }
+        p {
+            font-family: "JetBrains Mono ExtraBold"; /* Ensure consistent font for paragraphs */
+        }
+    </style>
+</head>
+
+<body id="app-container" class="menu-default show-spinner bluenavy-light-2">
+<main>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 text-center mb-5" style="font-family: 'JetBrains Mono ExtraBold'">
+                <h2 class="display-4">Student Report Card</h2>
+                <h3 class="h3 text-muted">SIHM-K</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4" style="box-shadow: #1a2833 0.5px 0.5px 7px 0.5px; font-family: 'JetBrains Mono ExtraBold'">
+
+                    {# This is the social profile component you provided #}
+
+
+                    <div class="card-body">
+                        {% if student.profile.photo %}
+                            <div class="text-center">
+                                <img src="{{ student.profile.photo.url }}" alt="Profile Picture"
+                                     class="img-thumbnail border-0 mb-4 rounded-circle list-thumbnail"></div>
+                        {% endif %}
+                        <div class="text-center pt-4">
+                            <p class="list-item-heading pt-2" style="font-family: 'JetBrains Mono ExtraBold'">{{ student.get_full_name }}</p>
+                        </div>
+
+                        <div class="row mt-4" >
+                            <div class="col-6" >
+                                <p class="text-muted text-small mb-2" style="font-family: 'JetBrains Mono ExtraBold'">Student ID</p>
+                                <p class="mb-3" style="font-family: 'JetBrains Mono ExtraBold'">{{ student.profile.student_id_number|default:"N/A" }}</p>
+
+                                <p class="text-muted text-small mb-2" style="font-family: 'JetBrains Mono ExtraBold'">Class</p>
+                                <p class="mb-3" style="font-family: 'JetBrains Mono ExtraBold'">{{ student_group.name|default:"N/A" }}</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="text-muted text-small mb-2">Father's Name</p>
+                                <p class="mb-3">{{ student.profile.father_name|default:"N/A" }}</p>
+
+                                <p class="text-muted text-small mb-2">Mother's Name</p>
+                                <p class="mb-3">{{ student.profile.mother_name|default:"N/A" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                {# This is the data table component you provided #}
+                <div class="card mb-4" style="box-shadow: #1a2833 0.5px 0.5px 9px 0.5px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Academic Performance - Semester {{ current_semester|default:"N/A" }}</h5>
+                        <table class="table table-bordered" style="border-color: rgba(0,0,0,0.5); border: 1px solid #dee2e6;">
+                            <thead>
+                            <tr>
+                                <th scope="col">Subject</th>
+                                <th scope="col">Attendance</th>
+                                <th scope="col">Marks</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in performance_data %}
+                                <tr>
+                                    <td>{{ item.subject_name }}</td>
+                                    <td>{{ item.attendance_percentage }}%</td>
+                                    <td>{{ item.marks_obtained }} / {{ item.max_marks }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted">No performance data available.</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4" style="box-shadow: #1a2833 0.5px 0.5px 9px 0.5px;">
+                    <div class="card-body" >
+                        <h5 class="card-title">Overall Summary</h5>
+                        <p><strong>Total Semester Attendance:</strong> {{ overall_attendance }}%</p>
+                        <p><strong>Total Semester Marks:</strong> {{ overall_marks }} / {{ overall_max_marks }}
+                            ({{ overall_marks_percentage }}%)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+<script src="{% static 'js/vendor/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/vendor/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/vendor/perfect-scrollbar.min.js' %}"></script>
+
+{# BLOCK for page-specific libraries like datatables.min.js #}
+{% block vendor_scripts %}{% endblock vendor_scripts %}
+
+<script src="{% static 'js/dore.script.js' %}"></script>
+<script src="{% static 'js/scripts.single.theme.js' %}"></script>
+</html>

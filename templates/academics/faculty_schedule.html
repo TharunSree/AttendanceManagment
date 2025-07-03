@@ -11,7 +11,7 @@
                 <div>
                     <h5 class="card-title">Your Classes for Today</h5>
                     {% if schedule %}
-                        <div class="list-group">
+                        <div>
                             {% for item in schedule %}
                                 {% comment %}
                                     First, determine the correct URL based on the session type.
@@ -28,7 +28,7 @@
                                     This is a more accessible and user-friendly approach.
                                 {% endcomment %}
                                 <a href="{% if not item.is_cancelled %}{{ attendance_url }}{% else %}#{% endif %}"
-                                   class="list-group-item list-group-item-action {% if item.is_cancelled %}disabled text-muted{% endif %} {% if not forloop.last %}mb-2{% endif %}">
+                                   class="card card-body {% if item.is_cancelled %}disabled text-muted{% endif %} {% if not forloop.last %}mb-2{% endif %}">
 
                                     <div class="d-flex w-100 justify-content-between">
                                         <h6 class="mb-1">

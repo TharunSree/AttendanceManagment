@@ -17,13 +17,17 @@
                 <div class="separator mb-5"></div>
             </div>
         </div>
-        <div class="text-center">
-            <img alt="Profile Picture" src="{{ user.profile.photo.url }}"
-                 class="img-thumbnail border-0 rounded-circle mb-4 list-thumbnail xlarge"/>
-            <h5 class="card-title">{{ user.get_full_name }}</h5>
-            <p class="text-muted text-small mb-2">{{ user.profile.get_role_display|title }}</p>
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    <img alt="Profile Picture" src="{{ user.profile.photo.url }}"
+                         class="img-thumbnail border-0 rounded-circle mb-4 list-thumbnail"/>
+                    <p class="list-item-heading mb-1">{{ user.get_full_name }}</p>
+                    <p class="text-muted text-small mb-2">{{ user.profile.get_role_display|title }}</p>
+                </div>
+            </div>
         </div>
-        <div class="separator mb-5"></div>
+        <div class="mb-5"></div>
 
         <div class="row">
             <div class="col-12 col-lg-6">

@@ -12,12 +12,18 @@
                     <a href="{% url 'academics:student_update' student.pk %}" class="btn btn-primary btn-sm">Edit
                         Profile</a>
                 </div>
+                <div class="position-relative card-top-buttons align-left">
+                <a href="{% url 'academics:student_report_html' student.id %}" class="btn btn-outline-primary"
+                   target="_blank">
+                    <i class="simple-icon-cloud-download"></i> Download Report Card
+                </a>
+                </div>
                 <div class="card-body">
                     <div class="text-center">
                         <img alt="Profile Picture" src="{{ student.profile.photo.url }}"
                              class="img-thumbnail border-0 rounded-circle mb-4 list-thumbnail xxlarge"/>
-                        <h3 class="card-title mb-1">{{ student.get_full_name }}</h4>
-                            <p class="text-muted text-medium mb-2">{{ student.profile.student_group.name|default:"No Class Assigned" }}</p>
+                        <h3 class="card-title mb-1">{{ student.get_full_name }}</h3>
+                        <p class="text-muted text-medium mb-2">{{ student.profile.student_group.name|default:"No Class Assigned" }}</p>
                     </div>
                 </div>
                 <div class="card-footer">

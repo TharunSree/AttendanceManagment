@@ -1,67 +1,77 @@
 {% extends "base.html" %}
-{% load static %}
 
-{% block title %}Log Details{% endblock title %}
+{% block title %}Session Attendance Detail{% endblock title %}
 
-{% block main_page_title %}Attendance Details{% endblock main_page_title %}
-
-{% block breadcrumbs %}
-    {{ block.super }}
-    <li class="breadcrumb-item"><a href="{% url 'academics:daily_log' %}">Daily Activity Log</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Session Details</li>
-{% endblock breadcrumbs %}
+{% block main_page_title %}
+    Session Attendance Detail
+    <span class="text-muted font-weight-light">- {{ date }}</span>
+{% endblock main_page_title %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="card  mb-4">
-            <div class="card-body">
-                <h5 >{{ timetable_entry.subject.subject.name }}</h5>
-                <p class="mb-0"><strong>Class:</strong> {{ timetable_entry.student_group.name }}</p>
-                <p class="mb-0"><strong>Faculty:</strong> {{ timetable_entry.faculty.get_full_name }}</p>
-                <p class="text-muted"><strong>Date:</strong> {{ date }}</p>
-            </div>
-        </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ session_entry.subject.subject.name }}
+                        {# FIX: Use if/else to safely get the group name #}
+                        <span class="text-muted">|
+                            {% if is_extra_class %}
+                                {{ session_entry.class_group.name }}
+                            {% else %}
+                                {{ session_entry.student_group.name }}
+                            {% endif %}
+                        </span>
+                    </h5>
+                    <p>
+                        {# FIX: Use if/else to safely get the faculty/teacher name #}
+                        <strong>Faculty:</strong>
+                        {% if is_extra_class %}
+                            {{ session_entry.teacher.get_full_name }}
+                        {% else %}
+                            {{ session_entry.faculty.get_full_name }}
+                        {% endif %}
+                        <br>
+                        <strong>Time:</strong> {{ session_entry.time_slot }} <br>
+                        {% if is_extra_class %}
+                            <span class="badge badge-pill badge-warning">Extra Class</span>
+                        {% endif %}
+                    </p>
 
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Student Statuses</h5>
-                <table class="data-table data-table-scrollable responsive nowrap">
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th class="text-center">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for record in records %}
+                    <table class="table table-hover">
+                        <thead>
                             <tr>
-                                <td>
-                                    <p class="list-item-heading">{{ record.student.get_full_name }}</p>
-                                </td>
-                                <td class="text-center">
-                                    {# Using different badge colors based on status #}
-                                    {% if record.status == "Present" %}
-                                        <span class="badge badge-pill badge-outline-success">{{ record.status }}</span>
-                                    {% elif record.status == "Absent" %}
-                                         <span class="badge badge-pill badge-outline-danger">{{ record.status }}</span>
-                                    {% else %}
-                                         <span class="badge badge-pill badge-outline-secondary">{{ record.status }}</span>
-                                    {% endif %}
-                                </td>
+                                <th scope="col">Student Name</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Marked By</th>
                             </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="2" class="text-center text-muted">No attendance records found for this session.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for record in records %}
+                                <tr>
+                                    <td>{{ record.student.get_full_name }}</td>
+                                    <td>
+                                        {% if record.status == 'Present' and record.is_late %}
+                                            <span class="badge badge-pill badge-secondary">Late</span>
+                                        {% elif record.status == 'Present' %}
+                                            <span class="badge badge-pill badge-success">Present</span>
+                                        {% else %}
+                                             <span class="badge badge-pill badge-danger">Absent</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ record.marked_by.get_full_name|default:"N/A" }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted">No attendance records found for this session.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock content %}
-{% block vendor_scripts %}
-    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
-{% endblock vendor_scripts %}
+{% endblock %}

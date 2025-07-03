@@ -41,6 +41,8 @@ urlpatterns = [
     path('faculty/previous-attendance/', views.previous_attendance_view, name='previous_attendance'),
     path('daily-log/', views.daily_attendance_log_view, name='daily_log'),
     path('daily-log/<int:timetable_id>/<str:date>/', views.daily_log_detail_view, name='daily_log_detail'),
+    path('daily-log/extra-class/<int:extra_class_id>/<str:date>/', views.extra_class_log_detail_view,
+         name='extra_class_log_detail'),
     path('timetable-entry/create/<int:group_id>/<str:day>/<int:timeslot_id>/', views.timetable_entry_create_view,
          name='timetable_entry_create'),
     path('timetable-entry/update/<int:entry_id>/', views.timetable_entry_update_view, name='timetable_entry_update'),
@@ -76,6 +78,11 @@ urlpatterns = [
     path('extra-class/delete/<int:pk>/', views.extra_class_delete, name='extra_class_delete'),
     path('attendance/extra-class/<int:extra_class_id>/', views.mark_extra_class_attendance_view,
          name='mark_extra_class_attendance'),
+    path('student/<int:student_id>/report/pdf/', views.student_report_card_pdf_view, name='student_report_pdf'),
+
+    # The URL that Pyppeteer will visit internally to render the HTML
+    path('student/<int:student_id>/report/html/', views.student_report_card_html_view, name='student_report_html'),
+    path('guide/', views.guide_view, name='guide'),
 
     # --- Academic Session Management URLs ---
 

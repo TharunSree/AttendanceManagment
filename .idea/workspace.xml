@@ -5,24 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="feat: Implement nested collapsible sidebar menu&#10;&#10;Refactors the sidebar generation to support a two-pane layout with nested, collapsible subgroups, improving UI organization and maintainability.&#10;&#10;The previous single-pane accordion menu was becoming cluttered as more items were added. This change introduces a more organized and scalable navigation system based on the theme's original two-pane design.&#10;&#10;Key changes:&#10;- **Centralized Menu Configuration:** The entire menu hierarchy, including main groups and nested collapsible subgroups, is now defined in `academics/registry.py`. This makes it easy to modify the sidebar from a single location without touching view decorators.&#10;&#10;- **Updated Templatetag:** The `get_sidebar_nav` templatetag has been rewritten to read the new centralized configuration and build the complex nested data structure required for the new layout.&#10;&#10;- **New Sidebar Template:** The `_sidebar.html` partial is updated to render the two-pane menu. The left pane (main menu) controls the content of the right pane (sub-menu), which now contains the collapsible sections.&#10;&#10;This new structure improves the user experience by reducing clutter and makes future maintenance of the navigation menu significantly simpler.">
-      <change afterPath="$PROJECT_DIR$/academics/templatetags/account_helpers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/extra_class_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/extra_class_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/academics/pdf_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/staticfiles/font/NeueHaasDisplayMediu.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/staticfiles/font/NeueHaasDisplayRoman.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/staticfiles/font/OpenSans-Bold.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/staticfiles/font/OpenSans-Light.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/staticfiles/font/OpenSans-Regular.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/guide.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/report_card.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/academics/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/academics/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/academics/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AttendanceManagement/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/admin_student_attendance_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_student_attendance_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/daily_attendance_log.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/daily_attendance_log.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/daily_log_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/daily_log_detail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/faculty_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/faculty_schedule.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/manage_substitutions.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/manage_substitutions.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/manage_timetable.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/manage_timetable.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/mark_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/mark_attendance.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/marks_entry_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/marks_entry_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/scheme_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/scheme_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/student_my_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_my_attendance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/student_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_profile.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/student_timetable.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_timetable.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/group_permission_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/group_permission_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/account_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/account_view.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,8 +38,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -73,41 +75,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Django Server.AttendanceManagement.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
-    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/AttendanceManagement/static/logos&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.android.studio.ml.bot.mainConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Django Server.AttendanceManagement.executor": "Run",
+    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
+    "django.template.preview.state": "SHOW_EDITOR",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/AttendanceManagement/static/font",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\AttendanceManagement\static\font" />
+      <recent name="D:\AttendanceManagement\templates\academics" />
+      <recent name="D:\AttendanceManagement\static" />
       <recent name="D:\AttendanceManagement\static\logos" />
       <recent name="D:\AttendanceManagement\staticfiles\logos" />
-      <recent name="D:\AttendanceManagement\static\img" />
-      <recent name="D:\AttendanceManagement\templates\accounts" />
-      <recent name="D:\AttendanceManagement\static\css" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\AttendanceManagement\static\css" />
+      <recent name="D:\AttendanceManagement\staticfiles\font" />
+      <recent name="D:\AttendanceManagement\static" />
       <recent name="D:\AttendanceManagement\student_photos" />
       <recent name="D:\AttendanceManagement\student_photos\default.png" />
-      <recent name="D:\AttendanceManagement\academics" />
-      <recent name="D:\AttendanceManagement\templates\accounts" />
-      <recent name="D:\AttendanceManagement\templates\academics" />
     </key>
   </component>
   <component name="RunManager">
@@ -175,7 +177,10 @@
       <workItem from="1751121010365" duration="1050000" />
       <workItem from="1751134355356" duration="16649000" />
       <workItem from="1751176518848" duration="25630000" />
-      <workItem from="1751216104471" duration="2769000" />
+      <workItem from="1751216104471" duration="6812000" />
+      <workItem from="1751274475964" duration="101000" />
+      <workItem from="1751307862003" duration="7442000" />
+      <workItem from="1751318226984" duration="7754000" />
     </task>
     <task id="LOCAL-00001" summary="Add initial project configuration files and user profile signal handling">
       <option name="closed" value="true" />
@@ -289,7 +294,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751193275399</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="feat: Implement nested collapsible sidebar menu&#10;&#10;Refactors the sidebar generation to support a two-pane layout with nested, collapsible subgroups, improving UI organization and maintainability.&#10;&#10;The previous single-pane accordion menu was becoming cluttered as more items were added. This change introduces a more organized and scalable navigation system based on the theme's original two-pane design.&#10;&#10;Key changes:&#10;- **Centralized Menu Configuration:** The entire menu hierarchy, including main groups and nested collapsible subgroups, is now defined in `academics/registry.py`. This makes it easy to modify the sidebar from a single location without touching view decorators.&#10;&#10;- **Updated Templatetag:** The `get_sidebar_nav` templatetag has been rewritten to read the new centralized configuration and build the complex nested data structure required for the new layout.&#10;&#10;- **New Sidebar Template:** The `_sidebar.html` partial is updated to render the two-pane menu. The left pane (main menu) controls the content of the right pane (sub-menu), which now contains the collapsible sections.&#10;&#10;This new structure improves the user experience by reducing clutter and makes future maintenance of the navigation menu significantly simpler.">
+      <option name="closed" value="true" />
+      <created>1751218926006</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1751218926006</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

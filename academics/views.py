@@ -5,6 +5,7 @@ import calendar
 from datetime import datetime
 from itertools import chain
 
+from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db import transaction
@@ -28,11 +29,12 @@ from accounts.models import Profile
 from .forms import StudentGroupForm, CourseForm, AddStudentForm, SubjectForm
 from .models import StudentGroup, AttendanceSettings, Course, Subject, \
     Timetable, AttendanceRecord, CourseSubject, TimeSlot, ClassCancellation, DailySubstitution, Announcement, \
-    UserNotificationStatus, MarkingScheme, Mark, Criterion, ExtraClass
+    UserNotificationStatus, MarkingScheme, Mark, Criterion, ExtraClass, AcademicSession
 from accounts.decorators import nav_item
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
-
+import asyncio
+from pyppeteer import launch
 
 # ... other views ...
 
@@ -875,56 +877,52 @@ def class_cancellation_view(request, timetable_id):
 @nav_item(title="Daily Activity Log", icon="iconsminds-folder-open", url_name="academics:daily_log",
           permission='academics.view_attendancerecord', group='admin_management', order=40)
 def daily_attendance_log_view(request):
-    # Get all distinct dates from both attendance and cancellation records
+    # Get all distinct dates from regular attendance, extra class attendance, and cancellations
     attendance_dates = AttendanceRecord.objects.values_list('date', flat=True)
+    extra_class_dates = ExtraClass.objects.values_list('date', flat=True)
     cancellation_dates = ClassCancellation.objects.values_list('date', flat=True)
-    all_dates = sorted(list(set(chain(attendance_dates, cancellation_dates))), reverse=True)
+    all_dates = sorted(list(set(chain(attendance_dates, extra_class_dates, cancellation_dates))), reverse=True)
 
     log_data = {}
     for date in all_dates:
-        # --- FIX: Moved substitution query inside the date loop ---
+        # --- MODIFIED LOGIC TO UNIFY SESSIONS ---
+        unified_daily_log = []
+
+        # Get substitutions for the date
         subs = DailySubstitution.objects.filter(date=date).select_related('substituted_by')
         sub_map = {s.timetable_id: s.substituted_by for s in subs}
 
-        # Get all conducted and cancelled classes for this specific date
-        conducted_entries = Timetable.objects.filter(attendance_records__date=date).distinct()
-        cancelled_entries = Timetable.objects.filter(cancellations__date=date).distinct()
-
-        daily_log = []
-        for entry in conducted_entries:
-            present_count = AttendanceRecord.objects.filter(
-                timetable=entry, date=date, status='Present'
-            ).count()
+        # 1. Get conducted regular classes
+        conducted_regular_entries = Timetable.objects.filter(attendance_records__date=date).distinct()
+        for entry in conducted_regular_entries:
+            present_count = AttendanceRecord.objects.filter(timetable=entry, date=date, status='Present').count()
             total_students = Profile.objects.filter(student_group=entry.student_group).count()
-            was_edited = AttendanceRecord.objects.filter(
-                timetable=entry,
-                date=date
-            ).annotate(
-                # Check if updated_at is more than 5 seconds after created_at
-                is_edited=ExpressionWrapper(Q(updated_at__gt=F('created_at') + timezone.timedelta(seconds=5)),
-                                            output_field=fields.BooleanField())
-            ).filter(is_edited=True).exists()
-
-            # --- FIX: Added substitution info to the context for the template ---
-            daily_log.append({
-                'timetable': entry,
-                'status': 'Conducted',
-                'present_count': present_count,
-                'total_students': total_students,
-                'date': date,
-                'substituted_by': sub_map.get(entry.id),  # Will be None if no sub exists
-                'was_edited': was_edited,
+            unified_daily_log.append({
+                'session': entry, 'type': 'regular', 'status': 'Conducted',
+                'present_count': present_count, 'total_students': total_students,
+                'date': date, 'substituted_by': sub_map.get(entry.id)
             })
 
+        # 2. Get conducted extra classes
+        conducted_extra_entries = ExtraClass.objects.filter(attendance_records__date=date).distinct()
+        for entry in conducted_extra_entries:
+            present_count = AttendanceRecord.objects.filter(extra_class=entry, date=date, status='Present').count()
+            total_students = Profile.objects.filter(student_group=entry.class_group).count()
+            unified_daily_log.append({
+                'session': entry, 'type': 'extra', 'status': 'Conducted',
+                'present_count': present_count, 'total_students': total_students, 'date': date
+            })
+
+        # 3. Get cancelled regular classes
+        cancelled_entries = Timetable.objects.filter(cancellations__date=date).distinct()
         for entry in cancelled_entries:
-            daily_log.append({
-                'timetable': entry,
-                'status': 'Cancelled',
-                'date': date
-            })
+            # Avoid showing a class as both conducted and cancelled if data is inconsistent
+            if not any(log['session'] == entry and log['type'] == 'regular' for log in unified_daily_log):
+                unified_daily_log.append({'session': entry, 'type': 'regular', 'status': 'Cancelled', 'date': date})
 
-        daily_log.sort(key=lambda x: x['timetable'].time_slot.start_time)
-        log_data[date] = daily_log
+        # Sort all log entries for the day by time
+        unified_daily_log.sort(key=lambda x: x['session'].time_slot.start_time)
+        log_data[date] = unified_daily_log
 
     context = {'log_data': log_data}
     return render(request, 'academics/daily_attendance_log.html', context)
@@ -934,7 +932,7 @@ def daily_attendance_log_view(request):
 @permission_required('academics.view_attendancelog', raise_exception=True)
 def daily_log_detail_view(request, timetable_id, date):
     """
-    Shows the detailed attendance list for a single class session.
+    Shows the detailed attendance list for a single REGULAR class session.
     """
     try:
         timetable_entry = Timetable.objects.select_related(
@@ -950,10 +948,45 @@ def daily_log_detail_view(request, timetable_id, date):
         raise Http404("The requested attendance session does not exist.")
 
     context = {
-        'timetable_entry': timetable_entry,
+        # MODIFICATION: Use a generic context variable name 'session_entry'
+        'session_entry': timetable_entry,
         'date': date,
-        'records': records
+        'records': records,
+        'is_extra_class': False,
     }
+    return render(request, 'academics/daily_log_detail.html', context)
+
+
+# --- ADD THIS ENTIRE NEW VIEW FUNCTION ---
+@login_required
+@permission_required('academics.view_attendancerecord')
+def extra_class_log_detail_view(request, extra_class_id, date):
+    """
+    Shows the detailed attendance list for a single EXTRA class session.
+    """
+    try:
+        # Fetch the specific extra class session
+        extra_class_entry = ExtraClass.objects.select_related(
+            'subject__subject', 'class_group', 'teacher'
+        ).get(pk=extra_class_id)
+
+        # Fetch the attendance records for that session on that date
+        records = AttendanceRecord.objects.filter(
+            extra_class=extra_class_entry,
+            date=date
+        ).select_related('student').order_by('student__first_name')
+
+    except ObjectDoesNotExist:
+        raise Http404("The requested extra class session does not exist.")
+
+    context = {
+        # Use the same generic context variable name for template reuse
+        'session_entry': extra_class_entry,
+        'date': date,
+        'records': records,
+        'is_extra_class': True,
+    }
+    # Reuse the same template as the regular detail view
     return render(request, 'academics/daily_log_detail.html', context)
 
 
@@ -1113,71 +1146,184 @@ def cancel_substitution_view(request, timetable_id):
 def student_my_attendance_view(request):
     """
     Allows a logged-in student to view their own attendance details,
-    filtered by semester, with charts for visualization.
+    filtered by semester, with charts for visualization. This view now
+    correctly includes attendance from both regular and extra classes.
     """
     student = request.user
     student_group = student.profile.student_group if hasattr(student, 'profile') else None
 
-    subject_attendance_data = []
-    available_semesters = []
+    # --- Get view type and filters from request ---
+    view_type = request.GET.get('view_type', 'semester')
     selected_semester = request.GET.get('semester')
+    selected_month_str = request.GET.get('month')
+    selected_date_str = request.GET.get('date', timezone.now().strftime('%Y-%m-%d'))
+
+    # --- Initialize a comprehensive context dictionary ---
+    context = {
+        'student': student,
+        'view_type': view_type,
+        'available_semesters': [],
+        'selected_semester': None,
+        'subject_attendance_data': [],
+        'subject_attendance_data_json': '[]',
+        'overall_attended_sem': 0,
+        'overall_absent_sem': 0,
+        'overall_percentage_sem': 0,
+        'monthly_subject_data': [],
+        'monthly_subject_data_json': '[]',
+        'available_months': [],
+        'selected_month': selected_month_str,
+        'overall_attended_month': 0,
+        'overall_absent_month': 0,
+        'overall_percentage_month': 0,
+        'daily_attendance_data': [],
+        'selected_date': selected_date_str,
+        'marks_data_list': []
+    }
 
     if student_group and student_group.course:
         all_course_subjects_qs = CourseSubject.objects.filter(course=student_group.course)
-        available_semesters = all_course_subjects_qs.values_list('semester', flat=True).distinct().order_by('semester')
+        context['available_semesters'] = all_course_subjects_qs.values_list('semester', flat=True).distinct().order_by(
+            'semester')
 
-        # Default to the latest semester if none is selected
-        if not selected_semester and available_semesters:
-            selected_semester = available_semesters.last()
+        if not selected_semester and context['available_semesters']:
+            selected_semester = context['available_semesters'].last()
+        context['selected_semester'] = int(selected_semester) if selected_semester and str(
+            selected_semester).isdigit() else None
 
-        subjects_for_semester = all_course_subjects_qs
-        if selected_semester and str(selected_semester).isdigit():
-            subjects_for_semester = all_course_subjects_qs.filter(semester=selected_semester)
-
-        for course_subject in subjects_for_semester:
-            total_classes = AttendanceRecord.objects.filter(
-                timetable__student_group=student_group,
-                timetable__subject=course_subject
-            ).values('date', 'timetable_id').distinct().count()
-
-            student_records = AttendanceRecord.objects.filter(
-                student=student,
-                timetable__subject=course_subject
+        if context['selected_semester']:
+            # Base queryset for ALL of the student's attendance records for the semester
+            student_records_sem = AttendanceRecord.objects.filter(
+                student=student
+            ).filter(
+                Q(timetable__subject__semester=context['selected_semester']) |
+                Q(extra_class__subject__semester=context['selected_semester'])
             )
-            present_count = student_records.filter(status='Present').count()
 
-            absent_count = total_classes - present_count
-            official_percentage = (present_count / total_classes * 100) if total_classes > 0 else 0
+            if view_type == 'semester':
+                subjects_for_semester = all_course_subjects_qs.filter(semester=context['selected_semester'])
+                for cs in subjects_for_semester:
+                    # Calculate total classes by combining regular and extra classes
+                    regular_classes_count = AttendanceRecord.objects.filter(
+                        timetable__student_group=student_group, timetable__subject=cs
+                    ).values('date', 'timetable__time_slot').distinct().count()
+                    extra_classes_count = ExtraClass.objects.filter(
+                        class_group=student_group, subject=cs
+                    ).count()
+                    total_classes = regular_classes_count + extra_classes_count
 
-            subject_attendance_data.append({
-                'subject_pk': course_subject.subject.pk,
-                'subject_name': course_subject.subject.name,
-                'attended_classes': present_count,
-                'absent_classes': absent_count if absent_count >= 0 else 0,
-                'on_duty_classes': 0,
-                'total_classes': total_classes,
-                'official_percentage': round(official_percentage, 2),
-            })
+                    if total_classes > 0:
+                        # Count attended classes from both regular and extra class records
+                        present_count = student_records_sem.filter(
+                            Q(timetable__subject=cs) | Q(extra_class__subject=cs),
+                            status__in=['Present', 'Late']
+                        ).count()
+                        absent_count = total_classes - present_count
+                        context['subject_attendance_data'].append({
+                            'subject_pk': cs.subject.pk,
+                            'subject_name': cs.subject.name,
+                            'attended_classes': present_count,
+                            'absent_classes': absent_count,
+                            'total_classes': total_classes,
+                            'official_percentage': round(
+                                (present_count / total_classes * 100) if total_classes > 0 else 0, 2)
+                        })
 
-    # Calculate Overall data
-    overall_attended = sum(item['attended_classes'] for item in subject_attendance_data)
-    overall_absent = sum(item['absent_classes'] for item in subject_attendance_data)
-    overall_on_duty = 0
-    overall_official_percentage = ((overall_attended / (overall_attended + overall_absent)) * 100) if (
-                                                                                                              overall_attended + overall_absent) > 0 else 0
+                context['overall_attended_sem'] = sum(d['attended_classes'] for d in context['subject_attendance_data'])
+                total_sem = sum(d['total_classes'] for d in context['subject_attendance_data'])
+                context['overall_absent_sem'] = total_sem - context['overall_attended_sem']
+                context['overall_percentage_sem'] = round(
+                    (context['overall_attended_sem'] / total_sem * 100) if total_sem > 0 else 0, 2)
+                context['subject_attendance_data_json'] = json.dumps(context['subject_attendance_data'])
 
-    context = {
-        'student': student,
-        'student_group': student_group,
-        'subject_attendance_data': subject_attendance_data,
-        'subject_attendance_data_json': json.dumps(subject_attendance_data),
-        'available_semesters': available_semesters,
-        'selected_semester': int(selected_semester) if selected_semester and str(selected_semester).isdigit() else None,
-        'overall_attended': overall_attended,
-        'overall_absent': overall_absent,
-        'overall_on_duty': overall_on_duty,
-        'overall_official_percentage': round(overall_official_percentage, 2)
-    }
+            elif view_type == 'monthly':
+                all_records_in_sem = AttendanceRecord.objects.filter(
+                    Q(timetable__student_group=student_group) | Q(extra_class__class_group=student_group),
+                    Q(timetable__subject__semester=context['selected_semester']) | Q(
+                        extra_class__subject__semester=context['selected_semester'])
+                ).distinct()
+                context['available_months'] = all_records_in_sem.annotate(month=TruncMonth('date')).values(
+                    'month').distinct().order_by('-month')
+
+                if not selected_month_str and context['available_months']:
+                    selected_month_str = context['available_months'][0]['month'].strftime('%Y-%m')
+                context['selected_month'] = selected_month_str
+
+                if selected_month_str:
+                    year, month = map(int, selected_month_str.split('-'))
+                    subjects_for_semester = all_course_subjects_qs.filter(semester=context['selected_semester'])
+                    for cs in subjects_for_semester:
+                        regular_classes_month = AttendanceRecord.objects.filter(
+                            timetable__student_group=student_group, timetable__subject=cs, date__year=year,
+                            date__month=month
+                        ).values('date', 'timetable__time_slot').distinct().count()
+                        extra_classes_month = ExtraClass.objects.filter(
+                            class_group=student_group, subject=cs, date__year=year, date__month=month
+                        ).count()
+                        total_classes_month = regular_classes_month + extra_classes_month
+
+                        if total_classes_month > 0:
+                            present_count_month = student_records_sem.filter(
+                                Q(timetable__subject=cs) | Q(extra_class__subject=cs),
+                                status__in=['Present', 'Late'], date__year=year, date__month=month
+                            ).count()
+                            absent_count_month = total_classes_month - present_count_month
+                            context['monthly_subject_data'].append({
+                                'subject_pk': cs.subject.pk,
+                                'subject_name': cs.subject.name,
+                                'attended_classes': present_count_month,
+                                'absent_classes': absent_count_month,
+                                'total_classes': total_classes_month,
+                                'official_percentage': round(
+                                    (present_count_month / total_classes_month * 100) if total_classes_month > 0 else 0,
+                                    2)
+                            })
+
+                    context['overall_attended_month'] = sum(
+                        d['attended_classes'] for d in context['monthly_subject_data'])
+                    total_month = sum(d['total_classes'] for d in context['monthly_subject_data'])
+                    context['overall_absent_month'] = total_month - context['overall_attended_month']
+                    context['overall_percentage_month'] = round(
+                        (context['overall_attended_month'] / total_month * 100) if total_month > 0 else 0, 2)
+                    context['monthly_subject_data_json'] = json.dumps(context['monthly_subject_data'])
+
+            elif view_type == 'daily':
+                try:
+                    selected_date = datetime.strptime(selected_date_str, '%Y-%m-%d').date()
+                    daily_records = student_records_sem.filter(date=selected_date).select_related(
+                        'timetable__subject__subject', 'timetable__time_slot',
+                        'extra_class__subject__subject', 'extra_class__time_slot'
+                    )
+
+                    unified_daily_data = []
+                    for record in daily_records:
+                        session_info = {
+                            'status': record.status,
+                            'is_late': record.is_late
+                        }
+                        if record.timetable:
+                            session_info['subject_name'] = record.timetable.subject.subject.name
+                            session_info['time_slot'] = record.timetable.time_slot
+                        elif record.extra_class:
+                            session_info['subject_name'] = record.extra_class.subject.subject.name
+                            session_info['time_slot'] = record.extra_class.time_slot
+
+                        if 'time_slot' in session_info:
+                            unified_daily_data.append(session_info)
+
+                    unified_daily_data.sort(key=lambda x: x['time_slot'].start_time)
+                    context['daily_attendance_data'] = unified_daily_data
+                except (ValueError, TypeError):
+                    pass  # Ignore invalid date formats
+
+            elif view_type == 'marks':
+                context['marks_data_list'] = Mark.objects.filter(
+                    student=student,
+                    subject__semester=context['selected_semester']
+                ).select_related(
+                    'subject__subject', 'criterion'
+                ).order_by('subject__subject__name', 'criterion__name')
+
     return render(request, 'academics/student_my_attendance.html', context)
 
 
@@ -1216,12 +1362,25 @@ def previous_attendance_view(request):
           permission='academics.view_own_timetable', group='my_academics', order=2)
 def student_timetable_view(request):
     """
-    Displays the weekly timetable for the logged-in student's class.
+    Displays the weekly timetable and any extra classes for the current day
+    for the logged-in student's class.
     """
-    student_group = request.user.profile.student_group
-    timetable_grid = {}
+    # Safely get the student's assigned group from their profile.
+    student_group = None
+    try:
+        student_group = request.user.profile.student_group
+    except Profile.DoesNotExist:
+        messages.error(request,
+                       "CRITICAL: A profile for your user account does not exist. Please contact an administrator.")
+        # Return a completely empty page if there's no profile
+        return render(request, 'academics/student_timetable.html', {'timetable_grid': {}})
 
+    timetable_grid = {}
+    extra_classes_today = []
+
+    # Only try to fetch timetable and extra classes if the student is assigned to a group.
     if student_group:
+        # Get the regular weekly timetable entries
         entries = Timetable.objects.filter(student_group=student_group).select_related(
             'subject__subject', 'faculty', 'time_slot'
         )
@@ -1230,11 +1389,23 @@ def student_timetable_view(request):
                 timetable_grid[entry.day_of_week] = {}
             timetable_grid[entry.day_of_week][entry.time_slot.id] = entry
 
+        # Get extra classes for today
+        current_date = timezone.now().date()
+        extra_classes_today = ExtraClass.objects.filter(
+            class_group=student_group,
+            date=current_date
+        ).select_related('time_slot', 'subject__subject', 'teacher').order_by('time_slot__start_time')
+    else:
+        # If the student is assigned a profile but no group, show a clear warning.
+        messages.warning(request,
+                         "You are not currently assigned to any class group. Please contact the admin to see your full timetable.")
+
     context = {
         'student_group': student_group,
         'timeslots': TimeSlot.objects.filter(is_schedulable=True),
         'days_of_week': [day[0] for day in Timetable.DAY_CHOICES],
         'timetable_grid': timetable_grid,
+        'extra_classes_today': extra_classes_today,  # Add extra classes to the context
     }
     return render(request, 'academics/student_timetable.html', context)
 
@@ -2063,8 +2234,8 @@ def extra_class_delete(request, pk):
         with transaction.atomic():
             # --- FIX 1: Use 'sender' instead of 'created_by' ---
             cancellation_announcement = Announcement.objects.create(
-                title=f"CANCELLED: Extra Class for {extra_class.subject.name}",
-                content=f"The extra class for {extra_class.subject.name} scheduled on {extra_class.date} has been cancelled.",
+                title=f"CANCELLED: Extra Class for {extra_class.subject}",
+                content=f"The extra class for {extra_class.subject} scheduled on {extra_class.date} has been cancelled.",
                 sender=request.user
             )
             cancellation_announcement.target_student_groups.add(extra_class.class_group)
@@ -2081,3 +2252,108 @@ def extra_class_delete(request, pk):
         'type': 'Extra Class'
     }
     return render(request, 'academics/confirm_delete.html', context)
+
+
+@login_required
+def guide_view(request):
+    return render(request, 'academics/guide.html')
+
+
+@login_required
+def student_report_card_html_view(request, student_id):
+    student = get_object_or_404(User, pk=student_id, profile__role='student')
+    student_group = student.profile.student_group
+
+    # This block fetches all necessary data for the report
+    context_data = {'student': student, 'student_group': student_group}
+    if student_group:
+        latest_semester_instance = CourseSubject.objects.filter(course=student_group.course).order_by(
+            '-semester').first()
+        if latest_semester_instance:
+            current_semester = latest_semester_instance.semester
+            subjects_for_semester = CourseSubject.objects.filter(course=student_group.course, semester=current_semester)
+
+            # This logic gathers all performance data
+            all_records = AttendanceRecord.objects.filter(student=student).filter(
+                Q(timetable__subject__in=subjects_for_semester) | Q(extra_class__subject__in=subjects_for_semester))
+            all_marks = Mark.objects.filter(student=student, subject__in=subjects_for_semester)
+
+            performance_data = []
+            for cs in subjects_for_semester:
+                subject_total_held = AttendanceRecord.objects.filter(
+                    (Q(timetable__student_group=student_group) & Q(timetable__subject=cs)) | (
+                                Q(extra_class__class_group=student_group) & Q(extra_class__subject=cs))).values('date',
+                                                                                                                'timetable_id',
+                                                                                                                'extra_class_id').distinct().count()
+                subject_attended = all_records.filter(
+                    (Q(timetable__subject=cs) | Q(extra_class__subject=cs)) & Q(status__in=['Present', 'Late'])).count()
+                subject_marks = all_marks.filter(subject=cs)
+
+                performance_data.append({
+                    'subject_name': cs.subject.name,
+                    'attendance_percentage': round((subject_attended / subject_total_held) * 100,
+                                                   1) if subject_total_held > 0 else 0,
+                    'marks_obtained': subject_marks.aggregate(total=Sum('marks_obtained'))['total'] or 0,
+                    'max_marks': subject_marks.aggregate(total=Sum('criterion__max_marks'))['total'] or 0
+                })
+
+            total_held = AttendanceRecord.objects.filter(
+                Q(timetable__student_group=student_group, timetable__subject__in=subjects_for_semester) | Q(
+                    extra_class__class_group=student_group, extra_class__subject__in=subjects_for_semester)).values(
+                'date', 'timetable_id', 'extra_class_id').distinct().count()
+            total_attended = all_records.filter(status__in=['Present', 'Late']).count()
+            total_marks_obtained = all_marks.aggregate(total=Sum('marks_obtained'))['total'] or 0
+            total_max_marks = all_marks.aggregate(total=Sum('criterion__max_marks'))['total'] or 0
+
+            context_data.update({
+                'current_semester': current_semester,
+                'performance_data': performance_data,
+                'overall_attendance': round((total_attended / total_held) * 100, 1) if total_held > 0 else 0,
+                'overall_marks': total_marks_obtained,
+                'overall_max_marks': total_max_marks,
+                'overall_marks_percentage': round((total_marks_obtained / total_max_marks) * 100,
+                                                  1) if total_max_marks > 0 else 0,
+            })
+
+    return render(request, 'academics/report_card.html', context_data)
+
+
+# --- VIEW 2: The ASYNC view that controls the browser and serves the PDF ---
+async def student_report_card_pdf_view(request, student_id):
+    """
+    Generates a PDF report card by launching a headless browser with Pyppeteer,
+    visiting the HTML version of the report, and printing it to PDF.
+    """
+    # This URL must match the one in your urls.py for the HTML view
+    render_url = request.build_absolute_uri(reverse('academics:student_report_card_html', args=[student_id]))
+
+    try:
+        browser = await launch(headless=True, args=['--no-sandbox'])
+        page = await browser.newPage()
+
+        # Go to the page and wait until network traffic has settled
+        await page.goto(render_url, {'waitUntil': 'networkidle0'})
+
+        # --- FIX: Added 'displayHeaderFooter': False to remove the default header ---
+        pdf_content = await page.pdf({
+            'format': 'A4',
+            'landscape': True,
+            'printBackground': True,
+            'displayHeaderFooter': False,  # This removes the unwanted top/bottom text
+            'margin': {  # Optional: You can adjust margins for a better fit
+                'top': '0.5in',
+                'bottom': '0.5in',
+                'left': '0.5in',
+                'right': '0.5in'
+            }
+        })
+
+        await browser.close()
+
+        # Serve the PDF as a download
+        response = HttpResponse(pdf_content, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="report_card_{student_id}.pdf"'
+
+        return response
+    except Exception as e:
+        return HttpResponse(f"Error generating PDF: {e}", status=500)

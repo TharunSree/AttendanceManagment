@@ -6,68 +6,96 @@
 {% block title %}My Timetable{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <h1>My Weekly Timetable</h1>
-            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
-                <ol class="breadcrumb pt-0">
-                    <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">My Timetable</li>
-                </ol>
-            </nav>
-            <div class="separator mb-5"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>My Weekly Timetable</h1>
+                <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                    <ol class="breadcrumb pt-0">
+                        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">My Timetable</li>
+                    </ol>
+                </nav>
+                <div class="separator mb-5"></div>
+            </div>
         </div>
-    </div>
 
-    {% if student_group %}
-    <div class="row">
-        <div class="col-12">
-             <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Timetable for {{ student_group.name }}</h5>
-                    <div class="table-responsive">
-                        <table class="table table-bordered text-center">
-                            <thead>
-                                <tr>
-                                    <th>Time</th>
-                                    {% for day in days_of_week %}
-                                        <th>{{ day }}</th>
+        {% if student_group %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Timetable for {{ student_group.name }}</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center">
+                                    <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        {% for day in days_of_week %}
+                                            <th>{{ day }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for slot in timeslots %}
+                                        <tr>
+                                            <td>{{ slot.start_time|time:"h:i A" }}
+                                                - {{ slot.end_time|time:"h:i A" }}</td>
+                                            {% for day in days_of_week %}
+                                                <td>
+                                                    {% with entry=timetable_grid|get_item:day|get_item:slot.id %}
+                                                        {% if entry %}
+                                                            <div class="p-2">
+                                                                <strong>{{ entry.subject.subject.name }}</strong>
+                                                                <p class="text-muted text-small mb-0">{{ entry.faculty.get_full_name }}</p>
+                                                            </div>
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </td>
+                                            {% endfor %}
+                                        </tr>
                                     {% endfor %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for slot in timeslots %}
-                                <tr>
-                                    <td>{{ slot.start_time|time:"h:i A" }} - {{ slot.end_time|time:"h:i A" }}</td>
-                                    {% for day in days_of_week %}
-                                        <td>
-                                            {% with entry=timetable_grid|get_item:day|get_item:slot.id %}
-                                                {% if entry %}
-                                                    <div class="p-2">
-                                                        <strong>{{ entry.subject.subject.name }}</strong>
-                                                        <p class="text-muted text-small mb-0">{{ entry.faculty.get_full_name }}</p>
-                                                    </div>
-                                                {% else %}
-                                                    -
-                                                {% endif %}
-                                            {% endwith %}
-                                        </td>
-                                    {% endfor %}
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    {% else %}
-    <div class="alert alert-warning">
-        You are not currently assigned to a class, so no timetable can be displayed.
-    </div>
-    {% endif %}
+            {% if extra_classes_today %}
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Today's Extra Classes </h5>
+                                <div>
+                                    {% for extra_class in extra_classes_today %}
+                                        <div class=" card card-body">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">
+                                                    {{ extra_class.subject.subject.name }}
+                                                    <span class="badge badge-pill badge-warning ml-2">Extra Class</span>
+                                                </h6>
+                                                <small>{{ extra_class.time_slot }}</small>
+                                            </div>
+                                            <p class="mb-1">
+                                                Faculty: {{ extra_class.teacher.get_full_name }}
+                                            </p>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-warning">
+                You are not currently assigned to a class, so no timetable can be displayed.
+            </div>
+        {% endif %}
 
-</div>
+    </div>
 {% endblock %}

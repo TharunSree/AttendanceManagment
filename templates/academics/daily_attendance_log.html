@@ -5,69 +5,86 @@
 {% block main_page_title %}Daily Activity Log{% endblock main_page_title %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-12">
-            {% for date, entries in log_data.items %}
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ date|date:"F d, Y" }} - {{ date|date:"l" }}</h5>
+    <div class="container-fluid">
+        {% for date, daily_log in log_data.items %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ date|date:"F d, Y" }} - {{ date|date:"l" }}</h5>
 
-                        <table class="table">
-                            <thead>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th>Faculty</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in daily_log %}
                             <tr>
-                                <th>Time</th>
-                                <th>Class</th>
-                                <th>Subject</th>
-                                <th>Faculty</th>
-                                <th class="text-center">Status</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for item in entries %}
-
-                                <tr>
-                                    <td>
-                                        <p class="text-muted">{{ item.timetable.time_slot }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="list-item-heading">{{ item.timetable.student_group.name }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-muted">{{ item.timetable.subject.subject.name }}</p>
-                                    </td>
-                                    <td>
-                                        {# Show original faculty, and the substitute if one exists #}
-                                        <p class="text-muted mb-0">{{ item.timetable.faculty.get_full_name }}</p>
-                                        {% if item.substituted_by %}
-                                            <span class="text-success text-small">(Sub: {{ item.substituted_by.get_full_name }})</span>
+                                <td>
+                                    <p class="text-muted mb-0">{{ item.session.time_slot }}</p>
+                                </td>
+                                <td>
+                                    {# Safely get the group name based on the class type #}
+                                    {% if item.type == 'regular' %}
+                                        <p class="list-item-heading mb-0">{{ item.session.student_group.name }}</p>
+                                    {% else %}
+                                        <p class="list-item-heading mb-0">{{ item.session.class_group.name }}</p>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <p class="text-muted mb-0">{{ item.session.subject.subject.name }}
+                                        {% if item.type == 'extra' %}
+                                            <span class="badge badge-pill badge-outline-warning">Extra Class</span>
                                         {% endif %}
-                                    </td>
-
-                                    <td class="text-center">
-
-                                        {% if item.status == 'Conducted' %}
-                                            <a href="{% url 'academics:daily_log_detail' timetable_id=item.timetable.id date=date|date:'Y-m-d' %}"
-                                            ><span class="badge badge-pill badge-primary">{{ item.present_count }} / {{ item.total_students }} Present</span>
+                                    </p>
+                                </td>
+                                <td>
+                                    {# Safely get the faculty/teacher name #}
+                                    {% if item.substituted_by %}
+                                        <p class="text-muted mb-0">{{ item.session.faculty.get_full_name }}</p>
+                                        <span class="text-success text-small">(Sub: {{ item.substituted_by.get_full_name }})</span>
+                                    {% elif item.type == 'regular' %}
+                                        <p class="text-muted mb-0">{{ item.session.faculty.get_full_name }}</p>
+                                    {% else %}
+                                        <p class="text-muted mb-0">{{ item.session.teacher.get_full_name }}</p>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if item.status == 'Conducted' %}
+                                        {% comment %}
+                                This block now creates the correct link for BOTH regular and extra classes.
+                                {% endcomment %}
+                                        {% if item.type == 'regular' %}
+                                            <a href="{% url 'academics:daily_log_detail' timetable_id=item.session.id date=date|date:'Y-m-d' %}">
+                                                <span class="badge badge-pill badge-primary">{{ item.present_count }}/{{ item.total_students }} Present</span>
                                             </a>
-                                            {% if item.was_edited %}
-                                                <span class="badge badge-pill badge-outline-warning ml-1">Edited</span>
-                                            {% endif %}
-                                        {% elif item.status == 'Cancelled' %}
-                                            <span class="badge badge-pill badge-danger">Not Conducted</span>
+                                        {% else %}
+                                            <a href="{% url 'academics:extra_class_log_detail' extra_class_id=item.session.id date=date|date:'Y-m-d' %}">
+                                                <span class="badge badge-pill badge-primary">{{ item.present_count }}/{{ item.total_students }} Present</span>
+                                            </a>
                                         {% endif %}
 
-                                    </td>
-
-                                </tr>
-
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                        {% if item.was_edited %}
+                                            <span class="badge badge-pill badge-outline-warning ml-1">Edited</span>
+                                        {% endif %}
+                                    {% elif item.status == 'Cancelled' %}
+                                        <span class="badge badge-pill badge-danger">Not Conducted</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-            {% empty %}
-                <div class="alert alert-info">No attendance has been marked for any class yet.</div>
-            {% endfor %}
-        </div>
+            </div>
+        {% empty %}
+            <div class="alert alert-info" role="alert">
+                There are no logs to display for this period.
+            </div>
+        {% endfor %}
     </div>
 {% endblock content %}

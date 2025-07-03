@@ -32,10 +32,12 @@
                             <tr>
                                 <td class="text-center">{{ scheme.name }}</td>
                                 <td class="text-center">
+                                    <div class="btn-group">
                                     <a href="{% url 'academics:scheme_update' scheme.pk %}"
-                                       class="btn btn-xs btn-primary">Edit</a>
+                                       class="btn btn-xs btn-outline-primary">Edit</a>
                                     <a href="{% url 'academics:scheme_delete' scheme.pk %}"
-                                       class="btn btn-xs btn-danger">Delete</a>
+                                       class="btn btn-xs btn-outline-danger">Delete</a>
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}
