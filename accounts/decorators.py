@@ -1,7 +1,8 @@
 # In accounts/decorators.py
 from academics.registry import REGISTERED_NAV_ITEMS
 
-def nav_item(title, icon, url_name, permission=None, group=None, order=99):
+
+def nav_item(title, icon, url_name, permission=None, group=None, order=99, role_required=None):
     """
     Decorator that registers a view to be included in the sidebar.
     Visibility is now controlled by a specific Django permission codename.
@@ -19,7 +20,8 @@ def nav_item(title, icon, url_name, permission=None, group=None, order=99):
             'url_name': url_name,
             'permission': permission,
             'group': group,
-            'order': order
+            'order': order,
+            'role_required': role_required,
         })
         return view_func
     return decorator

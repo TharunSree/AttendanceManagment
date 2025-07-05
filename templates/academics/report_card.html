@@ -12,34 +12,44 @@
         var STATIC_URL = "{% static '' %}";
     </script>
 
-    {# <link rel="shortcut icon" href="{% static 'favicon.ico' %}" /> #}
-
     <link rel="stylesheet" href="{% static 'font/iconsmind-s/css/iconsminds.css' %}"/>
     <link rel="stylesheet" href="{% static 'font/simple-line-icons/css/simple-line-icons.css' %}"/>
     {% block vendor_styles %}{% endblock vendor_styles %}
     <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/dore.light.bluenavy.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/vendor/bootstrap.rtl.only.min.css' %}"/>
-    {# If using RTL #}
     <link rel="stylesheet" href="{% static 'css/vendor/component-custom-switch.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/vendor/perfect-scrollbar.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/main.css' %}"/>
     <style>
-        /* PDF-specific styling to ensure it prints well */
+        @page {
+            size: A4;
+            margin: 0.7in;
+        }
         body {
             background-color: #fff;
-            font-family: "JetBrains Mono ExtraBold"/* White background for printing */
+            font-family: "JetBrains Mono ExtraBold"
         }
 
         main {
-            padding-top: 2rem; /* Add some space at the top */
+            padding-top: 2rem;
         }
 
         .table-bordered th, .table-bordered td {
-            border: 1px solid #dee2e6 !important; /* Ensure table borders are visible */
+            border: 2px solid #dee2e6 !important;
         }
+
+        .card {
+            border: 2px solid #d7d7d7 !important;
+        }
+
         p {
-            font-family: "JetBrains Mono ExtraBold"; /* Ensure consistent font for paragraphs */
+            font-family: "JetBrains Mono ExtraBold";
+        }
+
+        .semester-section {
+            page-break-inside: avoid;
+            margin-bottom: 2rem;
         }
     </style>
 </head>
@@ -55,11 +65,7 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="card mb-4" style="box-shadow: #1a2833 0.5px 0.5px 7px 0.5px; font-family: 'JetBrains Mono ExtraBold'">
-
-                    {# This is the social profile component you provided #}
-
-
+                <div class="card mb-4" style="font-family: 'JetBrains Mono ExtraBold'">
                     <div class="card-body">
                         {% if student.profile.photo %}
                             <div class="text-center">
@@ -67,16 +73,21 @@
                                      class="img-thumbnail border-0 mb-4 rounded-circle list-thumbnail"></div>
                         {% endif %}
                         <div class="text-center pt-4">
-                            <p class="list-item-heading pt-2" style="font-family: 'JetBrains Mono ExtraBold'">{{ student.get_full_name }}</p>
+                            <p class="list-item-heading pt-2"
+                               style="font-family: 'JetBrains Mono ExtraBold'">{{ student.get_full_name }}</p>
                         </div>
 
-                        <div class="row mt-4" >
-                            <div class="col-6" >
-                                <p class="text-muted text-small mb-2" style="font-family: 'JetBrains Mono ExtraBold'">Student ID</p>
-                                <p class="mb-3" style="font-family: 'JetBrains Mono ExtraBold'">{{ student.profile.student_id_number|default:"N/A" }}</p>
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <p class="text-muted text-small mb-2" style="font-family: 'JetBrains Mono ExtraBold'">
+                                    Student ID</p>
+                                <p class="mb-3"
+                                   style="font-family: 'JetBrains Mono ExtraBold'">{{ student.profile.student_id_number|default:"N/A" }}</p>
 
-                                <p class="text-muted text-small mb-2" style="font-family: 'JetBrains Mono ExtraBold'">Class</p>
-                                <p class="mb-3" style="font-family: 'JetBrains Mono ExtraBold'">{{ student_group.name|default:"N/A" }}</p>
+                                <p class="text-muted text-small mb-2" style="font-family: 'JetBrains Mono ExtraBold'">
+                                    Class</p>
+                                <p class="mb-3"
+                                   style="font-family: 'JetBrains Mono ExtraBold'">{{ student_group.name|default:"N/A" }}</p>
                             </div>
                             <div class="col-6">
                                 <p class="text-muted text-small mb-2">Father's Name</p>
@@ -91,45 +102,71 @@
             </div>
         </div>
 
-        <div class="row">
+        <!-- Display each semester's performance -->
+        {% for semester, data in semester_performance.items %}
+            <div class="row semester-section">
             <div class="col-12">
-                {# This is the data table component you provided #}
                 <div class="card mb-4" style="box-shadow: #1a2833 0.5px 0.5px 9px 0.5px;">
                     <div class="card-body">
-                        <h5 class="card-title">Academic Performance - Semester {{ current_semester|default:"N/A" }}</h5>
-                        <table class="table table-bordered" style="border-color: rgba(0,0,0,0.5); border: 1px solid #dee2e6;">
+                        <h5 class="card-title">Academic Performance - Semester {{ semester }}</h5>
+                        <table class="table table-bordered"
+                               style="border-color: rgba(0,0,0,0.5); border: 1px solid #dee2e6;">
                             <thead>
                             <tr>
                                 <th scope="col">Subject</th>
                                 <th scope="col">Attendance</th>
                                 <th scope="col">Marks</th>
+                                <th scope="col">Remarks</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {% for item in performance_data %}
+                            {% for item in data.performance_data %}
                                 <tr>
-                                    <td>{{ item.subject_name }}</td>
-                                    <td>{{ item.attendance_percentage }}%</td>
-                                    <td>{{ item.marks_obtained }} / {{ item.max_marks }}</td>
+                                    <td style="width: 25%;">{{ item.subject_name }}</td>
+                                    <td style="width: 15%;">{{ item.attendance_percentage }}%</td>
+                                    <td style="width: 15%;">{{ item.marks_obtained }} / {{ item.max_marks }}</td>
+                                    <td style="width: 45%;"></td>
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="3" class="text-center text-muted">No performance data available.</td>
+                                    <td colspan="4" class="text-center text-muted">No performance data available for
+                                        this semester.
+                                    </td>
                                 </tr>
                             {% endfor %}
+                            <tr class="table-secondary">
+                                <td><strong>Semester {{ semester }} Total</strong></td>
+                                <td><strong>{{ data.semester_attendance }}%</strong></td>
+                                <td><strong>{{ data.semester_marks_obtained }} / {{ data.semester_max_marks }}
+                                    ({{ data.semester_marks_percentage }}%)</strong></td>
+                                <td></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+        {% empty %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <p class="text-center text-muted">No academic performance data available.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <!-- Overall Summary -->
         <div class="row">
             <div class="col-12">
                 <div class="card mb-4" style="box-shadow: #1a2833 0.5px 0.5px 9px 0.5px;">
-                    <div class="card-body" >
-                        <h5 class="card-title">Overall Summary</h5>
-                        <p><strong>Total Semester Attendance:</strong> {{ overall_attendance }}%</p>
-                        <p><strong>Total Semester Marks:</strong> {{ overall_marks }} / {{ overall_max_marks }}
+                    <div class="card-body">
+                        <h5 class="card-title">Overall Summary (All Semesters)</h5>
+                        <p><strong>Total Overall Attendance:</strong> {{ overall_attendance }}%</p>
+                        <p><strong>Total Overall Marks:</strong> {{ overall_marks }} / {{ overall_max_marks }}
                             ({{ overall_marks_percentage }}%)</p>
                     </div>
                 </div>
@@ -142,7 +179,6 @@
 <script src="{% static 'js/vendor/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'js/vendor/perfect-scrollbar.min.js' %}"></script>
 
-{# BLOCK for page-specific libraries like datatables.min.js #}
 {% block vendor_scripts %}{% endblock vendor_scripts %}
 
 <script src="{% static 'js/dore.script.js' %}"></script>

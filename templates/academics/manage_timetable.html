@@ -9,8 +9,8 @@
     <style>
         .modal-backdrop.show {
             backdrop-filter: blur(22px);
-        -webkit-backdrop-filter: blur(22px);
-        background-color: rgba(0, 0, 0, 0.3);
+            -webkit-backdrop-filter: blur(22px);
+            background-color: rgba(0, 0, 0, 0.3);
         }
 
         .timetable-cell {
@@ -33,7 +33,6 @@
 {% endblock page_styles %}
 
 {% block content %}
-
     <div class="modal fade" id="timetable-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <form id="timetable-entry-form" method="post" novalidate>
@@ -82,8 +81,8 @@
                                 <tbody>
                                 {% for slot in timeslots %}
                                     <tr>
-                                    {% if slot.is_schedulable %}
-                                        <td class="text-muted">{{ slot }}</td>
+                                        {% if slot.is_schedulable %}
+                                            <td class="text-muted">{{ slot }}</td>
                                             {% for day in days_of_week %}
                                                 <td class="timetable-cell"
                                                     data-day="{{ day }}"
@@ -122,99 +121,151 @@
 {% endblock content %}
 
 {% block page_scripts %}
-<script>
-$(document).ready(function() {
-    // Select the modal and form based on the IDs in your HTML
-    const modal = $('#timetable-modal');
-    const form = $('#timetable-entry-form');
-    const modalContent = modal.find('.modal-content');
+    <script>
+        $(document).ready(function () {
+            const modal = $('#timetable-modal');
+            const form = $('#timetable-entry-form');
+            const modalContent = modal.find('.modal-content');
 
-    // CLICK HANDLER: Load form content into the modal
-    $('#timetable-grid').on('click', '.timetable-cell', function(e) {
-        e.preventDefault();
-        const cell = $(this);
-        const entry = cell.find('.timetable-entry');
-        let url;
+            // 1. CLICK HANDLER: Load form content into the modal
+            $('#timetable-grid').on('click', '.timetable-cell', function (e) {
+                e.preventDefault();
+                const cell = $(this);
+                const entry = cell.find('.timetable-entry');
+                let url;
 
-        if (entry.length > 0) {
-            url = entry.data('update-url'); // URL for editing
-        } else {
-            url = cell.data('create-url'); // URL for creating
-        }
-
-        if (!url) return;
-
-        // Set the form's action attribute to the correct URL
-        form.attr('action', url);
-
-        // Load the partial form HTML into the modal's content area
-        modalContent.load(url, function() {
-            // Re-initialize any plugins like select2 if you use them here
-            modal.modal('show');
-        });
-    });
-
-    // SUBMIT HANDLER: This is now correctly attached to the static form
-    form.on('submit', function(e) {
-        e.preventDefault();
-        const url = form.attr('action'); // Get the action URL we just set
-        const errorContainer = modal.find('#modal-errors-container');
-        errorContainer.html('');
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: form.serialize(),
-            dataType: 'json',
-            success: function(response) {
-                if (response && response.success) {
-                    modal.modal('hide');
-                    location.reload();
+                if (entry.length > 0) {
+                    url = entry.data('update-url');
                 } else {
-                    let errorHtml = '<div class="alert alert-danger p-2" role="alert">';
-                    if (response.errors && response.errors.__all__) {
-                        errorHtml += "<strong>SCHEDULING CONFLICT:</strong> This class or faculty is already booked at this time.";
-                    } else {
-                        errorHtml += "Please correct the errors in the form and try again.";
-                    }
-                    errorHtml += '</div>';
-                    errorContainer.html(errorHtml);
+                    url = cell.data('create-url');
                 }
-            },
-            error: function() {
-                errorContainer.html('<div class="alert alert-danger p-2" role="alert">A server error occurred.</div>');
-            }
-        });
-    });
 
-    // DELETE HANDLER
-    modal.on('click', '#btn-delete-entry', function(e) {
-        e.preventDefault();
-        if (confirm("Are you sure you want to delete this period?")) {
-            let deleteUrl = $(this).data('delete-url');
-            if (!deleteUrl) {
-                 // Fallback in case data attribute isn't on the button, get from the form action
-                 const updateUrl = form.attr('action');
-                 deleteUrl = updateUrl.replace('/update/', '/delete/');
-            }
-            const csrfToken = form.find('input[name="csrfmiddlewaretoken"]').val();
+                if (!url) return;
 
-            $.ajax({
-                url: deleteUrl,
-                type: 'POST',
-                data: { 'csrfmiddlewaretoken': csrfToken },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        modal.modal('hide');
-                        location.reload();
-                    } else {
-                        alert(response.message || "Failed to delete.");
-                    }
+                form.attr('action', url);
+                modalContent.load(url, function () {
+                    modal.modal('show');
+                });
+            });
+
+            // 2. SUBJECT CHANGE HANDLER: Update faculty dropdown based on subject
+            $(document).on('change', '#id_subject', function () {
+                const subjectId = $(this).val();
+                const facultySelect = $('#id_faculty');
+
+                if (subjectId) {
+                    $.ajax({
+                        url: "{% url 'academics:get_subject_faculty' %}",
+                        data: {
+                            'subject_id': subjectId
+                        },
+                        success: function (data) {
+                            facultySelect.empty();
+                            facultySelect.append('<option value="">Select Faculty</option>');
+
+                            data.faculty.forEach(function (faculty) {
+                                const option = new Option(faculty.name, faculty.id);
+                                if (faculty.specialized) {
+                                    option.style.fontWeight = 'bold';
+                                    option.title = 'Specialized in this subject';
+                                }
+                                facultySelect.append(option);
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error fetching faculty:', error);
+                            facultySelect.empty();
+                            facultySelect.append('<option value="">Select Faculty</option>');
+                        }
+                    });
+                } else {
+                    facultySelect.empty();
+                    facultySelect.append('<option value="">Select Faculty</option>');
                 }
             });
-        }
-    });
-});
-</script>
+
+            // 3. FORM SUBMIT HANDLER: Handle form submission with proper error handling
+            form.on('submit', function (e) {
+                e.preventDefault();
+                const url = form.attr('action');
+                const errorContainer = modal.find('#modal-errors-container');
+
+                // Clear previous errors
+                errorContainer.html('');
+                modal.find('.is-invalid').removeClass('is-invalid');
+                modal.find('.invalid-feedback').remove();
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: form.serialize(),
+                    dataType: 'json',
+                    // In manage_timetable.html, replace the success function in the AJAX call:
+                    success: function (response) {
+                        if (response && response.success) {
+                            modal.modal('hide');
+                            location.reload();
+                        } else {
+                            // Handle form errors
+                            if (response.errors) {
+                                if (response.errors.__all__) {
+                                    let errorHtml = '<div class="alert alert-danger p-2" role="alert">';
+                                    // FIX: Display the actual error messages
+                                    response.errors.__all__.forEach(function (error) {
+                                        errorHtml += error + '<br>';
+                                    });
+                                    errorHtml += '</div>';
+                                    errorContainer.html(errorHtml);
+                                } else {
+                                    // Display field-specific errors
+                                    Object.keys(response.errors).forEach(function (field) {
+                                        const fieldElement = form.find(`[name="${field}"]`);
+                                        const errorHtml = `<div class="invalid-feedback d-block">${response.errors[field].join('<br>')}</div>`;
+                                        fieldElement.addClass('is-invalid');
+                                        fieldElement.after(errorHtml);
+                                    });
+                                }
+                            } else {
+                                errorContainer.html('<div class="alert alert-danger p-2" role="alert">Please correct the errors in the form and try again.</div>');
+                            }
+                        }
+                    },
+                    error: function () {
+                        errorContainer.html('<div class="alert alert-danger p-2" role="alert">A server error occurred.</div>');
+                    }
+                });
+            });
+
+            // 4. DELETE HANDLER: Handle deletion of timetable entries
+            modal.on('click', '#btn-delete-entry', function (e) {
+                e.preventDefault();
+                if (confirm("Are you sure you want to delete this period?")) {
+                    let deleteUrl = $(this).data('delete-url');
+                    if (!deleteUrl) {
+                        const updateUrl = form.attr('action');
+                        deleteUrl = updateUrl.replace('/update/', '/delete/');
+                    }
+                    const csrfToken = form.find('input[name="csrfmiddlewaretoken"]').val();
+
+                    $.ajax({
+                        url: deleteUrl,
+                        type: 'POST',
+                        data: {'csrfmiddlewaretoken': csrfToken},
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.success) {
+                                modal.modal('hide');
+                                location.reload();
+                            } else {
+                                alert(response.message || "Failed to delete.");
+                            }
+                        },
+                        error: function () {
+                            alert("Error occurred while deleting.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 {% endblock page_scripts %}

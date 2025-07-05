@@ -18,6 +18,7 @@ NAVIGATION_GROUPS = [
         'id': 'faculty_tools',
         'title': 'Faculty Tools',
         'icon': 'iconsminds-check',
+        'role_required': 'faculty',  # Only visible to faculty
     },
     {
         'id': 'application_settings',  # Unique ID for the group
@@ -28,6 +29,7 @@ NAVIGATION_GROUPS = [
         'id': 'my_academics',
         'title': 'My Academics',
         'icon': 'simple-icon-user',
+        'role_required': 'student',  # Only visible to students
     }
 ]
 

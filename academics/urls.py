@@ -83,6 +83,8 @@ urlpatterns = [
     # The URL that Pyppeteer will visit internally to render the HTML
     path('student/<int:student_id>/report/html/', views.student_report_card_html_view, name='student_report_html'),
     path('guide/', views.guide_view, name='guide'),
+    path('ajax/teacher-class-subjects/', views.get_teacher_class_subjects_view, name='get_teacher_class_subjects'),
+    path('ajax/subject-faculty/', views.get_subject_faculty_view, name='get_subject_faculty'),
 
     # --- Academic Session Management URLs ---
 

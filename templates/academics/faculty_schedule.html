@@ -19,7 +19,7 @@
                                 {% endcomment %}
                                 {% if item.type == 'extra' %}
                                     {% url 'academics:mark_extra_class_attendance' item.session.pk as attendance_url %}
-                                {% else %}
+                                {% elif item.type == 'regular' %}
                                     {% url 'academics:mark_attendance' item.session.pk as attendance_url %}
                                 {% endif %}
 
@@ -42,6 +42,13 @@
 
                                             {% if item.is_cancelled %}
                                                 <span class="badge badge-pill badge-danger ml-2">Cancelled</span>
+                                            {% endif %}
+
+                                            {% comment %}NEW: Show "Marked" badge if attendance has been recorded{% endcomment %}
+                                            {% if item.attendance_marked %}
+                                                <span class="badge badge-pill badge-success ml-2">
+                                                    <i class="simple-icon-check"></i> Marked
+                                                </span>
                                             {% endif %}
                                         </h6>
                                         <small>{{ item.session.time_slot }}</small>

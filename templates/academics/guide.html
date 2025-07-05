@@ -1,44 +1,1254 @@
 {% extends "base.html" %}
-{% block title %}Application Guide{% endblock title %}
-{% block main_page_title %}Application Guide & Tutorials{% endblock main_page_title %}
+{% load static %}
+
+{% block title %}User Guide{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">For Administrators</h5>
-                <ul>
-                    <li><strong>Managing Courses & Subjects:</strong> Navigate to Admin Management > Manage Courses to add or edit courses and their subjects by semester.</li>
-                    <li><strong>Managing Classes:</strong> Go to Manage Classes to create new class groups (e.g., "BCA Section A") and assign them to a course.</li>
-                    <li><strong>Bulk User Import:</strong> Use the Bulk Import feature in User Management to quickly add multiple students or faculty from a CSV file.</li>
-                    <li><strong>Marking Schemes:</strong> Define how marks are calculated by creating criteria (e.g., "Internal Exam", "Assignment") under Marking Schemes.</li>
-                </ul>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-2">
+                <h1>User Guide</h1>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-lg-3 col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Guide Sections</h6>
+                    <div class="guide-navigation">
+                        <!-- Getting Started -->
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="getting-started">
+                                <i class="simple-icon-rocket"></i> Getting Started
+                            </a>
+                        </div>
+
+                        <!-- Student Sections -->
+                        {% if user_role == 'student' %}
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="student-dashboard">
+                                <i class="simple-icon-home"></i> Dashboard
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="student-attendance">
+                                <i class="simple-icon-pie-chart"></i> My Attendance
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="student-timetable">
+                                <i class="iconsminds-calendar-4"></i> My Timetable
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="student-marks">
+                                <i class="simple-icon-graduation"></i> My Marks
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="student-profile">
+                                <i class="simple-icon-user"></i> My Profile
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        <!-- Faculty Sections -->
+                        {% if user_role == 'faculty' %}
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="faculty-dashboard">
+                                <i class="simple-icon-home"></i> Dashboard
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="faculty-schedule">
+                                <i class="iconsminds-calendar-4"></i> My Schedule
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="faculty-attendance">
+                                <i class="simple-icon-check"></i> Mark Attendance
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="faculty-marks">
+                                <i class="simple-icon-note"></i> Enter Marks
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="faculty-extra-classes">
+                                <i class="simple-icon-plus"></i> Extra Classes
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        <!-- Admin Sections -->
+                        {% if user_role == 'admin' %}
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="admin-dashboard">
+                                <i class="simple-icon-home"></i> Dashboard
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="admin-users">
+                                <i class="simple-icon-people"></i> User Management
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="admin-timetable">
+                                <i class="iconsminds-calendar-4"></i> Timetable Management
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="admin-reports">
+                                <i class="simple-icon-printer"></i> Reports
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="admin-settings">
+                                <i class="simple-icon-settings"></i> System Settings
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        <!-- Common Sections -->
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="troubleshooting">
+                                <i class="simple-icon-wrench"></i> Troubleshooting
+                            </a>
+                        </div>
+                        <div class="nav-section">
+                            <a href="#" class="nav-section-title" data-section="faqs">
+                                <i class="simple-icon-question"></i> FAQs
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">For Faculty</h5>
-                <ul>
-                    <li><strong>Daily Schedule:</strong> Your dashboard shows your daily schedule, including regular, substitution, and extra classes.</li>
-                    <li><strong>Marking Attendance:</strong> Click on a class from your schedule to mark attendance. You can also edit recent attendance records from the "Edit Past Attendance" page.</li>
-                    <li><strong>Scheduling Extra Classes:</strong> Use the "Schedule Extra Class" tool to create additional classes. An announcement will be automatically sent to the students.</li>
-                    <li><strong>Entering Marks:</strong> Go to "Enter Marks" to input student scores based on the active marking scheme for their course.</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">For Students</h5>
-                <ul>
-                    <li><strong>My Timetable:</strong> View your weekly class schedule and any extra classes scheduled for the current day.</li>
-                    <li><strong>My Attendance:</strong> Check your subject-wise and overall attendance percentage for the current semester.</li>
-                    <li><strong>My Marks:</strong> View your marks for each subject, broken down by the criteria set by the administrator.</li>
-                </ul>
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div id="guide-content">
+                        <!-- Content will be loaded here -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock content %}
+
+<!-- Guide Content Templates -->
+<div id="guide-templates" style="display: none;">
+    <!-- Getting Started -->
+    <div id="getting-started-content">
+        <h2><i class="simple-icon-rocket"></i> Getting Started</h2>
+        <div class="separator mb-4"></div>
+
+        <div class="alert alert-info">
+            <h5><i class="simple-icon-info"></i> Welcome to the Academic Management System</h5>
+            <p>This guide will help you understand and use all the features available to you based on your role: <strong>{{ user_role|title }}</strong></p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5><i class="simple-icon-login"></i> First Login</h5>
+                        <ol>
+                            <li>Use the credentials provided by your administrator</li>
+                            <li>Change your password on first login</li>
+                            <li>Complete your profile information</li>
+                            <li>Familiarize yourself with the dashboard</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5><i class="simple-icon-screen-desktop"></i> Navigation</h5>
+                        <ul>
+                            <li><strong>Sidebar:</strong> Main navigation menu</li>
+                            <li><strong>Top Bar:</strong> Search and notifications</li>
+                            <li><strong>Breadcrumbs:</strong> Current page location</li>
+                            <li><strong>User Menu:</strong> Profile and logout</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning">
+            <h6><i class="simple-icon-exclamation"></i> Important Notes</h6>
+            <ul class="mb-0">
+                <li>Always logout when using shared computers</li>
+                <li>Report any issues to your administrator immediately</li>
+                <li>Keep your login credentials secure</li>
+            </ul>
+        </div>
+    </div>
+
+    {% if user_role == 'student' %}
+    <!-- Student Dashboard -->
+    <div id="student-dashboard-content">
+        <h2><i class="simple-icon-home"></i> Student Dashboard</h2>
+        <div class="separator mb-4"></div>
+
+        <p>Your dashboard provides a quick overview of your academic performance and upcoming activities.</p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h5><i class="simple-icon-pie-chart"></i> Attendance Overview</h5>
+                <ul>
+                    <li>View your overall attendance percentage</li>
+                    <li>See subject-wise attendance breakdown</li>
+                    <li>Monitor attendance trends</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5><i class="simple-icon-graduation"></i> Academic Performance</h5>
+                <ul>
+                    <li>Check your marks and grades</li>
+                    <li>View semester-wise performance</li>
+                    <li>Track academic progress</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-4">
+            <h6><i class="simple-icon-bulb"></i> Dashboard Tips</h6>
+            <ul class="mb-0">
+                <li>Dashboard data updates in real-time</li>
+                <li>Click on charts for detailed views</li>
+                <li>Use filters to view specific periods</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Student Attendance -->
+    <div id="student-attendance-content">
+        <h2><i class="simple-icon-pie-chart"></i> My Attendance</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Viewing Your Attendance</h5>
+        <ol>
+            <li>Navigate to <strong>My Academics → My Attendance</strong></li>
+            <li>Select the desired view type:
+                <ul>
+                    <li><strong>Semester View:</strong> Overall attendance for the current semester</li>
+                    <li><strong>Monthly View:</strong> Detailed monthly breakdown</li>
+                    <li><strong>Daily View:</strong> Specific date attendance</li>
+                </ul>
+            </li>
+            <li>Use filters to select specific semesters or months</li>
+        </ol>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div class="badge badge-success mb-2">Present</div>
+                        <p class="small mb-0">You were marked present</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div class="badge badge-warning mb-2">Late</div>
+                        <p class="small mb-0">You were marked late</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div class="badge badge-danger mb-2">Absent</div>
+                        <p class="small mb-0">You were marked absent</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning mt-4">
+            <h6><i class="simple-icon-exclamation"></i> Attendance Queries</h6>
+            <p class="mb-0">If you believe there's an error in your attendance record, contact your class teacher or the academic office immediately.</p>
+        </div>
+    </div>
+
+    <!-- Student Timetable -->
+    <div id="student-timetable-content">
+        <h2><i class="iconsminds-calendar-4"></i> My Timetable</h2>
+        <div class="separator mb-4"></div>
+
+        <p>Your timetable shows your weekly class schedule and any extra classes for today.</p>
+
+        <h5>Understanding Your Timetable</h5>
+        <ul>
+            <li><strong>Regular Classes:</strong> Your weekly recurring classes</li>
+            <li><strong>Extra Classes:</strong> Additional classes scheduled for specific dates</li>
+            <li><strong>Time Slots:</strong> Each class has a specific time slot</li>
+            <li><strong>Subjects:</strong> Subject name and faculty information</li>
+        </ul>
+
+        <div class="alert alert-info">
+            <h6><i class="simple-icon-bell"></i> Notifications</h6>
+            <p class="mb-0">You'll receive notifications about extra classes, cancellations, and schedule changes.</p>
+        </div>
+
+        <h5 class="mt-4">Features</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <ul>
+                    <li>View weekly timetable grid</li>
+                    <li>See today's extra classes</li>
+                    <li>Faculty contact information</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul>
+                    <li>Room/venue information</li>
+                    <li>Subject details</li>
+                    <li>Real-time updates</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Marks -->
+    <div id="student-marks-content">
+        <h2><i class="simple-icon-graduation"></i> My Marks</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Viewing Your Marks</h5>
+        <ol>
+            <li>Go to <strong>My Academics → My Marks</strong></li>
+            <li>Select the semester using the dropdown</li>
+            <li>View marks by subject and assessment criteria</li>
+        </ol>
+
+        <h5 class="mt-4">Understanding Your Marks Display</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Subject-wise Breakdown</h6>
+                        <ul class="small">
+                            <li>Each subject shows individual criteria</li>
+                            <li>Marks obtained vs maximum marks</li>
+                            <li>Total marks for each subject</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Assessment Criteria</h6>
+                        <ul class="small">
+                            <li>Internal assessments</li>
+                            <li>Assignments and projects</li>
+                            <li>Mid-term examinations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-4">
+            <h6><i class="simple-icon-info"></i> Grade Queries</h6>
+            <p class="mb-0">For any queries about your marks or grades, contact the respective subject faculty or the examination office.</p>
+        </div>
+    </div>
+
+    <!-- Student Profile -->
+    <div id="student-profile-content">
+        <h2><i class="simple-icon-user"></i> My Profile</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Managing Your Profile</h5>
+        <p>Your profile contains important academic and personal information.</p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Personal Information</h6>
+                        <ul class="small">
+                            <li>Name and contact details</li>
+                            <li>Student ID and registration number</li>
+                            <li>Class group and course information</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Academic Summary</h6>
+                        <ul class="small">
+                            <li>Overall attendance percentage</li>
+                            <li>Academic performance overview</li>
+                            <li>Current semester information</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-4">
+            <h6><i class="simple-icon-settings"></i> Profile Updates</h6>
+            <p class="mb-0">To update your personal information, contact the academic office. Some information may be editable through the system.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if user_role == 'faculty' %}
+    <!-- Faculty Dashboard -->
+    <div id="faculty-dashboard-content">
+        <h2><i class="simple-icon-home"></i> Faculty Dashboard</h2>
+        <div class="separator mb-4"></div>
+
+        <p>Your dashboard provides quick access to teaching activities and class management tools.</p>
+
+        <h5>Dashboard Features</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <h6><i class="iconsminds-calendar-4"></i> Today's Schedule</h6>
+                <ul>
+                    <li>View today's classes</li>
+                    <li>Quick attendance marking</li>
+                    <li>Class cancellation options</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6><i class="simple-icon-chart"></i> Quick Stats</h6>
+                <ul>
+                    <li>Classes taught this week</li>
+                    <li>Attendance completion status</li>
+                    <li>Pending marks entry</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Faculty Schedule -->
+    <div id="faculty-schedule-content">
+        <h2><i class="iconsminds-calendar-4"></i> My Schedule</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Managing Your Teaching Schedule</h5>
+        <p>Your schedule shows all classes assigned to you, along with quick action buttons.</p>
+
+        <h6>Available Actions</h6>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="simple-icon-check text-success mb-2" style="font-size: 2rem;"></i>
+                        <h6>Mark Attendance</h6>
+                        <p class="small">Record student attendance</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="simple-icon-close text-danger mb-2" style="font-size: 2rem;"></i>
+                        <h6>Cancel Class</h6>
+                        <p class="small">Mark class as not conducted</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="simple-icon-eye text-info mb-2" style="font-size: 2rem;"></i>
+                        <h6>View Details</h6>
+                        <p class="small">See class and student info</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Faculty Attendance -->
+    <div id="faculty-attendance-content">
+        <h2><i class="simple-icon-check"></i> Mark Attendance</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Marking Student Attendance</h5>
+        <ol>
+            <li>Click "Mark Attendance" for any class from your schedule</li>
+            <li>The system will show all students in that class</li>
+            <li>Mark each student as:
+                <ul>
+                    <li><span class="badge badge-success">Present</span> - Student attended on time</li>
+                    <li><span class="badge badge-warning">Late</span> - Student arrived late</li>
+                    <li><span class="badge badge-danger">Absent</span> - Student didn't attend</li>
+                </ul>
+            </li>
+            <li>Save the attendance</li>
+        </ol>
+
+        <div class="alert alert-warning">
+            <h6><i class="simple-icon-clock"></i> Edit Deadline</h6>
+            <p class="mb-0">You can edit attendance records for a limited time after marking. Check with administration for the exact deadline.</p>
+        </div>
+
+        <h5 class="mt-4">Bulk Actions</h5>
+        <ul>
+            <li><strong>Mark All Present:</strong> Quick way to mark all students present</li>
+            <li><strong>Mark All Absent:</strong> Mark all students absent</li>
+            <li><strong>Copy from Previous:</strong> Copy attendance from the last class</li>
+        </ul>
+    </div>
+
+    <!-- Faculty Marks -->
+    <div id="faculty-marks-content">
+        <h2><i class="simple-icon-note"></i> Enter Marks</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Entering Student Marks</h5>
+        <ol>
+            <li>Go to <strong>Faculty Tools → Enter Marks</strong></li>
+            <li>Select the class group</li>
+            <li>Choose the subject you teach</li>
+            <li>Enter marks for each assessment criterion</li>
+            <li>Save the marks</li>
+        </ol>
+
+        <h5 class="mt-4">Marking Scheme</h5>
+        <p>The system uses predefined marking schemes that include various assessment criteria such as:</p>
+        <div class="row">
+            <div class="col-md-6">
+                <ul>
+                    <li>Internal assessments</li>
+                    <li>Assignments</li>
+                    <li>Class participation</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul>
+                    <li>Mid-term examinations</li>
+                    <li>Projects</li>
+                    <li>Practical work</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            <h6><i class="simple-icon-cloud-upload"></i> Bulk Import</h6>
+            <p class="mb-0">For large classes, you can use the bulk import feature to upload marks via CSV file.</p>
+        </div>
+    </div>
+
+    <!-- Faculty Extra Classes -->
+    <div id="faculty-extra-classes-content">
+        <h2><i class="simple-icon-plus"></i> Extra Classes</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Scheduling Extra Classes</h5>
+        <ol>
+            <li>Go to <strong>Faculty Tools → Schedule Extra Class</strong></li>
+            <li>Select the class group</li>
+            <li>Choose the subject</li>
+            <li>Pick an available date and time slot</li>
+            <li>Add any notes or agenda</li>
+            <li>Submit the request</li>
+        </ol>
+
+        <h5 class="mt-4">What Happens Next</h5>
+        <ul>
+            <li>Students receive automatic notifications</li>
+            <li>The extra class appears in student timetables</li>
+            <li>You can mark attendance for extra classes</li>
+            <li>Extra class attendance counts toward total attendance</li>
+        </ul>
+
+        <div class="alert alert-warning">
+            <h6><i class="simple-icon-calendar"></i> Scheduling Guidelines</h6>
+            <ul class="mb-0">
+                <li>Extra classes should be scheduled at least 24 hours in advance</li>
+                <li>Avoid scheduling during other subjects' regular slots</li>
+                <li>Consider student availability and breaks</li>
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if user_role == 'admin' %}
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard-content">
+        <h2><i class="simple-icon-home"></i> Admin Dashboard</h2>
+        <div class="separator mb-4"></div>
+
+        <p>The admin dashboard provides system-wide oversight and management capabilities.</p>
+
+        <h5>Key Management Areas</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6><i class="simple-icon-people"></i> User Management</h6>
+                        <ul class="small">
+                            <li>Add/edit students and faculty</li>
+                            <li>Assign roles and permissions</li>
+                            <li>Manage user profiles</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6><i class="iconsminds-calendar-4"></i> Academic Management</h6>
+                        <ul class="small">
+                            <li>Timetable creation and editing</li>
+                            <li>Subject and course management</li>
+                            <li>Class group assignments</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6><i class="simple-icon-chart"></i> Reports & Analytics</h6>
+                        <ul class="small">
+                            <li>Attendance reports</li>
+                            <li>Academic performance tracking</li>
+                            <li>System usage statistics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6><i class="simple-icon-settings"></i> System Administration</h6>
+                        <ul class="small">
+                            <li>System settings configuration</li>
+                            <li>Backup and maintenance</li>
+                            <li>Security management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin User Management -->
+    <div id="admin-users-content">
+        <h2><i class="simple-icon-people"></i> User Management</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Managing Students</h5>
+        <ol>
+            <li>Go to <strong>Admin Management → Manage Classes</strong></li>
+            <li>Select a class to view enrolled students</li>
+            <li>Use "Add Student" to enroll new students</li>
+            <li>Edit student details by clicking on their name</li>
+            <li>Remove students if needed using the delete option</li>
+        </ol>
+
+        <h5 class="mt-4">Managing Faculty</h5>
+        <ol>
+            <li>Navigate to user management section</li>
+            <li>Create faculty accounts with appropriate permissions</li>
+            <li>Assign subjects and classes to faculty members</li>
+            <li>Monitor faculty activity and performance</li>
+            <li>Manage faculty schedules and substitutions</li>
+        </ol>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Student Operations</h6>
+                        <ul class="small">
+                            <li>Bulk student enrollment</li>
+
+                            <li>Profile updates</li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Faculty Operations</h6>
+                        <ul class="small">
+                            <li>Subject assignments</li>
+
+                            <li>Permission management</li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-4">
+            <h6><i class="simple-icon-bulb"></i> Best Practices</h6>
+            <ul class="mb-0">
+                <li>Always verify student information before enrollment</li>
+                <li>Ensure faculty have appropriate permissions for their role</li>
+                <li>Regularly audit user accounts for inactive users</li>
+                <li>Maintain backup of user data before making bulk changes</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Admin Timetable Management -->
+    <div id="admin-timetable-content">
+        <h2><i class="iconsminds-calendar-4"></i> Timetable Management</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Creating Timetables</h5>
+        <ol>
+            <li>Go to <strong>Admin Management → Manage Timetable</strong></li>
+            <li>Select a class group to create timetable for</li>
+            <li>Choose time slots and assign subjects</li>
+            <li>Assign faculty members to each slot</li>
+            <li>Review and save the timetable</li>
+            <li>Publish the timetable to make it visible to students and faculty</li>
+        </ol>
+
+        <h5 class="mt-4">Managing Substitutions</h5>
+        <ol>
+            <li>Navigate to <strong>Admin Management → Manage Substitutions</strong></li>
+            <li>View pending substitution requests</li>
+            <li>Assign substitute faculty members</li>
+            <li>Send notifications to affected parties</li>
+            <li>Track substitution history and statistics</li>
+        </ol>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Timetable Features</h6>
+                        <ul class="small">
+                            <li>Day - Hour Scheduling</li>
+                            <li>Conflict detection</li>
+
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Substitution Management</h6>
+                        <ul class="small">
+
+                            <li>Notification system</li>
+
+                            <li>Historical records</li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning mt-4">
+            <h6><i class="simple-icon-exclamation"></i> Important Guidelines</h6>
+            <ul class="mb-0">
+                <li>Avoid scheduling conflicts between faculty members</li>
+                <li>Ensure adequate breaks between consecutive classes</li>
+                <li>Consider room capacity and availability</li>
+                <li>Notify affected parties before making significant changes</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Admin Reports -->
+    <div id="admin-reports-content">
+        <h2><i class="simple-icon-printer"></i> Reports</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Available Reports</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Attendance Reports</h6>
+                        <ul class="small">
+                            <li>Class-wise attendance summary</li>
+                            <li>Student attendance history</li>
+                            <li>Low attendance alerts</li>
+                            <li>Monthly attendance trends</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Academic Reports</h6>
+                        <ul class="small">
+                            <li>Marks and grade reports</li>
+                            <li>Performance analytics</li>
+                            <li>Subject-wise analysis</li>
+                            <li>Semester comparisons</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>System Reports</h6>
+                        <ul class="small">
+                            <li>User activity logs</li>
+                            <li>System usage statistics</li>
+                            <li>Error logs and diagnostics</li>
+                            <li>Performance benchmarks</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="mt-4">Generating Reports</h5>
+        <ol>
+            <li>Navigate to the specific report section</li>
+            <li>Select the desired filters (class, subject, date range)</li>
+
+            <li>Click "Generate Report" to download</li>
+
+        </ol>
+
+        <div class="alert alert-info mt-4">
+            <h6><i class="simple-icon-clock"></i> Report Scheduling</h6>
+            <p class="mb-0">Set up automated reports to be generated and emailed weekly or monthly to relevant stakeholders. This ensures consistent monitoring and reduces manual effort.</p>
+        </div>
+    </div>
+
+    <!-- Admin Settings -->
+    <div id="admin-settings-content">
+        <h2><i class="simple-icon-settings"></i> System Settings</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Attendance Settings</h5>
+        <p>Configure system-wide attendance parameters:</p>
+        <ul>
+            <li><strong>Edit Deadline:</strong> How long faculty can edit attendance records (default: 24 hours)</li>
+            <li><strong>Minimum Attendance:</strong> Required attendance percentage for students (default: 75%)</li>
+
+            <li><strong>Auto-notifications:</strong> Automatic alerts for low attendance (default: enabled)</li>
+        </ul>
+
+        <h5 class="mt-4">Academic Settings</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Marking Schemes</h6>
+                        <ul class="small">
+                            <li>Create custom marking criteria</li>
+                            <li>Set maximum marks for each criterion</li>
+                                                        <li>Define pass/fail thresholds</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <h5 class="mt-4">Notification Settings</h5>
+        <ul>
+            <li><strong>Email Configuration:</strong> SMTP settings for system emails</li>
+            <li><strong>Alert Thresholds:</strong> When to send low attendance warnings</li>
+            <li><strong>Announcement Settings:</strong> Default recipients and notification preferences</li>
+            <li><strong>Reminder Schedule:</strong> Automated reminders for faculty and students</li>
+        </ul>
+
+        <h5 class="mt-4">Security Settings</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <ul>
+                    <li>Password policy configuration</li>
+                    <li>Session timeout settings</li>
+                    <li>Login attempt restrictions</li>
+                    <li>Two-factor authentication</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul>
+                    <li>User access logs</li>
+                    <li>Data backup settings</li>
+                    <li>System maintenance schedule</li>
+                    <li>Security audit configuration</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert alert-warning mt-4">
+            <h6><i class="simple-icon-shield"></i> Security Notice</h6>
+            <p class="mb-0">Always backup your system before making significant changes to settings. Test changes in a development environment first and ensure all stakeholders are informed of policy changes.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Troubleshooting -->
+    <div id="troubleshooting-content">
+        <h2><i class="simple-icon-wrench"></i> Troubleshooting</h2>
+        <div class="separator mb-4"></div>
+
+        <h5>Common Issues and Solutions</h5>
+
+        <div class="accordion" id="troubleshootingAccordion">
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#issue1">
+                        <i class="simple-icon-login"></i> Cannot Login
+                    </button>
+                </div>
+                <div id="issue1" class="collapse" data-parent="#troubleshootingAccordion">
+                    <div class="card-body">
+                        <ul>
+                            <li>Check your username and password</li>
+                            <li>Ensure Caps Lock is off</li>
+                            <li>Clear browser cache and cookies</li>
+                            <li>Try a different browser</li>
+                            <li>Contact administrator for password reset</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#issue2">
+                        <i class="simple-icon-reload"></i> Page Not Loading
+                    </button>
+                </div>
+                <div id="issue2" class="collapse" data-parent="#troubleshootingAccordion">
+                    <div class="card-body">
+                        <ul>
+                            <li>Check your internet connection</li>
+                            <li>Refresh the page (Ctrl + F5)</li>
+                            <li>Clear browser cache</li>
+                            <li>Disable browser extensions temporarily</li>
+                            <li>Try accessing from a different device</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#issue3">
+                        <i class="simple-icon-pie-chart"></i> Attendance Not Showing
+                    </button>
+                </div>
+                <div id="issue3" class="collapse" data-parent="#troubleshootingAccordion">
+                    <div class="card-body">
+                        <ul>
+                            <li>Check if you're assigned to a class group</li>
+                            <li>Verify the semester selection</li>
+                            <li>Contact class teacher about attendance marking</li>
+                            <li>Report the issue to administration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#issue4">
+                        <i class="simple-icon-note"></i> Marks Not Visible
+                    </button>
+                </div>
+                <div id="issue4" class="collapse" data-parent="#troubleshootingAccordion">
+                    <div class="card-body">
+                        <ul>
+                            <li>Verify you're viewing the correct semester</li>
+                            <li>Check if marks have been entered by faculty</li>
+                            <li>Ensure you're enrolled in the subject</li>
+                            <li>Contact faculty or academic office</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#issue5">
+                        <i class="simple-icon-bell"></i> Not Receiving Notifications
+                    </button>
+                </div>
+                <div id="issue5" class="collapse" data-parent="#troubleshootingAccordion">
+                    <div class="card-body">
+                        <ul>
+                            <li>Check your email address in profile</li>
+                            <li>Look in spam/junk email folders</li>
+                            <li>Verify notification settings</li>
+                            <li>Contact system administrator</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div id="faqs-content">
+        <h2><i class="simple-icon-question"></i> Frequently Asked Questions</h2>
+        <div class="separator mb-4"></div>
+
+        <div class="accordion" id="faqAccordion">
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq1">
+                        How often is attendance updated?
+                    </button>
+                </div>
+                <div id="faq1" class="collapse show" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Attendance is updated in real-time as soon as faculty members mark it. You should see your attendance reflected immediately after each class.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq2">
+                        Can I view attendance for previous semesters?
+                    </button>
+                </div>
+                <div id="faq2" class="collapse" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Yes, you can view attendance for all semesters. Use the semester dropdown in the attendance section to select previous semesters.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq3">
+                        What if my attendance is marked incorrectly?
+                    </button>
+                </div>
+                <div id="faq3" class="collapse" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Contact your class teacher or the academic office immediately. Attendance corrections must be requested within the system's edit deadline period.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq4">
+                        How do I change my password?
+                    </button>
+                </div>
+                <div id="faq4" class="collapse" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Go to your profile page and look for the "Change Password" option. You'll need to enter your current password and choose a new one.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq5">
+                        When are marks typically updated?
+                    </button>
+                </div>
+                <div id="faq5" class="collapse" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Marks are updated by faculty members after assessments are completed and graded. The timing depends on the type of assessment and faculty schedule.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq6">
+                        Can I download my attendance report?
+                    </button>
+                </div>
+                <div id="faq6" class="collapse" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Yes, most sections have download options for reports. Look for "Download" or "Export" buttons in the attendance and marks sections.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq7">
+                        What happens if I miss an extra class?
+                    </button>
+                </div>
+                <div id="faq7" class="collapse" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Extra classes count toward your total attendance. Missing them will affect your overall attendance percentage. Contact your faculty for makeup options.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq8">
+                        How do I know about schedule changes?
+                    </button>
+                </div>
+                <div id="faq8" class="collapse" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        The system sends automatic notifications about schedule changes, extra classes, and cancellations. Check your email and the announcements section regularly.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-4">
+            <h6><i class="simple-icon-support"></i> Need More Help?</h6>
+            <p class="mb-0">If you can't find the answer to your question, contact your institution's IT support or academic office for personalized assistance.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_styles %}
+<style>
+.guide-navigation .nav-section {
+    margin-bottom: 0.5rem;
+}
+
+.guide-navigation .nav-section-title {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #5c6bc0;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    transition: all 0.2s;
+}
+
+.guide-navigation .nav-section-title:hover,
+.guide-navigation .nav-section-title.active {
+    background-color: #5c6bc0;
+    color: white;
+    text-decoration: none;
+}
+
+.guide-navigation .nav-section-title i {
+    margin-right: 0.5rem;
+    width: 1.2rem;
+}
+
+#guide-content {
+    min-height: 500px;
+}
+
+.card-body h6 {
+    color: #5c6bc0;
+    margin-bottom: 1rem;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.accordion .card {
+    border: 1px solid #e3e6f0;
+    margin-bottom: 0.5rem;
+}
+
+.accordion .card-header {
+    padding: 0;
+    background-color: #f8f9fc;
+}
+
+.accordion .btn-link {
+    width: 100%;
+    text-align: left;
+    padding: 1rem;
+    color: #5c6bc0;
+    text-decoration: none;
+}
+
+.accordion .btn-link:hover {
+    color: #4552a3;
+    text-decoration: none;
+}
+
+.separator {
+    height: 1px;
+    background: linear-gradient(to right, #5c6bc0, transparent);
+}
+</style>
+{% endblock page_styles %}
+
+{% block page_scripts %}
+<script>
+$(document).ready(function() {
+    // Load initial content
+    const initialSection = '{{ current_section }}' || 'getting-started';
+    showGuideContent(initialSection);
+
+    // Handle navigation clicks
+    $('.nav-section-title').on('click', function(e) {
+        e.preventDefault();
+        const section = $(this).data('section');
+        showGuideContent(section);
+
+        // Update active state
+        $('.nav-section-title').removeClass('active');
+        $(this).addClass('active');
+
+        // Update URL without page reload
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('section', section);
+        window.history.pushState({}, '', newUrl);
+    });
+
+    function showGuideContent(section) {
+        // Hide all content sections
+        $('#guide-templates > div').hide();
+
+        // Show the selected section
+        const sectionContent = $('#' + section + '-content');
+        if (sectionContent.length) {
+            $('#guide-content').html(sectionContent.html());
+            // Set active navigation item
+            $('.nav-section-title').removeClass('active');
+            $(`.nav-section-title[data-section="${section}"]`).addClass('active');
+        } else {
+            $('#guide-content').html('<div class="alert alert-warning"><h5>Content Not Available</h5><p>The content for this section is currently being developed. Please check back later or contact support for assistance.</p></div>');
+        }
+
+        // Scroll to top of content
+        $('#guide-content').scrollTop(0);
+    }
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', function(e) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const section = urlParams.get('section') || 'getting-started';
+        showGuideContent(section);
+    });
+});
+</script>
+{% endblock page_scripts %}

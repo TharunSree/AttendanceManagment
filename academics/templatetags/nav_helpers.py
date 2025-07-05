@@ -17,16 +17,28 @@ def get_sidebar_nav(context):
     if not user.is_authenticated:
         return []
 
+    # Get user's role
+    user_role = None
+    if hasattr(user, 'profile') and user.profile.role:
+        user_role = user.profile.role
+
     # Get the name of the current URL to determine the active item/group
     current_url_name = resolve(context['request'].path_info).url_name
 
-    # Filter items based on user permissions
-    allowed_items = [
-        item for item in REGISTERED_NAV_ITEMS
-        if not item.get('permission') or user.has_perm(item['permission'])
-    ]
+    # Filter items based on user permissions AND role
+    allowed_items = []
+    for item in REGISTERED_NAV_ITEMS:
+        # Check permission
+        if item.get('permission') and not user.has_perm(item['permission']):
+            continue
 
-    # This will hold the final structure for each main group
+        # Check role requirement
+        if item.get('role_required') and item['role_required'] != user_role:
+            continue
+
+        allowed_items.append(item)
+
+    # Group items
     items_by_group = defaultdict(lambda: {'direct_items': [], 'subgroups': defaultdict(list)})
     ungrouped_items = []
 
@@ -44,8 +56,14 @@ def get_sidebar_nav(context):
     final_nav = []
     final_nav.extend(sorted(ungrouped_items, key=lambda x: x.get('order', 99)))
 
+    # Filter navigation groups by role requirement
     for group_def in NAVIGATION_GROUPS:
         group_id = group_def['id']
+
+        # Check if group has role requirement and user meets it
+        if group_def.get('role_required') and group_def['role_required'] != user_role:
+            continue
+
         if group_id in items_by_group:
             group_content = items_by_group[group_id]
 
@@ -68,8 +86,8 @@ def get_sidebar_nav(context):
 
             # Determine if the main group should be active
             is_main_group_active = (
-                any(item['url_name'] == current_url_name for item in direct_items) or
-                any(sg['is_active'] for sg in processed_subgroups)
+                    any(item['url_name'] == current_url_name for item in direct_items) or
+                    any(sg['is_active'] for sg in processed_subgroups)
             )
 
             # Create the final structure for this main group

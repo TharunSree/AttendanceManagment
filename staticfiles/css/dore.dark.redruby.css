@@ -184,7 +184,7 @@ body {
 .logo-single {
   width: 110px;
   height: 35px;
-  background: url("../logos/white.svg") no-repeat;
+    background: url("../logos/mobile.svg") no-repeat;
   background-position: center center;
   display: inline-block;
   margin-bottom: 60px; }

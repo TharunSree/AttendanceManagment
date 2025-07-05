@@ -4,28 +4,47 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="feat: Implement nested collapsible sidebar menu&#10;&#10;Refactors the sidebar generation to support a two-pane layout with nested, collapsible subgroups, improving UI organization and maintainability.&#10;&#10;The previous single-pane accordion menu was becoming cluttered as more items were added. This change introduces a more organized and scalable navigation system based on the theme's original two-pane design.&#10;&#10;Key changes:&#10;- **Centralized Menu Configuration:** The entire menu hierarchy, including main groups and nested collapsible subgroups, is now defined in `academics/registry.py`. This makes it easy to modify the sidebar from a single location without touching view decorators.&#10;&#10;- **Updated Templatetag:** The `get_sidebar_nav` templatetag has been rewritten to read the new centralized configuration and build the complex nested data structure required for the new layout.&#10;&#10;- **New Sidebar Template:** The `_sidebar.html` partial is updated to render the two-pane menu. The left pane (main menu) controls the content of the right pane (sub-menu), which now contains the collapsible sections.&#10;&#10;This new structure improves the user experience by reducing clutter and makes future maintenance of the navigation menu significantly simpler.">
-      <change afterPath="$PROJECT_DIR$/academics/pdf_utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/staticfiles/font/NeueHaasDisplayMediu.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/staticfiles/font/NeueHaasDisplayRoman.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/staticfiles/font/OpenSans-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/staticfiles/font/OpenSans-Light.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/staticfiles/font/OpenSans-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/guide.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/report_card.html" afterDir="false" />
+    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="feat: Update logo and favicon to mobile version; enhance navigation role management">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AttendanceManagement/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AttendanceManagement/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academics/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academics/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academics/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academics/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academics/templatetags/nav_helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/templatetags/nav_helpers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/daily_attendance_log.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/daily_attendance_log.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/daily_log_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/daily_log_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/decorators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/dore.dark.bluenavy.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/dore.dark.bluenavy.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/dore.light.yellowgranola.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/dore.light.yellowgranola.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/favicon.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/img/favicon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/logo-mobile.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/img/logo-mobile.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/img/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/logos/black.svg" beforeDir="false" afterPath="$PROJECT_DIR$/static/logos/black.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/logos/mobile.svg" beforeDir="false" afterPath="$PROJECT_DIR$/static/logos/mobile.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/logos/white.svg" beforeDir="false" afterPath="$PROJECT_DIR$/static/logos/white.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticfiles/css/dore.dark.bluenavy.css" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/css/dore.dark.bluenavy.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticfiles/css/dore.dark.redruby.css" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/css/dore.dark.redruby.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticfiles/css/dore.light.yellowgranola.css" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/css/dore.light.yellowgranola.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticfiles/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticfiles/logos/black.svg" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/logos/black.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticfiles/logos/mobile.svg" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/logos/mobile.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/staticfiles/logos/white.svg" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/logos/white.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/extra_class_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/extra_class_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/faculty_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/faculty_schedule.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/scheme_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/scheme_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/student_my_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_my_attendance.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/student_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/student_timetable.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_timetable.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/account_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/account_view.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/guide.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/guide.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/manage_timetable.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/manage_timetable.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/mark_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/mark_attendance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/report_card.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/report_card.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/Login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/Login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/password_reset_complete.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/password_reset_complete.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/password_reset_confirm.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/password_reset_confirm.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/password_reset_done.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/password_reset_done.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/partials/_topnav.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/_topnav.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/registration/password_reset_email.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/password_reset_email.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,34 +94,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Django Server.AttendanceManagement.executor": "Run",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
-    "django.template.preview.state": "SHOW_EDITOR",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/AttendanceManagement/static/font",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Django Server.AttendanceManagement.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/AttendanceManagement/static/img&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\AttendanceManagement\static\img" />
+      <recent name="D:\AttendanceManagement\static\logos" />
       <recent name="D:\AttendanceManagement\static\font" />
       <recent name="D:\AttendanceManagement\templates\academics" />
       <recent name="D:\AttendanceManagement\static" />
-      <recent name="D:\AttendanceManagement\static\logos" />
-      <recent name="D:\AttendanceManagement\staticfiles\logos" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\AttendanceManagement\static\css" />
@@ -142,8 +161,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-PY-251.25410.159" />
-        <option value="bundled-python-sdk-e0ed3721d81e-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.25410.159" />
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-PY-251.26094.141" />
+        <option value="bundled-python-sdk-9f8e2b94138c-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26094.141" />
       </set>
     </attachedChunks>
   </component>
@@ -181,6 +200,10 @@
       <workItem from="1751274475964" duration="101000" />
       <workItem from="1751307862003" duration="7442000" />
       <workItem from="1751318226984" duration="7754000" />
+      <workItem from="1751561236988" duration="6637000" />
+      <workItem from="1751608557795" duration="824000" />
+      <workItem from="1751640025847" duration="7510000" />
+      <workItem from="1751746837717" duration="2808000" />
     </task>
     <task id="LOCAL-00001" summary="Add initial project configuration files and user profile signal handling">
       <option name="closed" value="true" />
@@ -302,7 +325,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751218926006</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="feat: Implement nested collapsible sidebar menu&#10;&#10;Refactors the sidebar generation to support a two-pane layout with nested, collapsible subgroups, improving UI organization and maintainability.&#10;&#10;The previous single-pane accordion menu was becoming cluttered as more items were added. This change introduces a more organized and scalable navigation system based on the theme's original two-pane design.&#10;&#10;Key changes:&#10;- **Centralized Menu Configuration:** The entire menu hierarchy, including main groups and nested collapsible subgroups, is now defined in `academics/registry.py`. This makes it easy to modify the sidebar from a single location without touching view decorators.&#10;&#10;- **Updated Templatetag:** The `get_sidebar_nav` templatetag has been rewritten to read the new centralized configuration and build the complex nested data structure required for the new layout.&#10;&#10;- **New Sidebar Template:** The `_sidebar.html` partial is updated to render the two-pane menu. The left pane (main menu) controls the content of the right pane (sub-menu), which now contains the collapsible sections.&#10;&#10;This new structure improves the user experience by reducing clutter and makes future maintenance of the navigation menu significantly simpler.">
+      <option name="closed" value="true" />
+      <created>1751561338045</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1751561338045</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -320,6 +351,10 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="CODE_SMELLS_PROFILE" value="Default" />
+    <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT_PROFILE" value="Default" />
+    <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <MESSAGE value="Add initial project configuration files and user profile signal handling" />
     <MESSAGE value="Add initial Django app structure with models, views, and tests" />
     <MESSAGE value="Add initial SVG icons and README for Font Awesome assets" />
@@ -331,6 +366,10 @@
     <MESSAGE value="feat(academics): Default latest semester in attendance, fix group assignment for new students&#10;&#10;- In the student attendance detail view, if no semester is specified via URL,&#10;  the view now defaults to displaying data for the latest available semester.&#10;- Corrected an issue in the student creation process where the new student's&#10;  profile was not being associated with the selected student group." />
     <MESSAGE value="feat(academics): Create substitution management page&#10;&#10;Adds a new interface for managing faculty substitutions for scheduled classes.&#10;&#10;This new page allows administrative users to:&#10;- Select a specific date using a date picker to view the class schedule.&#10;- For each scheduled class, assign a substitute faculty from a dropdown list.&#10;- View the currently assigned substitute for a class.&#10;- Cancel an existing substitution, making the slot available again.&#10;&#10;The interface provides clear, inline forms for both assigning and canceling substitutions on a per-class basis." />
     <MESSAGE value="feat: Implement nested collapsible sidebar menu&#10;&#10;Refactors the sidebar generation to support a two-pane layout with nested, collapsible subgroups, improving UI organization and maintainability.&#10;&#10;The previous single-pane accordion menu was becoming cluttered as more items were added. This change introduces a more organized and scalable navigation system based on the theme's original two-pane design.&#10;&#10;Key changes:&#10;- **Centralized Menu Configuration:** The entire menu hierarchy, including main groups and nested collapsible subgroups, is now defined in `academics/registry.py`. This makes it easy to modify the sidebar from a single location without touching view decorators.&#10;&#10;- **Updated Templatetag:** The `get_sidebar_nav` templatetag has been rewritten to read the new centralized configuration and build the complex nested data structure required for the new layout.&#10;&#10;- **New Sidebar Template:** The `_sidebar.html` partial is updated to render the two-pane menu. The left pane (main menu) controls the content of the right pane (sub-menu), which now contains the collapsible sections.&#10;&#10;This new structure improves the user experience by reducing clutter and makes future maintenance of the navigation menu significantly simpler." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Implement nested collapsible sidebar menu&#10;&#10;Refactors the sidebar generation to support a two-pane layout with nested, collapsible subgroups, improving UI organization and maintainability.&#10;&#10;The previous single-pane accordion menu was becoming cluttered as more items were added. This change introduces a more organized and scalable navigation system based on the theme's original two-pane design.&#10;&#10;Key changes:&#10;- **Centralized Menu Configuration:** The entire menu hierarchy, including main groups and nested collapsible subgroups, is now defined in `academics/registry.py`. This makes it easy to modify the sidebar from a single location without touching view decorators.&#10;&#10;- **Updated Templatetag:** The `get_sidebar_nav` templatetag has been rewritten to read the new centralized configuration and build the complex nested data structure required for the new layout.&#10;&#10;- **New Sidebar Template:** The `_sidebar.html` partial is updated to render the two-pane menu. The left pane (main menu) controls the content of the right pane (sub-menu), which now contains the collapsible sections.&#10;&#10;This new structure improves the user experience by reducing clutter and makes future maintenance of the navigation menu significantly simpler." />
+    <MESSAGE value="feat: Update logo and favicon to mobile version; enhance navigation role management" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Update logo and favicon to mobile version; enhance navigation role management" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
 </project>

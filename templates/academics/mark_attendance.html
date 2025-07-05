@@ -18,7 +18,7 @@
         {% if is_extra_class %}
             {% url 'academics:mark_extra_class_attendance' session_object.pk %}
         {% else %}
-            {% url 'academics:mark_attendance' session_object.pk date|date:'Y-m-d' %}
+            {% url 'academics:mark_attendance' session_object.pk %}
         {% endif %}">
         {% csrf_token %}
         {{ formset.management_form }}
@@ -28,6 +28,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Student List for {% if is_extra_class %}{{ session_object.class_group.name }}{% else %}{{ session_object.student_group.name }}{% endif %}</h5>
+                        <h5 class="card-title">Subject: {{ session_object.subject.subject }}</h5>
                         <p class="card-subtitle mb-4">Date: {{ date|date:"F d, Y" }}</p>
 
                         <table class="data-table data-table-scrollable responsive nowrap" data-order="[]">
@@ -95,7 +96,7 @@
 
             {# Only show the "Class Not Conducted" button for regular timetable entries #}
             {% if not is_extra_class %}
-                <form action="{% url 'academics:class_cancellation' session_object.pk %}" method="post" class="d-inline mr-2">
+                <form action="{% url 'academics:cancel_class' session_object.pk %}" method="post" class="d-inline mr-2">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger"
                             onclick="return confirm('Are you sure you want to mark this class as not conducted? This cannot be undone.');">

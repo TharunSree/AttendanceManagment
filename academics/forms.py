@@ -161,38 +161,96 @@ class AttendanceSettingsForm(forms.ModelForm):
 # In academics/forms.py
 
 class TimetableEntryForm(forms.ModelForm):
-    # Use the custom field to show full names and filter by Group membership
-    faculty = UserChoiceField(
-        queryset=User.objects.filter(groups__name='Faculty').order_by('first_name'),
-        widget=forms.Select(attrs={'class': 'form-control select2-single'}),
-        label="Faculty"
-    )
-
     class Meta:
         model = Timetable
         fields = ['subject', 'faculty']
         widgets = {
-            'subject': forms.Select(attrs={'class': 'form-control select2-single'}),
+            'subject': forms.Select(attrs={'class': 'form-control'}),
+            'faculty': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
-        student_group = kwargs.pop('student_group', None)
+        # Extract the student_group from kwargs if provided
+        self.student_group = kwargs.pop('student_group', None)
         super().__init__(*args, **kwargs)
 
-        if student_group:
-            # This logic correctly filters subjects to the latest semester
-            latest_semester_instance = CourseSubject.objects.filter(
-                course=student_group.course
-            ).order_by('-semester').first()
+        if self.student_group:
+            # Filter subjects to only those in the student group's course
+            latest_semester = CourseSubject.objects.filter(
+                course=self.student_group.course
+            ).order_by('-semester').values_list('semester', flat=True).first()
 
-            queryset = CourseSubject.objects.none()
-            if latest_semester_instance:
-                queryset = CourseSubject.objects.filter(
-                    course=student_group.course,
-                    semester=latest_semester_instance.semester
-                ).select_related('subject').order_by('subject__name')
+            if latest_semester:
+                self.fields['subject'].queryset = CourseSubject.objects.filter(
+                    course=self.student_group.course,
+                    semester=latest_semester
+                )
+            else:
+                self.fields['subject'].queryset = CourseSubject.objects.none()
 
-            self.fields['subject'].queryset = queryset
+        # Initially set faculty to all faculty members
+        self.fields['faculty'].queryset = User.objects.filter(
+            profile__role='faculty'
+        ).order_by('first_name')
+
+        # If a subject is already selected (during edit), filter faculty accordingly
+        if self.instance and self.instance.pk and self.instance.subject:
+            self.fields['faculty'].queryset = self._get_faculty_for_subject(self.instance.subject)
+
+    def _get_faculty_for_subject(self, subject):
+        """Helper method to get faculty for a specific subject"""
+        try:
+            # Get faculty with matching specialization
+            specialized_faculty = User.objects.filter(
+                profile__role='faculty',
+                profile__field_of_expertise=subject.subject
+            ).order_by('first_name')
+
+            # If no specialized faculty, return all faculty
+            if specialized_faculty.exists():
+                return specialized_faculty
+            else:
+                return User.objects.filter(
+                    profile__role='faculty'
+                ).order_by('first_name')
+        except Exception:
+            # Fallback to all faculty if there's any error
+            return User.objects.filter(
+                profile__role='faculty'
+            ).order_by('first_name')
+
+    # In your TimetableForm class (if you need custom validation)
+    def clean(self):
+        cleaned_data = super().clean()
+        day_of_week = cleaned_data.get('day_of_week')
+        time_slot = cleaned_data.get('time_slot')
+        faculty = cleaned_data.get('faculty')
+        student_group = self.student_group
+
+        if day_of_week and time_slot and faculty:
+            # Check for faculty conflict
+            faculty_conflict = Timetable.objects.filter(
+                day_of_week=day_of_week,
+                time_slot=time_slot,
+                faculty=faculty
+            ).exclude(pk=self.instance.pk if self.instance.pk else None)
+
+            if faculty_conflict.exists():
+                raise forms.ValidationError(
+                    f"{faculty.get_full_name()} is already scheduled for {day_of_week} at {time_slot}.")
+
+            # Check for class conflict
+            class_conflict = Timetable.objects.filter(
+                day_of_week=day_of_week,
+                time_slot=time_slot,
+                student_group=student_group
+            ).exclude(pk=self.instance.pk if self.instance.pk else None)
+
+            if class_conflict.exists():
+                raise forms.ValidationError(
+                    f"{student_group.name} already has a class scheduled for {day_of_week} at {time_slot}.")
+
+        return cleaned_data
 
 
 class SubstitutionForm(forms.Form):
@@ -316,7 +374,6 @@ class MarksReportForm(forms.Form):
 # In academics/forms.py
 
 class ExtraClassForm(forms.ModelForm):
-    # ... (Meta class is unchanged) ...
     class Meta:
         model = ExtraClass
         fields = ['teacher', 'class_group', 'subject', 'date', 'time_slot']
@@ -338,6 +395,7 @@ class ExtraClassForm(forms.ModelForm):
         self.fields['time_slot'].queryset = TimeSlot.objects.filter(is_schedulable=True)
 
         teacher_to_filter = None
+        class_group_to_filter = None
 
         if is_faculty:
             self.fields['teacher'].widget = forms.HiddenInput()
@@ -347,8 +405,7 @@ class ExtraClassForm(forms.ModelForm):
         else:  # Admin logic
             self.fields['teacher'].queryset = User.objects.filter(profile__role='faculty').order_by('first_name')
 
-            # --- FIX: Correctly determine the teacher to filter by ---
-            # Priority: 1. POST data -> 2. GET filter data -> 3. Saved instance data
+            # Get teacher from form data
             teacher_id = None
             if self.is_bound and 'teacher' in self.data:
                 teacher_id = self.data.get('teacher')
@@ -361,16 +418,30 @@ class ExtraClassForm(forms.ModelForm):
                 try:
                     teacher_to_filter = User.objects.get(pk=int(teacher_id))
                 except (ValueError, TypeError, User.DoesNotExist):
-                    pass  # teacher_to_filter will remain None, resulting in an empty subject list
-            # --- END FIX ---
+                    pass
 
-        # Now, populate the subjects dropdown if we have a teacher
-        if teacher_to_filter:
+        # Get class group from form data
+        class_group_id = None
+        if self.is_bound and 'class_group' in self.data:
+            class_group_id = self.data.get('class_group')
+        elif 'class_group' in self.initial:
+            class_group_id = self.initial.get('class_group')
+        elif self.instance and self.instance.pk:
+            class_group_id = self.instance.class_group_id
+
+        if class_group_id:
+            try:
+                class_group_to_filter = StudentGroup.objects.get(pk=int(class_group_id))
+            except (ValueError, TypeError, StudentGroup.DoesNotExist):
+                pass
+
+        # Filter subjects based on BOTH teacher AND class group
+        if teacher_to_filter and class_group_to_filter:
             self.fields['subject'].queryset = CourseSubject.objects.filter(
-                timetable_entries__faculty=teacher_to_filter
+                timetable_entries__faculty=teacher_to_filter,
+                timetable_entries__student_group=class_group_to_filter
             ).select_related('subject', 'course').distinct().order_by('subject__name')
 
-    # ... (The clean method is unchanged and correct) ...
     def clean(self):
         cleaned_data = super().clean()
         teacher = cleaned_data.get('teacher')

@@ -8,120 +8,163 @@
 {% endblock main_page_title %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                {# The form is a standard POST form for saving data #}
-                <form method="post">
-                    {% csrf_token %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    {# The form is a standard POST form for saving data #}
+                    <form method="post">
+                        {% csrf_token %}
 
-                    {# Display non-field errors, like validation conflicts #}
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            {% for error in form.non_field_errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                        {# Display non-field errors, like validation conflicts #}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
-                    {# --- FIX: Render the teacher field only if the user is not faculty --- #}
-                    {% if not user.profile.role == 'faculty' %}
-                        <div class="form-group">
-                            <label for="{{ form.teacher.id_for_label }}">Teacher</label>
+                        {# --- FIX: Render the teacher field only if the user is not faculty --- #}
+                        {% if not user.profile.role == 'faculty' %}
+                            <div class="form-group">
+                                <label for="{{ form.teacher.id_for_label }}">Teacher</label>
+                                {{ form.teacher }}
+                                {% if form.teacher.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.teacher.errors.as_text }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            {# For faculty, the teacher field is hidden but still part of the form #}
                             {{ form.teacher }}
-                            {% if form.teacher.errors %}
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label for="{{ form.class_group.id_for_label }}">Class / Batch</label>
+                            {{ form.class_group }}
+                            {% if form.class_group.errors %}
                                 <div class="invalid-feedback d-block">
-                                    {{ form.teacher.errors.as_text }}
+                                    {{ form.class_group.errors.as_text }}
                                 </div>
                             {% endif %}
                         </div>
-                    {% else %}
-                        {# For faculty, the teacher field is hidden but still part of the form #}
-                        {{ form.teacher }}
-                    {% endif %}
 
-                    <div class="form-group">
-                        <label for="{{ form.class_group.id_for_label }}">Class / Batch</label>
-                        {{ form.class_group }}
-                        {% if form.class_group.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.class_group.errors.as_text }}
-                            </div>
-                        {% endif %}
-                    </div>
+                        <div class="form-group">
+                            <label for="{{ form.subject.id_for_label }}">Subject</label>
+                            {{ form.subject }}
+                            {% if form.subject.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.subject.errors.as_text }}
+                                </div>
+                            {% endif %}
+                        </div>
 
-                    <div class="form-group">
-                        <label for="{{ form.subject.id_for_label }}">Subject</label>
-                        {{ form.subject }}
-                        {% if form.subject.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.subject.errors.as_text }}
-                            </div>
-                        {% endif %}
-                    </div>
+                        <div class="form-group">
+                            <label for="{{ form.date.id_for_label }}">Date</label>
+                            {{ form.date }}
+                            {% if form.date.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.date.errors.as_text }}
+                                </div>
+                            {% endif %}
+                        </div>
 
-                    <div class="form-group">
-                        <label for="{{ form.date.id_for_label }}">Date</label>
-                        {{ form.date }}
-                        {% if form.date.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.date.errors.as_text }}
-                            </div>
-                        {% endif %}
-                    </div>
+                        <div class="form-group">
+                            <label for="{{ form.time_slot.id_for_label }}">Time Slot</label>
+                            {{ form.time_slot }}
+                            {% if form.time_slot.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.time_slot.errors.as_text }}
+                                </div>
+                            {% endif %}
+                        </div>
 
-                    <div class="form-group">
-                        <label for="{{ form.time_slot.id_for_label }}">Time Slot</label>
-                        {{ form.time_slot }}
-                        {% if form.time_slot.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ form.time_slot.errors.as_text }}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="text-right mt-3">
-                        <a href="{% url 'academics:extra_class_list' %}" class="btn btn-outline-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Save Extra Class</button>
-                    </div>
-                </form>
+                        <div class="text-right mt-3">
+                            <a href="{% url 'academics:extra_class_list' %}"
+                               class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Extra Class</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {# --- FIX: Replace the old script with this new, correct version --- #}
 {% block page_scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Find the teacher dropdown. Its ID is generated by Django.
-    const teacherSelect = document.getElementById('{{ form.teacher.id_for_label }}');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Find the teacher dropdown. Its ID is generated by Django.
+            const teacherSelect = document.getElementById('{{ form.teacher.id_for_label }}');
 
-    // This script is only for admins where the teacher dropdown is visible.
-    // If the element doesn't exist (e.g., for faculty), the script does nothing.
-    if (!teacherSelect) {
-        return;
-    }
+            // This script is only for admins where the teacher dropdown is visible.
+            // If the element doesn't exist (e.g., for faculty), the script does nothing.
+            if (!teacherSelect) {
+                return;
+            }
 
-    teacherSelect.addEventListener('change', function() {
-        const teacherId = this.value;
+            teacherSelect.addEventListener('change', function () {
+                const teacherId = this.value;
 
-        // Build the new URL to reload the page with the selected teacher
-        const currentUrl = new URL(window.location.href);
+                // Build the new URL to reload the page with the selected teacher
+                const currentUrl = new URL(window.location.href);
 
-        if (teacherId) {
-            // Set the 'teacher' parameter in the URL
-            currentUrl.searchParams.set('teacher', teacherId);
-        } else {
-            // If the admin selects "---", remove the parameter to reset the subject list
-            currentUrl.searchParams.delete('teacher');
-        }
+                if (teacherId) {
+                    // Set the 'teacher' parameter in the URL
+                    currentUrl.searchParams.set('teacher', teacherId);
+                } else {
+                    // If the admin selects "---", remove the parameter to reset the subject list
+                    currentUrl.searchParams.delete('teacher');
+                }
 
-        // Reload the page with the new URL
-        window.location.href = currentUrl.toString();
-    });
-});
-</script>
+                // Reload the page with the new URL
+                window.location.href = currentUrl.toString();
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            const teacherSelect = $('#id_teacher');
+            const classGroupSelect = $('#id_class_group');
+            const subjectSelect = $('#id_subject');
+
+            function updateSubjects() {
+                const teacherId = teacherSelect.val();
+                const classGroupId = classGroupSelect.val();
+
+                if (teacherId && classGroupId) {
+                    // Make AJAX call to get subjects for this teacher-class combination
+                    $.ajax({
+                        url: '{% url "academics:get_teacher_class_subjects" %}',
+                        data: {
+                            'teacher_id': teacherId,
+                            'class_group_id': classGroupId
+                        },
+                        success: function (data) {
+                            subjectSelect.empty();
+                            subjectSelect.append('<option value="">---------</option>');
+
+                            data.subjects.forEach(function (subject) {
+                                subjectSelect.append(`<option value="${subject.id}">${subject.name}</option>`);
+                            });
+                        }
+                    });
+                } else {
+                    subjectSelect.empty();
+                    subjectSelect.append('<option value="">---------</option>');
+                }
+            }
+
+            teacherSelect.on('change', updateSubjects);
+            classGroupSelect.on('change', updateSubjects);
+
+            // Initialize on page load if values are already selected
+            if (teacherSelect.val() && classGroupSelect.val()) {
+                updateSubjects();
+            }
+        });
+    </script>
 {% endblock page_scripts %}

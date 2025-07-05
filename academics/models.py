@@ -95,7 +95,7 @@ class CourseSubject(models.Model):
         unique_together = ('course', 'subject')  # A subject can only be in a course once
 
     def __str__(self):
-        return f"{self.course.name} - {self.subject.name} ({self.required_hours} hrs)"
+        return self.subject.name
 
 
 class StudentGroup(models.Model):
