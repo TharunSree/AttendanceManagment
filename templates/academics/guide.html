@@ -584,37 +584,236 @@
         <h2><i class="iconsminds-calendar-4"></i> My Timetable</h2>
         <div class="separator mb-4"></div>
 
-        <p>Your timetable shows your weekly class schedule and any extra classes for today.</p>
-
-        <h5>Understanding Your Timetable</h5>
-        <ul>
-            <li><strong>Regular Classes:</strong> Your weekly recurring classes</li>
-            <li><strong>Extra Classes:</strong> Additional classes scheduled for specific dates</li>
-            <li><strong>Time Slots:</strong> Each class has a specific time slot</li>
-            <li><strong>Subjects:</strong> Subject name and faculty information</li>
-        </ul>
-
         <div class="alert alert-info">
-            <h6><i class="simple-icon-bell"></i> Notifications</h6>
-            <p class="mb-0">You'll receive notifications about extra classes, cancellations, and schedule changes.</p>
+            <h6><i class="simple-icon-info"></i> Personal Schedule Management</h6>
+            <p class="mb-0">Your comprehensive timetable displays all regular classes, extra sessions, schedule changes, and important academic events with real-time updates and notifications.</p>
         </div>
 
-        <h5 class="mt-4">Features</h5>
+        <h5>Understanding Your Timetable</h5>
+        <div class="accordion" id="timetableAccordion">
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#regularSchedule">
+                        <i class="iconsminds-calendar-4"></i> Regular Class Schedule
+                    </button>
+                </div>
+                <div id="regularSchedule" class="collapse show" data-parent="#timetableAccordion">
+                    <div class="card-body">
+                        <h6>Weekly Timetable Overview</h6>
+                        <p>Your timetable shows your complete weekly class schedule with detailed information for each session.</p>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Regular Class Information</h6>
+                                        <ul class="small">
+                                            <li><strong>Subject Details:</strong> Subject name, code, and type (theory/practical)</li>
+                                            <li><strong>Time Slots:</strong> Exact start and end times for each class</li>
+                                            <li><strong>Faculty Information:</strong> Teacher name and contact details</li>
+                                            <li><strong>Venue Details:</strong> Classroom numbers and building information</li>
+                                            <li><strong>Duration:</strong> Class length and break intervals</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Visual Features</h6>
+                                        <ul class="small">
+                                            <li><strong>Color Coding:</strong> Different colors for each subject</li>
+                                            <li><strong>Status Indicators:</strong> Active, cancelled, or rescheduled classes</li>
+                                            <li><strong>Priority Marking:</strong> Important classes highlighted</li>
+                                            <li><strong>Interactive Elements:</strong> Click for detailed information</li>
+                                            <li><strong>Mobile Responsive:</strong> Optimized for phone and tablet viewing</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Navigation and Views</h6>
+                        <ul>
+                            <li><strong>Weekly Grid View:</strong> Traditional timetable format with days and time slots</li>
+                            <li><strong>Daily List View:</strong> Focused view of today's classes</li>
+                            <li><strong>Monthly Calendar:</strong> Overview of the entire month with special events</li>
+                            <li><strong>Agenda View:</strong> Chronological list of upcoming classes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#extraSessions">
+                        <i class="simple-icon-plus"></i> Extra Classes and Special Sessions
+                    </button>
+                </div>
+                <div id="extraSessions" class="collapse" data-parent="#timetableAccordion">
+                    <div class="card-body">
+                        <h6>Additional Learning Opportunities</h6>
+                        <p>Beyond regular classes, your timetable includes various additional sessions designed to enhance your learning experience.</p>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-primary">
+                                    <div class="card-body">
+                                        <h6 class="text-primary">Extra Classes</h6>
+                                        <ul class="small">
+                                            <li><strong>Curriculum Completion:</strong> Classes to cover pending topics</li>
+                                            <li><strong>Exam Preparation:</strong> Review sessions before tests</li>
+                                            <li><strong>Remedial Classes:</strong> Additional support for challenging topics</li>
+                                            <li><strong>Advanced Sessions:</strong> Extended learning for high achievers</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-success">
+                                    <div class="card-body">
+                                        <h6 class="text-success">Special Events</h6>
+                                        <ul class="small">
+                                            <li><strong>Guest Lectures:</strong> Industry experts and special speakers</li>
+                                            <li><strong>Workshops:</strong> Practical skill development sessions</li>
+                                            <li><strong>Seminars:</strong> Academic presentations and discussions</li>
+                                            <li><strong>Project Presentations:</strong> Student showcase events</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Extra Class Benefits</h6>
+                        <ul>
+                            <li><strong>Enhanced Learning:</strong> Deeper understanding of complex topics</li>
+                            <li><strong>Exam Success:</strong> Better preparation for assessments</li>
+                            <li><strong>Attendance Credit:</strong> Extra classes count toward total attendance</li>
+                            <li><strong>Academic Excellence:</strong> Opportunity to excel beyond regular curriculum</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#scheduleChanges">
+                        <i class="simple-icon-refresh"></i> Schedule Changes and Updates
+                    </button>
+                </div>
+                <div id="scheduleChanges" class="collapse" data-parent="#timetableAccordion">
+                    <div class="card-body">
+                        <h6>Real-time Schedule Management</h6>
+                        <p>Stay informed about all schedule changes and updates through automated notifications and visual indicators.</p>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-warning text-dark">
+                                    <div class="card-body">
+                                        <h6>Class Cancellations</h6>
+                                        <ul class="small mb-0">
+                                            <li>Immediate notification of cancelled classes</li>
+                                            <li>Reason for cancellation provided</li>
+                                            <li>Rescheduling information when available</li>
+                                            <li>Alternative activities suggested</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body">
+                                        <h6>Faculty Substitutions</h6>
+                                        <ul class="small mb-0">
+                                            <li>Notification of substitute teachers</li>
+                                            <li>Substitute faculty qualifications</li>
+                                            <li>Class content and expectations</li>
+                                            <li>Contact information for queries</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Notification Methods</h6>
+                        <ul>
+                            <li><strong>Email Alerts:</strong> Immediate email notifications for urgent changes</li>
+                            <li><strong>In-system Notifications:</strong> Dashboard alerts and announcements</li>
+                            <li><strong>Mobile Notifications:</strong> Push notifications on mobile devices</li>
+                            <li><strong>Calendar Integration:</strong> Updates to personal calendar applications</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="mt-4">Timetable Features and Tools</h5>
         <div class="row">
             <div class="col-md-6">
-                <ul>
-                    <li>View weekly timetable grid</li>
-                    <li>See today's extra classes</li>
-                    <li>Faculty contact information</li>
-                </ul>
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Personal Organization Tools</h6>
+                        <ul class="small">
+                            <li><strong>Study Planning:</strong> Plan study sessions around class schedules</li>
+                            <li><strong>Assignment Tracking:</strong> Track assignment deadlines with class times</li>
+                            <li><strong>Free Time Identification:</strong> Find gaps for personal study or activities</li>
+                            <li><strong>Time Management:</strong> Optimize daily and weekly schedules</li>
+                            <li><strong>Priority Setting:</strong> Mark important classes and sessions</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="col-md-6">
-                <ul>
-                    <li>Room/venue information</li>
-                    <li>Subject details</li>
-                    <li>Real-time updates</li>
-                </ul>
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Communication Features</h6>
+                        <ul class="small">
+                            <li><strong>Faculty Contact:</strong> Direct access to teacher contact information</li>
+                            <li><strong>Class Queries:</strong> Submit questions about schedule or content</li>
+                            <li><strong>Peer Coordination:</strong> Share schedule information with classmates</li>
+                            <li><strong>Parent Access:</strong> Parents can view student schedules</li>
+                            <li><strong>Emergency Contacts:</strong> Quick access to important numbers</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <h5 class="mt-4">Academic Calendar Integration</h5>
+        <div class="card">
+            <div class="card-body">
+                <h6>Comprehensive Academic Planning</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li><strong>Examination Periods:</strong> Test schedules and examination dates</li>
+                            <li><strong>Holiday Calendar:</strong> Academic holidays and vacation periods</li>
+                            <li><strong>Assignment Deadlines:</strong> Important submission dates</li>
+                            <li><strong>Project Milestones:</strong> Key project dates and presentations</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li><strong>Cultural Events:</strong> College festivals and celebrations</li>
+                            <li><strong>Sports Activities:</strong> Athletic events and competitions</li>
+                            <li><strong>Academic Conferences:</strong> Seminars and academic events</li>
+                            <li><strong>Career Events:</strong> Job fairs and placement activities</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-success mt-4">
+            <h6><i class="simple-icon-bell"></i> Timetable Notifications and Updates</h6>
+            <p>Stay informed with comprehensive notification system:</p>
+            <ul class="mb-0">
+                <li>Automatic alerts for schedule changes and important updates</li>
+                <li>Advance notice for extra classes and special sessions</li>
+                <li>Real-time updates for class cancellations and substitutions</li>
+                <li>Reminders for upcoming classes and important events</li>
+                <li>Integration with personal calendar and planning applications</li>
+            </ul>
         </div>
     </div>
 
@@ -623,44 +822,230 @@
         <h2><i class="simple-icon-graduation"></i> My Marks</h2>
         <div class="separator mb-4"></div>
 
-        <h5>Viewing Your Marks</h5>
-        <ol>
-            <li>Go to <strong>My Academics → My Marks</strong></li>
-            <li>Select the semester using the dropdown</li>
-            <li>View marks by subject and assessment criteria</li>
-        </ol>
+        <div class="alert alert-info">
+            <h6><i class="simple-icon-info"></i> Academic Performance Tracking</h6>
+            <p class="mb-0">Access comprehensive marks and grades across all subjects with detailed analytics, progress tracking, and performance insights to monitor your academic journey.</p>
+        </div>
 
-        <h5 class="mt-4">Understanding Your Marks Display</h5>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
+        <h5>Viewing Your Academic Performance</h5>
+        <div class="accordion" id="marksViewAccordion">
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#marksAccess">
+                        <i class="simple-icon-graduation"></i> Accessing Your Marks
+                    </button>
+                </div>
+                <div id="marksAccess" class="collapse show" data-parent="#marksViewAccordion">
                     <div class="card-body">
-                        <h6>Subject-wise Breakdown</h6>
-                        <ul class="small">
-                            <li>Each subject shows individual criteria</li>
-                            <li>Marks obtained vs maximum marks</li>
-                            <li>Total marks for each subject</li>
+                        <h6>How to View Your Academic Records</h6>
+                        <ol>
+                            <li>Navigate to <strong>My Academics → My Marks</strong></li>
+                            <li>Select the semester using the dropdown menu</li>
+                            <li>Choose from different view options:
+                                <ul>
+                                    <li><strong>Subject-wise View:</strong> Marks organized by individual subjects</li>
+                                    <li><strong>Assessment-wise View:</strong> Marks grouped by evaluation criteria</li>
+                                    <li><strong>Semester Summary:</strong> Overall performance overview</li>
+                                    <li><strong>Historical View:</strong> Comparison across multiple semesters</li>
+                                </ul>
+                            </li>
+                            <li>Use filters to focus on specific subjects or time periods</li>
+                            <li>Export or download detailed reports for personal records</li>
+                        </ol>
+
+                        <div class="alert alert-info">
+                            <h6><i class="simple-icon-eye"></i> What You Can See</h6>
+                            <ul class="mb-0">
+                                <li>Marks for all completed assessments</li>
+                                <li>Grades calculated according to institutional grading scheme</li>
+                                <li>Semester and cumulative GPA</li>
+                                <li>Subject-wise performance analysis</li>
+                                <li>Progress trends and improvement areas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#marksBreakdown">
+                        <i class="simple-icon-chart"></i> Understanding Your Marks Display
+                    </button>
+                </div>
+                <div id="marksBreakdown" class="collapse" data-parent="#marksViewAccordion">
+                    <div class="card-body">
+                        <h6>Comprehensive Marks Breakdown</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Subject-wise Information</h6>
+                                        <ul class="small">
+                                            <li><strong>Subject Details:</strong> Course name, code, and credit hours</li>
+                                            <li><strong>Assessment Criteria:</strong> Individual components like internals, assignments</li>
+                                            <li><strong>Maximum Marks:</strong> Total possible marks for each criterion</li>
+                                            <li><strong>Marks Obtained:</strong> Your actual scores in each assessment</li>
+                                            <li><strong>Percentage:</strong> Performance percentage for each subject</li>
+                                            <li><strong>Grade:</strong> Letter grade based on institutional grading scale</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Assessment Categories</h6>
+                                        <ul class="small">
+                                            <li><strong>Internal Assessments:</strong> Regular tests and quizzes</li>
+                                            <li><strong>Assignments:</strong> Homework and project submissions</li>
+                                            <li><strong>Mid-term Examinations:</strong> Semester midpoint evaluations</li>
+                                            <li><strong>Final Examinations:</strong> Comprehensive end-term tests</li>
+                                            <li><strong>Practical Work:</strong> Laboratory and hands-on assessments</li>
+                                            <li><strong>Class Participation:</strong> Active engagement and contribution</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Grade Calculation System</h6>
+                        <p>Understanding how your final grades are calculated:</p>
+                        <ul>
+                            <li><strong>Weighted Average:</strong> Different assessments have different weightage</li>
+                            <li><strong>Credit System:</strong> Subjects with more credit hours impact GPA more</li>
+                            <li><strong>Minimum Requirements:</strong> Passing criteria for each subject</li>
+                            <li><strong>Grade Points:</strong> Numerical values assigned to letter grades</li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card">
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#performanceAnalytics">
+                        <i class="simple-icon-graph"></i> Performance Analytics and Insights
+                    </button>
+                </div>
+                <div id="performanceAnalytics" class="collapse" data-parent="#marksViewAccordion">
                     <div class="card-body">
-                        <h6>Assessment Criteria</h6>
-                        <ul class="small">
-                            <li>Internal assessments</li>
-                            <li>Assignments and projects</li>
-                            <li>Mid-term examinations</li>
+                        <h6>Advanced Performance Analysis</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-primary">
+                                    <div class="card-body">
+                                        <h6 class="text-primary">Individual Progress</h6>
+                                        <ul class="small">
+                                            <li><strong>Trend Analysis:</strong> Performance improvement or decline over time</li>
+                                            <li><strong>Subject Strengths:</strong> Identification of your best-performing subjects</li>
+                                            <li><strong>Improvement Areas:</strong> Subjects needing more attention</li>
+                                            <li><strong>Goal Tracking:</strong> Progress toward academic targets</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-success">
+                                    <div class="card-body">
+                                        <h6 class="text-success">Comparative Analysis</h6>
+                                        <ul class="small">
+                                            <li><strong>Class Ranking:</strong> Your position within the class (if enabled)</li>
+                                            <li><strong>Percentile Performance:</strong> Comparison with peer group</li>
+                                            <li><strong>Historical Comparison:</strong> Current vs previous semester performance</li>
+                                            <li><strong>Subject Benchmarking:</strong> Performance relative to class average</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Visual Analytics</h6>
+                        <ul>
+                            <li><strong>Performance Charts:</strong> Graphical representation of marks trends</li>
+                            <li><strong>Grade Distribution:</strong> Visual breakdown of grades across subjects</li>
+                            <li><strong>Progress Graphs:</strong> Timeline of academic improvement</li>
+                            <li><strong>Comparative Dashboards:</strong> Multi-semester performance comparison</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="alert alert-info mt-4">
-            <h6><i class="simple-icon-info"></i> Grade Queries</h6>
-            <p class="mb-0">For any queries about your marks or grades, contact the respective subject faculty or the examination office.</p>
+        <h5 class="mt-4">Academic Success Tools</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Performance Improvement</h6>
+                        <ul class="small">
+                            <li><strong>Weakness Identification:</strong> Automated identification of challenging areas</li>
+                            <li><strong>Study Recommendations:</strong> Personalized study suggestions</li>
+                            <li><strong>Resource Links:</strong> Additional learning materials and resources</li>
+                            <li><strong>Tutoring Requests:</strong> Connect with academic support services</li>
+                            <li><strong>Goal Setting:</strong> Set and track academic improvement goals</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Academic Planning</h6>
+                        <ul class="small">
+                            <li><strong>GPA Projection:</strong> Predict semester and cumulative GPA</li>
+                            <li><strong>Graduation Requirements:</strong> Track progress toward degree completion</li>
+                            <li><strong>Course Planning:</strong> Plan future course selections</li>
+                            <li><strong>Career Guidance:</strong> Academic performance impact on career goals</li>
+                            <li><strong>Scholarship Eligibility:</strong> Track eligibility for merit-based awards</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="mt-4">Result Publication and Reports</h5>
+        <div class="card">
+            <div class="card-body">
+                <h6>Official Academic Records</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li><strong>Semester Report Cards:</strong> Official transcripts with all marks and grades</li>
+                            <li><strong>Progress Reports:</strong> Mid-semester performance updates</li>
+                            <li><strong>Cumulative Transcripts:</strong> Complete academic history</li>
+                            <li><strong>Parent Reports:</strong> Detailed reports shared with parents</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li><strong>Download Options:</strong> PDF reports for personal records</li>
+                            <li><strong>Official Verification:</strong> Digitally signed and verified documents</li>
+                            <li><strong>Historical Access:</strong> Access to all previous semester records</li>
+                            <li><strong>Print-Ready Formats:</strong> Professional formatting for printing</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h6 class="mt-3">Publication Timeline</h6>
+                <ul>
+                    <li><strong>Real-time Updates:</strong> Marks appear as faculty enter them</li>
+                    <li><strong>Official Publication:</strong> Final results published after verification</li>
+                    <li><strong>Parent Notifications:</strong> Automatic emails to parents upon publication</li>
+                    <li><strong>Academic Counseling:</strong> Follow-up support for academic planning</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert alert-warning mt-4">
+            <h6><i class="simple-icon-info"></i> Grade Queries and Academic Support</h6>
+            <p>For any questions about your marks or academic performance:</p>
+            <ul class="mb-0">
+                <li>Contact the respective subject faculty for specific mark clarifications</li>
+                <li>Reach out to the examination office for grade calculation queries</li>
+                <li>Schedule meetings with academic advisors for performance counseling</li>
+                <li>Use the academic support services for study skills improvement</li>
+                <li>Join study groups and peer tutoring programs for collaborative learning</li>
+            </ul>
         </div>
     </div>
 
@@ -669,39 +1054,269 @@
         <h2><i class="simple-icon-user"></i> My Profile</h2>
         <div class="separator mb-4"></div>
 
-        <h5>Managing Your Profile</h5>
-        <p>Your profile contains important academic and personal information.</p>
+        <div class="alert alert-info">
+            <h6><i class="simple-icon-info"></i> Personal Profile Management</h6>
+            <p class="mb-0">Your profile contains comprehensive academic and personal information essential for your educational journey, communication, and institutional records.</p>
+        </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
+        <h5>Managing Your Profile Information</h5>
+        <div class="accordion" id="profileAccordion">
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#personalInfo">
+                        <i class="simple-icon-user"></i> Personal Information
+                    </button>
+                </div>
+                <div id="personalInfo" class="collapse show" data-parent="#profileAccordion">
                     <div class="card-body">
-                        <h6>Personal Information</h6>
-                        <ul class="small">
-                            <li>Name and contact details</li>
-                            <li>Student ID and registration number</li>
-                            <li>Class group and course information</li>
+                        <h6>Core Personal Details</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Basic Information</h6>
+                                        <ul class="small">
+                                            <li><strong>Full Name:</strong> Official name as per academic records</li>
+                                            <li><strong>Student ID:</strong> Unique identification number</li>
+                                            <li><strong>Registration Number:</strong> Academic registration details</li>
+                                            <li><strong>Date of Birth:</strong> Personal birth date information</li>
+                                            <li><strong>Gender:</strong> Personal gender identification</li>
+                                            <li><strong>Profile Photo:</strong> Academic identification picture</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Contact Details</h6>
+                                        <ul class="small">
+                                            <li><strong>Email Address:</strong> Primary institutional communication</li>
+                                            <li><strong>Phone Number:</strong> Personal contact number</li>
+                                            <li><strong>Residential Address:</strong> Current living address</li>
+                                            <li><strong>Emergency Contact:</strong> Alternative contact information</li>
+                                            <li><strong>Parent Contact:</strong> Guardian communication details</li>
+                                            <li><strong>Local Guardian:</strong> Local emergency contact (if applicable)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Profile Photo Management</h6>
+                        <ul>
+                            <li><strong>Upload Requirements:</strong> Clear, recent photograph meeting institutional guidelines</li>
+                            <li><strong>File Specifications:</strong> JPEG/PNG format, appropriate size and resolution</li>
+                            <li><strong>Privacy Settings:</strong> Control visibility of profile information</li>
+                            <li><strong>Update Process:</strong> Simple upload and verification procedure</li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card">
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#academicInfo">
+                        <i class="simple-icon-graduation"></i> Academic Information
+                    </button>
+                </div>
+                <div id="academicInfo" class="collapse" data-parent="#profileAccordion">
                     <div class="card-body">
-                        <h6>Academic Summary</h6>
-                        <ul class="small">
-                            <li>Overall attendance percentage</li>
-                            <li>Academic performance overview</li>
-                            <li>Current semester information</li>
+                        <h6>Academic Profile Details</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-primary">
+                                    <div class="card-body">
+                                        <h6 class="text-primary">Current Academic Status</h6>
+                                        <ul class="small">
+                                            <li><strong>Course Enrolled:</strong> Current program of study</li>
+                                            <li><strong>Class Group/Section:</strong> Assigned class division</li>
+                                            <li><strong>Current Semester:</strong> Active academic term</li>
+                                            <li><strong>Academic Year:</strong> Current session year</li>
+                                            <li><strong>Enrollment Date:</strong> Date of admission</li>
+                                            <li><strong>Expected Graduation:</strong> Projected completion date</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-success">
+                                    <div class="card-body">
+                                        <h6 class="text-success">Academic Performance Summary</h6>
+                                        <ul class="small">
+                                            <li><strong>Overall Attendance:</strong> Current attendance percentage</li>
+                                            <li><strong>Current GPA:</strong> Grade point average</li>
+                                            <li><strong>Cumulative Performance:</strong> Overall academic standing</li>
+                                            <li><strong>Academic Status:</strong> Good standing, probation, etc.</li>
+                                            <li><strong>Honors/Awards:</strong> Recognition and achievements</li>
+                                            <li><strong>Academic Advisor:</strong> Assigned faculty advisor</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Course and Subject Information</h6>
+                        <ul>
+                            <li><strong>Enrolled Subjects:</strong> Current semester subject list</li>
+                            <li><strong>Credit Hours:</strong> Total credits enrolled and completed</li>
+                            <li><strong>Faculty Assignments:</strong> Teachers for each subject</li>
+                            <li><strong>Timetable Schedule:</strong> Weekly class schedule overview</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#familyInfo">
+                        <i class="simple-icon-people"></i> Family and Guardian Information
+                    </button>
+                </div>
+                <div id="familyInfo" class="collapse" data-parent="#profileAccordion">
+                    <div class="card-body">
+                        <h6>Family Contact Details</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Father's Information</h6>
+                                        <ul class="small">
+                                            <li><strong>Father's Name:</strong> Full name of father</li>
+                                            <li><strong>Occupation:</strong> Professional details</li>
+                                            <li><strong>Contact Number:</strong> Primary phone number</li>
+                                            <li><strong>Email Address:</strong> Email for communication</li>
+                                            <li><strong>Work Address:</strong> Professional address</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Mother's Information</h6>
+                                        <ul class="small">
+                                            <li><strong>Mother's Name:</strong> Full name of mother</li>
+                                            <li><strong>Occupation:</strong> Professional details</li>
+                                            <li><strong>Contact Number:</strong> Primary phone number</li>
+                                            <li><strong>Email Address:</strong> Email for communication</li>
+                                            <li><strong>Work Address:</strong> Professional address</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Guardian and Emergency Contacts</h6>
+                        <ul>
+                            <li><strong>Primary Guardian:</strong> Main responsible person for academic matters</li>
+                            <li><strong>Local Guardian:</strong> Local contact person (if studying away from home)</li>
+                            <li><strong>Emergency Contact:</strong> Immediate contact in case of emergencies</li>
+                            <li><strong>Communication Preferences:</strong> Preferred method of contact</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="alert alert-info mt-4">
-            <h6><i class="simple-icon-settings"></i> Profile Updates</h6>
-            <p class="mb-0">To update your personal information, contact the academic office. Some information may be editable through the system.</p>
+        <h5 class="mt-4">Profile Management Features</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Editable Information</h6>
+                        <ul class="small">
+                            <li><strong>Contact Details:</strong> Update phone numbers and email addresses</li>
+                            <li><strong>Address Information:</strong> Modify residential and mailing addresses</li>
+                            <li><strong>Emergency Contacts:</strong> Update emergency contact information</li>
+                            <li><strong>Profile Photo:</strong> Upload new profile pictures</li>
+                            <li><strong>Communication Preferences:</strong> Set notification and contact preferences</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Protected Information</h6>
+                        <ul class="small">
+                            <li><strong>Academic Records:</strong> Official academic information (admin controlled)</li>
+                            <li><strong>Student ID:</strong> Unique identification numbers</li>
+                            <li><strong>Course Enrollment:</strong> Academic program details</li>
+                            <li><strong>Official Names:</strong> Legal name information</li>
+                            <li><strong>Financial Information:</strong> Fee and scholarship details</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="mt-4">Privacy and Security</h5>
+        <div class="card">
+            <div class="card-body">
+                <h6>Information Security and Privacy Controls</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li><strong>Privacy Settings:</strong> Control who can view your profile information</li>
+                            <li><strong>Data Protection:</strong> Secure storage of personal information</li>
+                            <li><strong>Access Control:</strong> Restricted access to sensitive data</li>
+                            <li><strong>Audit Trail:</strong> Track changes to profile information</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li><strong>Communication Security:</strong> Secure messaging and notifications</li>
+                            <li><strong>Data Sharing:</strong> Control sharing with third parties</li>
+                            <li><strong>Backup and Recovery:</strong> Secure backup of profile data</li>
+                            <li><strong>Compliance:</strong> Adherence to data protection regulations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="mt-4">Using Your Profile Effectively</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h6>Academic Benefits</h6>
+                        <ul class="small mb-0">
+                            <li>Accurate communication from faculty and administration</li>
+                            <li>Proper identification for examinations and events</li>
+                            <li>Emergency contact accessibility</li>
+                            <li>Academic record maintenance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h6>Communication Enhancement</h6>
+                        <ul class="small mb-0">
+                            <li>Receive important academic notifications</li>
+                            <li>Enable parent-institution communication</li>
+                            <li>Facilitate peer and faculty interaction</li>
+                            <li>Support emergency response procedures</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning mt-4">
+            <h6><i class="simple-icon-settings"></i> Profile Updates and Support</h6>
+            <p>For profile-related assistance:</p>
+            <ul class="mb-0">
+                <li>Contact the academic office to update protected information like official names or academic records</li>
+                <li>Use the profile settings to update editable information like contact details</li>
+                <li>Submit photo upload requests through the designated system process</li>
+                <li>Report any discrepancies in academic information immediately</li>
+                <li>Keep emergency contact information current and accurate</li>
+                <li>Review and update privacy settings regularly</li>
+            </ul>
         </div>
     </div>
     {% endif %}
@@ -3023,23 +3638,116 @@
         <h2><i class="simple-icon-wrench"></i> Troubleshooting</h2>
         <div class="separator mb-4"></div>
 
+        <div class="alert alert-info">
+            <h6><i class="simple-icon-info"></i> Comprehensive Troubleshooting Guide</h6>
+            <p class="mb-0">Find solutions to common issues and advanced problems across all system features including authentication, attendance, marks, timetables, notifications, and system performance.</p>
+        </div>
+
         <h5>Common Issues and Solutions</h5>
 
         <div class="accordion" id="troubleshootingAccordion">
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#issue1">
-                        <i class="simple-icon-login"></i> Cannot Login
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#loginIssues">
+                        <i class="simple-icon-login"></i> Login and Authentication Issues
                     </button>
                 </div>
-                <div id="issue1" class="collapse" data-parent="#troubleshootingAccordion">
+                <div id="loginIssues" class="collapse show" data-parent="#troubleshootingAccordion">
                     <div class="card-body">
+                        <h6>Cannot Login to System</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Basic Login Problems</h6>
+                                        <ul class="small">
+                                            <li>Verify username and password spelling</li>
+                                            <li>Check if Caps Lock is enabled</li>
+                                            <li>Clear browser cache and cookies</li>
+                                            <li>Try using a different browser</li>
+                                            <li>Disable browser extensions temporarily</li>
+                                            <li>Check internet connection stability</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Advanced Authentication Issues</h6>
+                                        <ul class="small">
+                                            <li>Account may be locked due to failed attempts</li>
+                                            <li>Password might have expired (faculty/admin)</li>
+                                            <li>Account could be deactivated by administration</li>
+                                            <li>Two-factor authentication issues</li>
+                                            <li>Session timeout from previous login</li>
+                                            <li>IP address restrictions (if applicable)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Password Reset Process</h6>
+                        <ol>
+                            <li>Click "Forgot Password" link on login page</li>
+                            <li>Enter your registered email address</li>
+                            <li>Check email for reset instructions</li>
+                            <li>Follow the secure link to create new password</li>
+                            <li>Contact administrator if email is not received within 15 minutes</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#performanceIssues">
+                        <i class="simple-icon-reload"></i> System Performance and Loading Issues
+                    </button>
+                </div>
+                <div id="performanceIssues" class="collapse" data-parent="#troubleshootingAccordion">
+                    <div class="card-body">
+                        <h6>Page Loading and Performance Problems</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-warning">
+                                    <div class="card-body">
+                                        <h6 class="text-warning">Slow Loading Pages</h6>
+                                        <ul class="small">
+                                            <li>Check internet connection speed</li>
+                                            <li>Close unnecessary browser tabs</li>
+                                            <li>Clear browser cache and temporary files</li>
+                                            <li>Disable heavy browser extensions</li>
+                                            <li>Try accessing during off-peak hours</li>
+                                            <li>Use wired connection instead of WiFi</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-danger">
+                                    <div class="card-body">
+                                        <h6 class="text-danger">Pages Not Loading</h6>
+                                        <ul class="small">
+                                            <li>Refresh page with Ctrl+F5 (force reload)</li>
+                                            <li>Check if system is under maintenance</li>
+                                            <li>Try different browser or incognito mode</li>
+                                            <li>Disable VPN if using one</li>
+                                            <li>Check firewall settings</li>
+                                            <li>Contact IT support for server status</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Browser Compatibility Issues</h6>
                         <ul>
-                            <li>Check your username and password</li>
-                            <li>Ensure Caps Lock is off</li>
-                            <li>Clear browser cache and cookies</li>
-                            <li>Try a different browser</li>
-                            <li>Contact administrator for password reset</li>
+                            <li><strong>Recommended Browsers:</strong> Chrome, Firefox, Safari, Edge (latest versions)</li>
+                            <li><strong>JavaScript Required:</strong> Ensure JavaScript is enabled</li>
+                            <li><strong>Cookies:</strong> Allow cookies for the system domain</li>
+                            <li><strong>Pop-up Blocker:</strong> Disable for attendance management system</li>
                         </ul>
                     </div>
                 </div>
@@ -3047,18 +3755,111 @@
 
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#issue2">
-                        <i class="simple-icon-reload"></i> Page Not Loading
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#attendanceIssues">
+                        <i class="simple-icon-pie-chart"></i> Attendance-Related Problems
                     </button>
                 </div>
-                <div id="issue2" class="collapse" data-parent="#troubleshootingAccordion">
+                <div id="attendanceIssues" class="collapse" data-parent="#troubleshootingAccordion">
                     <div class="card-body">
+                        <h6>Student Attendance Issues</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Attendance Not Showing</h6>
+                                        <ul class="small">
+                                            <li>Verify you're assigned to the correct class group</li>
+                                            <li>Check if you're viewing the correct semester</li>
+                                            <li>Ensure faculty has marked attendance for the class</li>
+                                            <li>Contact class teacher if attendance is missing</li>
+                                            <li>Report issue to academic office for investigation</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Incorrect Attendance Records</h6>
+                                        <ul class="small">
+                                            <li>Contact faculty immediately with specific details</li>
+                                            <li>Provide date, time, and subject information</li>
+                                            <li>Submit correction request within edit deadline</li>
+                                            <li>Follow up through academic office if needed</li>
+                                            <li>Keep documentation of your presence if available</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Faculty Attendance Marking Issues</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Cannot Access Attendance Page:</strong> Check permissions and class assignments</li>
+                                    <li><strong>Student List Not Loading:</strong> Verify class group enrollment</li>
+                                    <li><strong>Bulk Operations Failing:</strong> Check individual student status</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Unable to Edit Past Attendance:</strong> Check edit deadline settings</li>
+                                    <li><strong>System Timeout During Marking:</strong> Save progress frequently</li>
+                                    <li><strong>Duplicate Attendance Entries:</strong> Contact admin for database cleanup</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#marksIssues">
+                        <i class="simple-icon-note"></i> Marks and Grades Problems
+                    </button>
+                </div>
+                <div id="marksIssues" class="collapse" data-parent="#troubleshootingAccordion">
+                    <div class="card-body">
+                        <h6>Student Marks Viewing Issues</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-info">
+                                    <div class="card-body">
+                                        <h6 class="text-info">Marks Not Visible</h6>
+                                        <ul class="small">
+                                            <li>Verify you're viewing the correct semester</li>
+                                            <li>Check if marks have been entered by faculty</li>
+                                            <li>Ensure you're enrolled in the subject</li>
+                                            <li>Contact faculty about marks entry status</li>
+                                            <li>Check if results have been officially published</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-warning">
+                                    <div class="card-body">
+                                        <h6 class="text-warning">Grade Calculation Issues</h6>
+                                        <ul class="small">
+                                            <li>Verify marking scheme is correctly applied</li>
+                                            <li>Check if all assessment criteria are complete</li>
+                                            <li>Contact examination office for calculation queries</li>
+                                            <li>Review individual criterion marks for accuracy</li>
+                                            <li>Understand weightage distribution in grading</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Faculty Marks Entry Problems</h6>
                         <ul>
-                            <li>Check your internet connection</li>
-                            <li>Refresh the page (Ctrl + F5)</li>
-                            <li>Clear browser cache</li>
-                            <li>Disable browser extensions temporarily</li>
-                            <li>Try accessing from a different device</li>
+                            <li><strong>Cannot Access Marks Entry:</strong> Verify subject assignment and permissions</li>
+                            <li><strong>Validation Errors:</strong> Check marks against maximum values</li>
+                            <li><strong>Bulk Import Failures:</strong> Verify CSV format and student IDs</li>
+                            <li><strong>Calculation Errors:</strong> Contact admin for marking scheme verification</li>
                         </ul>
                     </div>
                 </div>
@@ -3066,17 +3867,38 @@
 
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#issue3">
-                        <i class="simple-icon-pie-chart"></i> Attendance Not Showing
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#timetableIssues">
+                        <i class="iconsminds-calendar-4"></i> Timetable and Schedule Issues
                     </button>
                 </div>
-                <div id="issue3" class="collapse" data-parent="#troubleshootingAccordion">
+                <div id="timetableIssues" class="collapse" data-parent="#timetableAccordion">
                     <div class="card-body">
+                        <h6>Schedule Display Problems</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Empty Timetable:</strong> Check class group assignment</li>
+                                    <li><strong>Outdated Schedule:</strong> Refresh page or clear cache</li>
+                                    <li><strong>Missing Classes:</strong> Verify enrollment status</li>
+                                    <li><strong>Incorrect Faculty Info:</strong> Report to academic office</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Extra Classes Not Showing:</strong> Check notification settings</li>
+                                    <li><strong>Cancelled Classes Still Visible:</strong> Wait for admin update</li>
+                                    <li><strong>Room Information Missing:</strong> Contact administration</li>
+                                    <li><strong>Mobile Display Issues:</strong> Use landscape orientation</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">Faculty Timetable Management Issues</h6>
                         <ul>
-                            <li>Check if you're assigned to a class group</li>
-                            <li>Verify the semester selection</li>
-                            <li>Contact class teacher about attendance marking</li>
-                            <li>Report the issue to administration</li>
+                            <li><strong>Cannot Create Timetable Entry:</strong> Check for scheduling conflicts</li>
+                            <li><strong>Faculty Assignment Problems:</strong> Verify subject expertise</li>
+                            <li><strong>Time Slot Conflicts:</strong> Review existing assignments</li>
+                            <li><strong>Substitution Issues:</strong> Contact admin for approval</li>
                         </ul>
                     </div>
                 </div>
@@ -3084,17 +3906,50 @@
 
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#issue4">
-                        <i class="simple-icon-note"></i> Marks Not Visible
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#notificationIssues">
+                        <i class="simple-icon-bell"></i> Notification and Communication Problems
                     </button>
                 </div>
-                <div id="issue4" class="collapse" data-parent="#troubleshootingAccordion">
+                <div id="notificationIssues" class="collapse" data-parent="#troubleshootingAccordion">
                     <div class="card-body">
+                        <h6>Email and Notification Issues</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Not Receiving Notifications</h6>
+                                        <ul class="small">
+                                            <li>Check email address in profile settings</li>
+                                            <li>Look in spam/junk email folders</li>
+                                            <li>Verify notification preferences are enabled</li>
+                                            <li>Contact system administrator for email system status</li>
+                                            <li>Add system email to safe sender list</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6>Delayed or Duplicate Notifications</h6>
+                                        <ul class="small">
+                                            <li>Email server delays are normal (up to 30 minutes)</li>
+                                            <li>Check if multiple devices are causing duplicates</li>
+                                            <li>Update notification frequency settings</li>
+                                            <li>Report persistent issues to IT support</li>
+                                            <li>Clear email client cache and restart</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3">System Announcement Issues</h6>
                         <ul>
-                            <li>Verify you're viewing the correct semester</li>
-                            <li>Check if marks have been entered by faculty</li>
-                            <li>Ensure you're enrolled in the subject</li>
-                            <li>Contact faculty or academic office</li>
+                            <li><strong>Announcements Not Displaying:</strong> Check user role permissions</li>
+                            <li><strong>Cannot Mark as Read:</strong> Try refreshing the page</li>
+                            <li><strong>Missing Important Notifications:</strong> Check notification history</li>
+                            <li><strong>Parent Notifications Not Working:</strong> Verify parent email in profile</li>
                         </ul>
                     </div>
                 </div>
@@ -3102,21 +3957,122 @@
 
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#issue5">
-                        <i class="simple-icon-bell"></i> Not Receiving Notifications
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#reportIssues">
+                        <i class="simple-icon-printer"></i> Report Generation Problems
                     </button>
                 </div>
-                <div id="issue5" class="collapse" data-parent="#troubleshootingAccordion">
+                <div id="reportIssues" class="collapse" data-parent="#troubleshootingAccordion">
                     <div class="card-body">
-                        <ul>
-                            <li>Check your email address in profile</li>
-                            <li>Look in spam/junk email folders</li>
-                            <li>Verify notification settings</li>
-                            <li>Contact system administrator</li>
+                        <h6>Report Download and Generation Issues</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Report Generation Fails:</strong> Check date range validity</li>
+                                    <li><strong>Empty Reports:</strong> Verify data exists for selected criteria</li>
+                                    <li><strong>Download Interrupted:</strong> Try during off-peak hours</li>
+                                    <li><strong>Excel File Corrupted:</strong> Use CSV format alternative</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Permission Denied:</strong> Check report access permissions</li>
+                                    <li><strong>Large File Timeout:</strong> Request smaller date ranges</li>
+                                    <li><strong>Format Issues:</strong> Update Microsoft Office or use online viewer</li>
+                                    <li><strong>Scheduled Reports Missing:</strong> Verify email settings</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#mobileIssues">
+                        <i class="simple-icon-screen-smartphone"></i> Mobile and Device-Specific Issues
+                    </button>
+                </div>
+                <div id="mobileIssues" class="collapse" data-parent="#troubleshootingAccordion">
+                    <div class="card-body">
+                        <h6>Mobile Device Problems</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-primary">
+                                    <div class="card-body">
+                                        <h6 class="text-primary">Display and Layout Issues</h6>
+                                        <ul class="small">
+                                            <li>Use landscape orientation for better timetable viewing</li>
+                                            <li>Zoom out if content appears cut off</li>
+                                            <li>Clear mobile browser cache regularly</li>
+                                            <li>Update mobile browser to latest version</li>
+                                            <li>Try desktop version if mobile version fails</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-success">
+                                    <div class="card-body">
+                                        <h6 class="text-success">Touch and Navigation Issues</h6>
+                                        <ul class="small">
+                                            <li>Tap and hold for context menus</li>
+                                            <li>Use pinch-to-zoom for better visibility</li>
+                                            <li>Scroll slowly to avoid accidental taps</li>
+                                            <li>Double-tap to zoom on specific content</li>
+                                            <li>Use native browser instead of in-app browsers</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="mt-4">Emergency Procedures</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card bg-danger text-white">
+                    <div class="card-body">
+                        <h6>Critical System Issues</h6>
+                        <ul class="small mb-0">
+                            <li>Complete system outage or inaccessibility</li>
+                            <li>Data loss or corruption concerns</li>
+                            <li>Security breaches or unauthorized access</li>
+                            <li>Attendance marking failures during exams</li>
+                            <li>Grade calculation errors affecting results</li>
                         </ul>
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body">
+                        <h6>Escalation Process</h6>
+                        <ul class="small mb-0">
+                            <li>Contact IT helpdesk immediately</li>
+                            <li>Report to academic office for academic issues</li>
+                            <li>Document the problem with screenshots</li>
+                            <li>Provide detailed steps to reproduce</li>
+                            <li>Follow up within 24 hours if unresolved</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-success mt-4">
+            <h6><i class="simple-icon-support"></i> Getting Additional Help</h6>
+            <p>When troubleshooting doesn't resolve your issue:</p>
+            <ul class="mb-0">
+                <li><strong>Academic Issues:</strong> Contact your class teacher or academic office</li>
+                <li><strong>Technical Problems:</strong> Reach out to IT support with detailed problem description</li>
+                <li><strong>Account Issues:</strong> Contact administration for account-related problems</li>
+                <li><strong>Emergency Situations:</strong> Use emergency contact numbers for urgent academic matters</li>
+                <li><strong>Feature Requests:</strong> Submit suggestions through proper channels</li>
+                <li><strong>Training Needs:</strong> Request additional training sessions for complex features</li>
+            </ul>
         </div>
     </div>
 
@@ -3125,115 +4081,512 @@
         <h2><i class="simple-icon-question"></i> Frequently Asked Questions</h2>
         <div class="separator mb-4"></div>
 
+        <div class="alert alert-info">
+            <h6><i class="simple-icon-info"></i> Comprehensive FAQ Collection</h6>
+            <p class="mb-0">Find answers to the most commonly asked questions about all system features, organized by category for easy navigation and understanding.</p>
+        </div>
+
         <div class="accordion" id="faqAccordion">
+            <!-- General System Questions -->
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq1">
-                        How often is attendance updated?
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#generalFAQs">
+                        <i class="simple-icon-home"></i> General System Questions
                     </button>
                 </div>
-                <div id="faq1" class="collapse show" data-parent="#faqAccordion">
+                <div id="generalFAQs" class="collapse show" data-parent="#faqAccordion">
                     <div class="card-body">
-                        Attendance is updated in real-time as soon as faculty members mark it. You should see your attendance reflected immediately after each class.
+                        <div class="accordion" id="generalQuestionsAccordion">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#faq1">
+                                        How often is attendance updated in the system?
+                                    </button>
+                                </div>
+                                <div id="faq1" class="collapse show" data-parent="#generalQuestionsAccordion">
+                                    <div class="card-body">
+                                        Attendance is updated in real-time as soon as faculty members mark it. You should see your attendance reflected immediately after each class. The system processes updates instantly and sends notifications to students and parents as configured.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#faq2">
+                                        Can I view attendance and marks for previous semesters?
+                                    </button>
+                                </div>
+                                <div id="faq2" class="collapse" data-parent="#generalQuestionsAccordion">
+                                    <div class="card-body">
+                                        Yes, you can access historical data for all previous semesters. Use the semester dropdown in the attendance and marks sections to select any previous academic term. All data is permanently stored and accessible throughout your academic journey.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#faq3">
+                                        How do I change my password?
+                                    </button>
+                                </div>
+                                <div id="faq3" class="collapse" data-parent="#generalQuestionsAccordion">
+                                    <div class="card-body">
+                                        Go to your profile page and look for the "Change Password" option. You'll need to enter your current password and choose a new one. If you've forgotten your current password, use the "Forgot Password" link on the login page.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#faq4">
+                                        What browsers are supported by the system?
+                                    </button>
+                                </div>
+                                <div id="faq4" class="collapse" data-parent="#generalQuestionsAccordion">
+                                    <div class="card-body">
+                                        The system works best with modern browsers: Chrome, Firefox, Safari, and Edge (latest versions). Internet Explorer is not supported. Make sure JavaScript is enabled and cookies are allowed for optimal functionality.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Attendance FAQs -->
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq2">
-                        Can I view attendance for previous semesters?
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#attendanceFAQs">
+                        <i class="simple-icon-pie-chart"></i> Attendance Questions
                     </button>
                 </div>
-                <div id="faq2" class="collapse" data-parent="#faqAccordion">
+                <div id="attendanceFAQs" class="collapse" data-parent="#faqAccordion">
                     <div class="card-body">
-                        Yes, you can view attendance for all semesters. Use the semester dropdown in the attendance section to select previous semesters.
+                        <div class="accordion" id="attendanceQuestionsAccordion">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#afaq1">
+                                        What if my attendance is marked incorrectly?
+                                    </button>
+                                </div>
+                                <div id="afaq1" class="collapse show" data-parent="#attendanceQuestionsAccordion">
+                                    <div class="card-body">
+                                        Contact your class teacher or the academic office immediately with specific details (date, time, subject). Attendance corrections must be requested within the system's edit deadline period. Provide any supporting documentation if available.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#afaq2">
+                                        How is the attendance percentage calculated?
+                                    </button>
+                                </div>
+                                <div id="afaq2" class="collapse" data-parent="#attendanceQuestionsAccordion">
+                                    <div class="card-body">
+                                        Attendance percentage = (Classes Attended / Total Classes Conducted) × 100. This includes regular classes, extra classes, and any make-up sessions. Cancelled classes are excluded from the total count. Late arrivals count as present but are tracked separately.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#afaq3">
+                                        Do extra classes count toward total attendance?
+                                    </button>
+                                </div>
+                                <div id="afaq3" class="collapse" data-parent="#attendanceQuestionsAccordion">
+                                    <div class="card-body">
+                                        Yes, extra classes count toward your total attendance. Attending extra classes can help improve your overall attendance percentage. Missing them will affect your attendance, so it's important to attend these additional sessions when scheduled.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#afaq4">
+                                        What's the difference between 'Late' and 'Absent'?
+                                    </button>
+                                </div>
+                                <div id="afaq4" class="collapse" data-parent="#attendanceQuestionsAccordion">
+                                    <div class="card-body">
+                                        'Late' means you arrived after class started but were still marked present - this counts toward your attendance but is tracked for punctuality monitoring. 'Absent' means you didn't attend the class at all and doesn't count toward your attendance percentage.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#afaq5">
+                                        Can faculty edit attendance after marking it?
+                                    </button>
+                                </div>
+                                <div id="afaq5" class="collapse" data-parent="#attendanceQuestionsAccordion">
+                                    <div class="card-body">
+                                        Yes, faculty can edit attendance records for a limited time after initial marking (usually 3 days, but check system settings). After the edit deadline, only administrators can make changes. This policy ensures data integrity while allowing reasonable corrections.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Marks and Grades FAQs -->
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq3">
-                        What if my attendance is marked incorrectly?
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#marksFAQs">
+                        <i class="simple-icon-graduation"></i> Marks and Grades Questions
                     </button>
                 </div>
-                <div id="faq3" class="collapse" data-parent="#faqAccordion">
+                <div id="marksFAQs" class="collapse" data-parent="#faqAccordion">
                     <div class="card-body">
-                        Contact your class teacher or the academic office immediately. Attendance corrections must be requested within the system's edit deadline period.
+                        <div class="accordion" id="marksQuestionsAccordion">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#mfaq1">
+                                        When are marks typically updated?
+                                    </button>
+                                </div>
+                                <div id="mfaq1" class="collapse show" data-parent="#marksQuestionsAccordion">
+                                    <div class="card-body">
+                                        Marks are updated by faculty members after assessments are completed and graded. The timing depends on the type of assessment - internal tests usually within a week, assignments within 2 weeks, and major exams within the institutional deadline.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#mfaq2">
+                                        How are final grades calculated?
+                                    </button>
+                                </div>
+                                <div id="mfaq2" class="collapse" data-parent="#marksQuestionsAccordion">
+                                    <div class="card-body">
+                                        Final grades are calculated using the marking scheme defined for each course. Different assessment criteria (internals, assignments, mid-terms, finals) have specific weightages. The system automatically calculates your total marks and assigns grades based on institutional grading scales.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#mfaq3">
+                                        Can I download my marks report?
+                                    </button>
+                                </div>
+                                <div id="mfaq3" class="collapse" data-parent="#marksQuestionsAccordion">
+                                    <div class="card-body">
+                                        Yes, you can download detailed marks reports in PDF format from the marks section. These include semester-wise performance, subject-wise breakdown, and cumulative academic records. Reports are digitally signed for authenticity.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#mfaq4">
+                                        What happens if I fail to meet the minimum percentage?
+                                    </button>
+                                </div>
+                                <div id="mfaq4" class="collapse" data-parent="#marksQuestionsAccordion">
+                                    <div class="card-body">
+                                        If you don't meet the minimum passing percentage, you'll need to appear for re-examinations or complete additional assessments as per institutional policy. Academic counseling and support services are available to help improve performance.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#mfaq5">
+                                        How do I request a re-evaluation of marks?
+                                    </button>
+                                </div>
+                                <div id="mfaq5" class="collapse" data-parent="#marksQuestionsAccordion">
+                                    <div class="card-body">
+                                        Contact the respective subject faculty first for clarification. If still unsatisfied, submit a formal re-evaluation request to the examination office within the specified deadline. Follow institutional guidelines for the re-evaluation process.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Timetable and Schedule FAQs -->
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq4">
-                        How do I change my password?
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#timetableFAQs">
+                        <i class="iconsminds-calendar-4"></i> Timetable and Schedule Questions
                     </button>
                 </div>
-                <div id="faq4" class="collapse" data-parent="#faqAccordion">
+                <div id="timetableFAQs" class="collapse" data-parent="#faqAccordion">
                     <div class="card-body">
-                        Go to your profile page and look for the "Change Password" option. You'll need to enter your current password and choose a new one.
+                        <div class="accordion" id="timetableQuestionsAccordion">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#tfaq1">
+                                        How do I know about schedule changes?
+                                    </button>
+                                </div>
+                                <div id="tfaq1" class="collapse show" data-parent="#timetableQuestionsAccordion">
+                                    <div class="card-body">
+                                        The system sends automatic notifications about schedule changes, extra classes, and cancellations via email and in-system alerts. Check your email regularly and enable push notifications if available. Important changes are also posted on the announcements board.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#tfaq2">
+                                        What happens when a faculty member is absent?
+                                    </button>
+                                </div>
+                                <div id="tfaq2" class="collapse" data-parent="#timetableQuestionsAccordion">
+                                    <div class="card-body">
+                                        When faculty is absent, administration will either arrange a substitute teacher or reschedule the class. You'll receive notifications about the arrangement. Substitute teachers are qualified in the subject and can mark attendance and conduct classes normally.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#tfaq3">
+                                        Can I access my timetable from mobile devices?
+                                    </button>
+                                </div>
+                                <div id="tfaq3" class="collapse" data-parent="#timetableQuestionsAccordion">
+                                    <div class="card-body">
+                                        Yes, the system is mobile-responsive and works well on smartphones and tablets. For better timetable viewing on mobile, use landscape orientation. The mobile version includes all features like schedule viewing, notifications, and attendance tracking.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#tfaq4">
+                                        How far in advance are extra classes scheduled?
+                                    </button>
+                                </div>
+                                <div id="tfaq4" class="collapse" data-parent="#timetableQuestionsAccordion">
+                                    <div class="card-body">
+                                        Extra classes are typically scheduled at least 24 hours in advance to ensure all students receive notification. However, in urgent cases (exam preparation, curriculum completion), they may be scheduled with shorter notice. Always check your notifications regularly.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Faculty-Specific FAQs -->
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq5">
-                        When are marks typically updated?
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#facultyFAQs">
+                        <i class="simple-icon-user-follow"></i> Faculty-Specific Questions
                     </button>
                 </div>
-                <div id="faq5" class="collapse" data-parent="#faqAccordion">
+                <div id="facultyFAQs" class="collapse" data-parent="#faqAccordion">
                     <div class="card-body">
-                        Marks are updated by faculty members after assessments are completed and graded. The timing depends on the type of assessment and faculty schedule.
+                        <div class="accordion" id="facultyQuestionsAccordion">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#ffaq1">
+                                        How do I request a substitution?
+                                    </button>
+                                </div>
+                                <div id="ffaq1" class="collapse show" data-parent="#facultyQuestionsAccordion">
+                                    <div class="card-body">
+                                        Submit a substitution request through the faculty tools section, providing the date, time, reason, and any special instructions. Administration will assign a qualified substitute and notify all relevant parties. Submit requests as early as possible for better arrangement.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#ffaq2">
+                                        Can I mark attendance for substitute classes?
+                                    </button>
+                                </div>
+                                <div id="ffaq2" class="collapse" data-parent="#facultyQuestionsAccordion">
+                                    <div class="card-body">
+                                        Yes, when teaching as a substitute, you can mark attendance for the class. You'll have access to the complete student roster and can mark attendance normally. Notes and observations can be shared with the regular faculty member.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#ffaq3">
+                                        How do I import marks from external files?
+                                    </button>
+                                </div>
+                                <div id="ffaq3" class="collapse" data-parent="#facultyQuestionsAccordion">
+                                    <div class="card-body">
+                                        Use the bulk marks import feature in the faculty tools section. Download the CSV template, fill in the marks data with correct student IDs, and upload the file. The system will validate the data and show a preview before final import.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#ffaq4">
+                                        What if I make a mistake while marking attendance?
+                                    </button>
+                                </div>
+                                <div id="ffaq4" class="collapse" data-parent="#facultyQuestionsAccordion">
+                                    <div class="card-body">
+                                        You can edit attendance records within the system's edit deadline (usually 3 days). After this period, contact administration for corrections. Always review attendance before saving, and use the bulk correction features for systematic errors.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Admin FAQs -->
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq6">
-                        Can I download my attendance report?
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#adminFAQs">
+                        <i class="simple-icon-settings"></i> Administrator Questions
                     </button>
                 </div>
-                <div id="faq6" class="collapse" data-parent="#faqAccordion">
+                <div id="adminFAQs" class="collapse" data-parent="#faqAccordion">
                     <div class="card-body">
-                        Yes, most sections have download options for reports. Look for "Download" or "Export" buttons in the attendance and marks sections.
+                        <div class="accordion" id="adminQuestionsAccordion">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#adfaq1">
+                                        How do I set up email notifications?
+                                    </button>
+                                </div>
+                                <div id="adfaq1" class="collapse show" data-parent="#adminQuestionsAccordion">
+                                    <div class="card-body">
+                                        Configure SMTP settings in the system settings section. Enter your email server details (host, port, username, password) and test the configuration. Enable specific notification types and set recipient preferences for different types of alerts.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#adfaq2">
+                                        How often should I backup the system?
+                                    </button>
+                                </div>
+                                <div id="adfaq2" class="collapse" data-parent="#adminQuestionsAccordion">
+                                    <div class="card-body">
+                                        The system is configured for daily automatic backups with a retention policy (default: 7 days). You can also perform manual backups before major system changes. Store backups in secure, offsite locations and test restoration procedures regularly.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#adfaq3">
+                                        How do I manage user permissions?
+                                    </button>
+                                </div>
+                                <div id="adfaq3" class="collapse" data-parent="#adminQuestionsAccordion">
+                                    <div class="card-body">
+                                        User permissions are role-based (Admin, Faculty, Student, HOD). Assign users to appropriate roles and the system automatically grants relevant permissions. For custom permissions, modify individual user settings or create custom role groups as needed.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#adfaq4">
+                                        What should I do if the system becomes slow?
+                                    </button>
+                                </div>
+                                <div id="adfaq4" class="collapse" data-parent="#adminQuestionsAccordion">
+                                    <div class="card-body">
+                                        Check system performance metrics in the admin dashboard. Common solutions include clearing old logs, optimizing database queries, increasing server resources, or scheduling heavy operations during off-peak hours. Monitor user activity patterns and plan accordingly.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Technical FAQs -->
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq7">
-                        What happens if I miss an extra class?
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#technicalFAQs">
+                        <i class="simple-icon-screen-desktop"></i> Technical Questions
                     </button>
                 </div>
-                <div id="faq7" class="collapse" data-parent="#faqAccordion">
+                <div id="technicalFAQs" class="collapse" data-parent="#faqAccordion">
                     <div class="card-body">
-                        Extra classes count toward your total attendance. Missing them will affect your overall attendance percentage. Contact your faculty for makeup options.
-                    </div>
-                </div>
-            </div>
+                        <div class="accordion" id="technicalQuestionsAccordion">
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#techfaq1">
+                                        Is my data secure in the system?
+                                    </button>
+                                </div>
+                                <div id="techfaq1" class="collapse show" data-parent="#technicalQuestionsAccordion">
+                                    <div class="card-body">
+                                        Yes, the system uses industry-standard security measures including encrypted data transmission, secure authentication, role-based access control, and regular security audits. All personal and academic data is protected according to data protection regulations.
+                                    </div>
+                                </div>
+                            </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faq8">
-                        How do I know about schedule changes?
-                    </button>
-                </div>
-                <div id="faq8" class="collapse" data-parent="#faqAccordion">
-                    <div class="card-body">
-                        The system sends automatic notifications about schedule changes, extra classes, and cancellations. Check your email and the announcements section regularly.
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#techfaq2">
+                                        Can I integrate the system with other software?
+                                    </button>
+                                </div>
+                                <div id="techfaq2" class="collapse" data-parent="#technicalQuestionsAccordion">
+                                    <div class="card-body">
+                                        The system supports data export in various formats (Excel, CSV, PDF) for integration with other systems. For direct API integration or custom connections, contact your IT department or system administrator for technical specifications.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#techfaq3">
+                                        What happens during system maintenance?
+                                    </button>
+                                </div>
+                                <div id="techfaq3" class="collapse" data-parent="#technicalQuestionsAccordion">
+                                    <div class="card-body">
+                                        During scheduled maintenance, the system may be temporarily unavailable. Users receive advance notification via email and system announcements. Emergency maintenance is performed only when necessary, with minimal disruption to academic activities.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#techfaq4">
+                                        How long is data retained in the system?
+                                    </button>
+                                </div>
+                                <div id="techfaq4" class="collapse" data-parent="#technicalQuestionsAccordion">
+                                    <div class="card-body">
+                                        Academic data (attendance, marks, transcripts) is retained permanently for institutional records. Personal data is retained according to institutional policy and legal requirements. Users can request data deletion after graduation, subject to record-keeping obligations.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="alert alert-info mt-4">
-            <h6><i class="simple-icon-support"></i> Need More Help?</h6>
-            <p class="mb-0">If you can't find the answer to your question, contact your institution's IT support or academic office for personalized assistance.</p>
+        <div class="alert alert-success mt-4">
+            <h6><i class="simple-icon-support"></i> Still Need Help?</h6>
+            <p>If you can't find the answer to your question in this comprehensive FAQ:</p>
+            <ul class="mb-0">
+                <li><strong>Academic Questions:</strong> Contact your class teacher or academic office</li>
+                <li><strong>Technical Issues:</strong> Reach out to IT support with detailed problem description</li>
+                <li><strong>Account Problems:</strong> Contact administration for account-related assistance</li>
+                <li><strong>Training Needs:</strong> Request additional training sessions for system features</li>
+                <li><strong>Feature Suggestions:</strong> Submit feedback through proper institutional channels</li>
+                <li><strong>Emergency Support:</strong> Use emergency contact numbers for urgent academic matters</li>
+            </ul>
         </div>
     </div>
 </div>
