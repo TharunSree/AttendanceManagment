@@ -85,6 +85,16 @@ urlpatterns = [
     path('guide/', views.guide_view, name='guide'),
     path('ajax/teacher-class-subjects/', views.get_teacher_class_subjects_view, name='get_teacher_class_subjects'),
     path('ajax/subject-faculty/', views.get_subject_faculty_view, name='get_subject_faculty'),
+    path('backup-restore/', views.backup_restore_view, name='backup_restore'),
+    path('settings/smtp/', views.smtp_settings_view, name='smtp_settings'),
+    path('reports/', views.system_reports_view, name='system_reports'),
+    path('update-status/', views.update_status_view, name='update_status'),
+    path('bulk-email/', views.bulk_email_view, name='bulk_email'),
+    path('publish-results/', views.publish_results_view, name='publish_results'),
+    path('publish-results/send/<int:student_id>/<int:group_id>/<int:semester>/', views.send_parent_report_email_view,
+         name='send_parent_report'),
+    path('publish-results/bulk/<int:group_id>/<int:semester>/', views.bulk_publish_results_view,
+         name='bulk_publish_results'),
 
     # --- Academic Session Management URLs ---
 

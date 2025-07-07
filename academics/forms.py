@@ -53,7 +53,8 @@ class AddStudentForm(forms.Form):
     last_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
-
+    gender = forms.ChoiceField(choices=Profile.GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), )
     student_id_number = forms.CharField(max_length=20, required=True,
                                         widget=forms.TextInput(attrs={'class': 'form-control'}))
     contact_number = forms.CharField(max_length=15, required=False,
@@ -70,6 +71,10 @@ class AddStudentForm(forms.Form):
     mother_phone = forms.CharField(max_length=15, required=False,
                                    widget=forms.TextInput(attrs={'class': 'form-control'}))
     address = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
+    parent_email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Optional parent email'})
+    )
 
     # -------------------------
 
@@ -116,12 +121,19 @@ class EditStudentForm(forms.ModelForm):
     first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    gender = forms.ChoiceField(choices=Profile.GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), )
+    parent_email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Optional parent email'})
+    )
 
     class Meta:
         model = Profile
         # --- UPDATED FIELDS LIST ---
         fields = ['photo', 'student_id_number', 'contact_number', 'father_name', 'father_phone', 'mother_name',
-                  'mother_phone', 'address']
+                  'mother_phone', 'address', 'gender', 'date_of_birth', 'first_name', 'last_name', 'email',
+                  'parent_email']
         # ---------------------------
         widgets = {
             'student_id_number': forms.TextInput(attrs={'class': 'form-control'}),
@@ -150,11 +162,22 @@ class TimeSlotForm(forms.ModelForm):
 class AttendanceSettingsForm(forms.ModelForm):
     class Meta:
         model = AttendanceSettings
-        fields = ['required_percentage', 'mark_deadline_days', 'edit_deadline_days']
+        fields = ['required_percentage', 'mark_deadline_days', 'edit_deadline_days', 'passing_percentage',
+                  'cancellation_threshold_hours',
+                  'number_of_backups_to_retain',
+                  'session_timeout_seconds',
+                  'notification_recipient_email',
+                  ]
         widgets = {
             'required_percentage': forms.NumberInput(attrs={'class': 'form-control'}),
             'mark_deadline_days': forms.NumberInput(attrs={'class': 'form-control'}),
             'edit_deadline_days': forms.NumberInput(attrs={'class': 'form-control'}),
+            'passing_percentage': forms.NumberInput(attrs={'class': 'form-control'}),
+            'cancellation_threshold_hours': forms.NumberInput(attrs={'class': 'form-control'}),
+            'number_of_backups_to_retain': forms.NumberInput(attrs={'class': 'form-control'}),
+            'session_timeout_seconds': forms.NumberInput(attrs={'class': 'form-control'}),
+            'notification_recipient_email': forms.EmailInput(
+                attrs={'class': 'form-control', 'placeholder': 'e.g., admin@example.com'}),
         }
 
 
@@ -481,3 +504,58 @@ class ExtraClassForm(forms.ModelForm):
                            f"The subject '{subject.subject.name}' is not part of the '{class_group.course.name}' course.")
 
         return cleaned_data
+
+
+class SmtpSettingsForm(forms.ModelForm):
+    class Meta:
+        model = AttendanceSettings
+        fields = [
+            'email_host',
+            'email_port',
+            'email_host_user',
+            'email_host_password',
+            'email_use_tls',
+            'email_use_ssl',
+        ]
+        widgets = {
+            'email_host': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., smtp.gmail.com'}),
+            'email_port': forms.NumberInput(attrs={'class': 'form-control'}),
+            'email_host_user': forms.EmailInput(
+                attrs={'class': 'form-control', 'placeholder': 'e.g., your-email@example.com'}),
+            'email_host_password': forms.PasswordInput(
+                attrs={'class': 'form-control', 'placeholder': 'Enter email or app password'}, render_value=True),
+            'email_use_tls': forms.CheckboxInput(attrs={'class': 'custom-control-input'}),
+            'email_use_ssl': forms.CheckboxInput(attrs={'class': 'custom-control-input'}),
+        }
+
+
+class BulkEmailForm(forms.Form):
+    RECIPIENT_CHOICES = [
+        ('all_students', 'All Students'),
+        ('all_faculty', 'All Faculty'),
+    ]
+
+    # Get all student groups and add them to the choices
+    # This uses a try-except block to prevent errors if the database isn't ready during migrations
+    try:
+        student_groups = [(f'group_{g.id}', g.name) for g in StudentGroup.objects.all()]
+        RECIPIENT_CHOICES += student_groups
+    except Exception:
+        pass
+
+    recipients = forms.MultipleChoiceField(
+        choices=RECIPIENT_CHOICES,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control select2-multiple'}),
+        required=True,
+        label="Recipients"
+    )
+    subject = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=True
+    )
+    message = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 10}),
+        required=True,
+        help_text="This message will be placed inside the standard email template."
+    )

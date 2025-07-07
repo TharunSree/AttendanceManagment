@@ -1,0 +1,34 @@
+{% extends 'emails/email_base.html' %}
+
+{% block title %}Notification of Extra Class{% endblock %}
+
+{% block preheader %}Extra Class Scheduled{% endblock %}
+
+{% block content %}
+    <p>Dear Student,</p>
+    <p>Please note that an extra class has been scheduled for your group. The details are as follows:</p>
+    <table border="0" cellpadding="10" cellspacing="0"
+           style="width: 100%; border: 1px solid #e4e2e2; margin-top: 20px; margin-bottom: 20px;">
+        <tr>
+            <td style="background-color: #f8f8f8; width: 120px;"><strong>Subject:</strong></td>
+            <td>{{ extra_class.subject.subject.name }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #f8f8f8;"><strong>Faculty:</strong></td>
+            <td>{{ extra_class.teacher.get_full_name }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #f8f8f8;"><strong>Date:</strong></td>
+            <td>{{ extra_class.date|date:"l, F j, Y" }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #f8f8f8;"><strong>Time:</strong></td>
+            <td>{{ extra_class.time_slot.start_time|time:"g:i A" }}
+                - {{ extra_class.time_slot.end_time|time:"g:i A" }}</td>
+        </tr>
+    </table>
+    <p>Please make a note of this and ensure your attendance.</p>
+    <br>
+    <p>Thank you,</p>
+    <p><strong>System Administration</strong></p>
+{% endblock %}

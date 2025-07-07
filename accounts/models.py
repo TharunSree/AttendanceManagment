@@ -11,11 +11,19 @@ class Profile(models.Model):
         ('student', 'Student'),
         ('hod', 'Head of Department'),
     )
+    GENDER_CHOICES = [
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other'),
+    ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     student_id_number = models.CharField(max_length=20, unique=True, null=True, blank=True)
     contact_number = models.CharField(max_length=15, null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    parent_email = models.EmailField(max_length=255, blank=True, null=True)
 
     student_group = models.ForeignKey(
         'academics.StudentGroup',
@@ -44,6 +52,7 @@ class Profile(models.Model):
         permissions = [
             ("view_own_profile", "Can view own profile"),
         ]
+
     def __str__(self):
         return f"{self.user.username} - {self.get_role_display()}"
 
@@ -72,3 +81,25 @@ class Notification(models.Model):
 
     class Meta:
         ordering = ['-timestamp']
+
+
+class UserActivityLog(models.Model):
+    ACTION_CHOICES = [
+        ('login_success', 'Login Success'),
+        ('login_failed', 'Login Failed'),
+        ('logout', 'Logout'),
+        ('session_timeout', 'Session Timeout'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    username = models.CharField(max_length=150, help_text="The username used in the action.")
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f"{self.username} - {self.get_action_display()} at {self.timestamp.strftime('%Y-%m-%d %H:%M')}"

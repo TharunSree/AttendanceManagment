@@ -137,12 +137,17 @@ class Timetable(models.Model):
         ('Monday', 'Monday'), ('Tuesday', 'Tuesday'), ('Wednesday', 'Wednesday'),
         ('Thursday', 'Thursday'), ('Friday', 'Friday'), ('Saturday', 'Saturday'), ('Sunday', 'Sunday')
     ]
+    STATUS_CHOICES = [  # <-- ADD THIS
+        ('scheduled', 'Scheduled'),
+        ('cancelled', 'Cancelled'),
+    ]
     student_group = models.ForeignKey(StudentGroup, on_delete=models.CASCADE, related_name='timetable_entries')
     subject = models.ForeignKey(CourseSubject, on_delete=models.CASCADE, related_name='timetable_entries')
     faculty = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='timetable_entries',
                                 limit_choices_to={'profile__role': 'faculty'})
     day_of_week = models.CharField(max_length=10, choices=DAY_CHOICES)
     time_slot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE, related_name='timetable_entries')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='scheduled')
 
     class Meta:
         permissions = [
@@ -165,6 +170,36 @@ class AttendanceSettings(models.Model):
                                                      help_text="Number of days a faculty has to mark attendance.")
     edit_deadline_days = models.PositiveIntegerField(default=3,
                                                      help_text="Number of days a faculty has to edit attendance after marking.")
+    passing_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, default=40.00,
+        help_text="The minimum percentage required to pass a subject."
+    )
+    cancellation_threshold_hours = models.PositiveIntegerField(
+        default=2,
+        help_text="Hours after a class is scheduled that it will be auto-cancelled if attendance is not taken."
+    )
+    number_of_backups_to_retain = models.PositiveIntegerField(
+        default=7,
+        help_text="The number of recent daily backups to keep. Older backups will be deleted."
+    )
+    session_timeout_seconds = models.PositiveIntegerField(
+        default=3600,  # Default to 1 hour
+        help_text="The number of seconds of inactivity before a user is automatically logged out."
+    )
+
+    email_host = models.CharField(max_length=255, blank=True, null=True, help_text="e.g., 'smtp.gmail.com'")
+    email_port = models.PositiveIntegerField(default=587, help_text="e.g., 587 for TLS")
+    email_host_user = models.EmailField(max_length=255, blank=True, null=True,
+                                        help_text="The email address to send from.")
+    email_host_password = models.CharField(max_length=255, blank=True, null=True,
+                                           help_text="The email password or app password.")
+    email_use_tls = models.BooleanField(default=True, help_text="Use TLS (Transport Layer Security). Recommended.")
+    email_use_ssl = models.BooleanField(default=False,
+                                        help_text="Use SSL (Secure Sockets Layer). Less common than TLS.")
+    notification_recipient_email = models.EmailField(
+        max_length=255, blank=True, null=True,
+        help_text="The email address that receives system notifications (e.g., auto-cancellations)."
+    )
 
     @classmethod
     def load(cls):
@@ -229,8 +264,8 @@ class AttendanceRecord(models.Model):
             # Ensure that for each record, either timetable or extra_class is set, but not both.
             models.CheckConstraint(
                 check=(
-                    (Q(timetable__isnull=False) & Q(extra_class__isnull=True)) |
-                    (Q(timetable__isnull=True) & Q(extra_class__isnull=False))
+                        (Q(timetable__isnull=False) & Q(extra_class__isnull=True)) |
+                        (Q(timetable__isnull=True) & Q(extra_class__isnull=False))
                 ),
                 name='one_of_timetable_or_extraclass'
             ),
@@ -244,7 +279,6 @@ class AttendanceRecord(models.Model):
     def __str__(self):
         session_type = "Timetable" if self.timetable else "Extra Class"
         return f"{self.student.username} on {self.date} ({session_type}) - {self.status}"
-
 
 
 class ClassCancellation(models.Model):
@@ -367,6 +401,10 @@ class Mark(models.Model):
 
 
 class ExtraClass(models.Model):
+    STATUS_CHOICES = [
+        ('scheduled', 'Scheduled'),
+        ('cancelled', 'Cancelled'),
+    ]
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='extra_classes_taught')
     class_group = models.ForeignKey('StudentGroup', on_delete=models.CASCADE, related_name='extra_classes')
     # Use CourseSubject for consistency with Timetable
@@ -375,6 +413,7 @@ class ExtraClass(models.Model):
     # Use TimeSlot instead of start/end times
     time_slot = models.ForeignKey('TimeSlot', on_delete=models.CASCADE)
     announcement = models.ForeignKey('Announcement', on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='scheduled')
 
     class Meta:
         verbose_name_plural = "Extra Classes"
@@ -383,3 +422,22 @@ class ExtraClass(models.Model):
 
     def __str__(self):
         return f'Extra Class: {self.subject.subject.name} on {self.date} for {self.class_group}'
+
+
+class ResultPublication(models.Model):
+    """
+    A log to track when a student's results for a specific semester
+    have been officially published and sent to parents.
+    """
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='published_results')
+    student_group = models.ForeignKey(StudentGroup, on_delete=models.CASCADE)
+    semester = models.PositiveIntegerField()
+    published_date = models.DateTimeField(auto_now_add=True)
+    published_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='published_by_user')
+
+    class Meta:
+        # Ensure a student's results for a specific group/semester can only be published once
+        unique_together = ('student', 'student_group', 'semester')
+
+    def __str__(self):
+        return f"Results for {self.student.username} (Sem {self.semester}) published on {self.published_date.strftime('%Y-%m-%d')}"

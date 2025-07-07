@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block page_title %}{{ page_title }}{% endblock page_title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>{{ page_title }}</h1>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Create New Backup</h5>
+                        <p class="card-text">
+                            Click the button below to create a new backup of the database.
+                            This will also automatically delete the oldest backups according to the retention policy you
+                            set in the settings.
+                        </p>
+                        <form method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" name="create_backup" class="btn btn-primary">Create New Backup Now
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Restore from Backup</h5>
+                        <p class="card-text text-danger font-weight-bold">
+                            Warning: Restoring will completely overwrite the current database with the data from the
+                            selected backup file. This action cannot be undone.
+                        </p>
+                        <form method="post"
+                              onsubmit="return confirm('Are you absolutely sure you want to restore? This will overwrite all current data.');">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="backup_file_select">Select a backup file to restore:</label>
+                                <select class="form-control" id="backup_file_select" name="backup_file" required>
+                                    {% for file in backup_files %}
+                                        <option value="{{ file }}">{{ file }}</option>
+                                    {% empty %}
+                                        <option disabled>No backup files found.</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" name="restore_backup" class="btn btn-danger"
+                                    {% if not backup_files %}disabled{% endif %}>
+                                Restore from this Backup
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Available Backup Files</h5>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Filename</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for file in backup_files %}
+                                <tr>
+                                    <td>{{ file }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td>No backup files have been created yet.</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

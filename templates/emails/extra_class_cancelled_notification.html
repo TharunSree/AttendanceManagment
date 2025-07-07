@@ -1,0 +1,15 @@
+{% extends 'emails/email_base.html' %}
+{% block title %}Notification of Class Cancellation{% endblock %}
+{% block preheader %}Extra Class Cancelled{% endblock %}
+
+{% block content %}
+    <p>Dear Student,</p>
+    <p>Please note that the following extra class has been **cancelled**:</p>
+    <p>
+        <strong>Subject:</strong> {{ extra_class.subject.subject.name }}<br>
+        <strong>Faculty:</strong> {{ extra_class.teacher.get_full_name }}<br>
+        <strong>Original Date:</strong> {{ extra_class.date|date:"l, F j, Y" }}<br>
+        <strong>Original Time:</strong> {{ extra_class.time_slot.start_time|time:"g:i A" }}
+    </p>
+    <p>You are no longer required to attend this session.</p>
+{% endblock %}

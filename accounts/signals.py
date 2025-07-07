@@ -1,10 +1,11 @@
+from django.contrib.auth import user_login_failed, user_logged_in
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
 from django.dispatch import receiver
 from django.urls import reverse
 
 from academics.models import DailySubstitution
-from .models import Profile, Notification
+from .models import Profile, Notification, UserActivityLog
 
 
 @receiver(post_save, sender=User)
@@ -63,3 +64,35 @@ def create_substitution_notification(sender, instance, created, **kwargs):
             message=message,
             url=reverse('academics:faculty_schedule')  # Link to their daily schedule
         )
+
+
+def get_client_info(request):
+    """Helper function to get IP and User Agent"""
+    ip = request.META.get('REMOTE_ADDR')
+    user_agent = request.META.get('HTTP_USER_AGENT')
+    return ip, user_agent
+
+
+@receiver(user_logged_in)
+def log_user_login_success(sender, request, user, **kwargs):
+    """Log successful login attempts."""
+    ip, user_agent = get_client_info(request)
+    UserActivityLog.objects.create(
+        user=user,
+        username=user.username,
+        action='login_success',
+        ip_address=ip,
+        user_agent=user_agent
+    )
+
+
+@receiver(user_login_failed)
+def log_user_login_failure(sender, credentials, request, **kwargs):
+    """Log failed login attempts."""
+    ip, user_agent = get_client_info(request)
+    UserActivityLog.objects.create(
+        username=credentials.get('username', 'N/A'),
+        action='login_failed',
+        ip_address=ip,
+        user_agent=user_agent
+    )

@@ -1,0 +1,30 @@
+{% extends 'emails/email_base.html' %}
+
+{% block title %}Welcome to the System!{% endblock %}
+{% block preheader %}Your Account Has Been Created{% endblock %}
+
+{% block content %}
+    <p>Dear {{ user.first_name|default:'User' }},</p>
+    <p>An account has been created for you in the Attendance Management System. You can now log in using the following
+        credentials:</p>
+    <table border="0" cellpadding="10" cellspacing="0"
+           style="width: 100%; border: 1px solid #e4e2e2; margin-top: 20px; margin-bottom: 20px;">
+        <tr>
+            <td style="background-color: #f8f8f8; width: 120px;"><strong>Username:</strong></td>
+            <td>{{ username }}</td>
+        </tr>
+        <tr>
+            <td style="background-color: #f8f8f8;"><strong>Password:</strong></td>
+            <td>{{ password }}</td>
+        </tr>
+    </table>
+    <p><strong>Important:</strong> For your security, we strongly recommend that you log in and change your password
+        immediately.</p>
+    <br>
+    <p style="text-align: center;">
+        <a href="{{ login_url }}" class="button">Log In Now</a>
+    </p>
+    <br>
+    <p>Thank you,</p>
+    <p><strong>System Administration</strong></p>
+{% endblock %}

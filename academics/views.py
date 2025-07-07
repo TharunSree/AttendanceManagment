@@ -2,12 +2,16 @@
 import csv
 import json
 import calendar
+import os
 from datetime import datetime, timedelta
 from itertools import chain
 
+from axes.models import AccessLog
 from django.conf import settings
 from django.contrib.auth.models import User, Group
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.core.management import call_command
 from django.db import transaction
 from django.db.models import Count, Sum
 from django.db.models import ExpressionWrapper, fields, F, Q
@@ -18,18 +22,21 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django import forms
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
+import academics.views
 from academics.forms import EditStudentForm, AttendanceSettingsForm, TimeSlotForm, MarkAttendanceForm, \
     TimetableEntryForm, SubstitutionForm, AttendanceReportForm, AnnouncementForm, CriterionFormSet, MarkingSchemeForm, \
-    MarkSelectForm, BulkMarksImportForm, MarksReportForm, ExtraClassForm
-from accounts.models import Profile
+    MarkSelectForm, BulkMarksImportForm, MarksReportForm, ExtraClassForm, SmtpSettingsForm, BulkEmailForm
+from accounts.models import Profile, UserActivityLog
+from .email_utils import send_database_email
 from .forms import StudentGroupForm, CourseForm, AddStudentForm, SubjectForm
 from .models import StudentGroup, AttendanceSettings, Course, Subject, \
     Timetable, AttendanceRecord, CourseSubject, TimeSlot, ClassCancellation, DailySubstitution, Announcement, \
-    UserNotificationStatus, MarkingScheme, Mark, Criterion, ExtraClass, AcademicSession
+    UserNotificationStatus, MarkingScheme, Mark, Criterion, ExtraClass, AcademicSession, ResultPublication
 from accounts.decorators import nav_item
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
@@ -572,7 +579,7 @@ def student_group_delete_view(request, pk):
 @permission_required('academics.delete_student', raise_exception=True)
 def student_delete_view(request, pk):
     student = get_object_or_404(User, pk=pk)
-    student_group = student.student_groups.first()  # To redirect back to the correct class list
+    student_group = student.profile.student_group  # To redirect back to the correct class list
 
     if request.method == 'POST':
         student.delete()
@@ -646,7 +653,7 @@ def student_update_view(request, pk):
             student_user.email = form.cleaned_data['email']
             student_user.save()
             messages.success(request, 'Student details updated successfully.')
-            return redirect('academics:student_profile', student_id=student_user.pk)
+            return redirect('academics:admin_student_list', group_id=student_user.profile.student_group.id)
     else:
         form = EditStudentForm(instance=student_user.profile, initial={
             'first_name': student_user.first_name, 'last_name': student_user.last_name, 'email': student_user.email
@@ -2027,6 +2034,8 @@ def bulk_marks_import_view(request):
           permission='academics.view_own_marks', group='my_academics', order=3)
 def student_my_marks_view(request):
     student = request.user
+    settings = AttendanceSettings.load()
+    passing_percentage = settings.passing_percentage
 
     # Get available semesters for the student's course
     available_semesters = []
@@ -2067,10 +2076,17 @@ def student_my_marks_view(request):
             marks_data[subject_name]['total_marks'] += mark.marks_obtained
             marks_data[subject_name]['max_total'] += mark.criterion.max_marks
 
+            for subject, data in marks_data.items():
+                for criterion in data['criteria']:
+                    # Calculate if the student passed this criterion
+                    passing_marks = (passing_percentage / 100) * criterion['max_marks']
+                    criterion['passed'] = criterion['marks_obtained'] >= passing_marks
+
     context = {
         'marks_data': marks_data,
         'available_semesters': available_semesters,
         'selected_semester': selected_semester,
+        'passing_percentage': passing_percentage,
     }
     return render(request, 'academics/student_my_marks.html', context)
 
@@ -2237,8 +2253,8 @@ def schedule_extra_class(request):
     if request.method == 'POST':
         form = ExtraClassForm(request.POST, user=request.user)
         if form.is_valid():
-            # ... (your existing POST logic is correct and remains here) ...
             with transaction.atomic():
+                # Your existing logic to save the class and create an announcement
                 extra_class = form.save(commit=False)
                 if request.user.profile.role == 'faculty':
                     extra_class.teacher = request.user
@@ -2253,19 +2269,54 @@ def schedule_extra_class(request):
                 extra_class.announcement = announcement
                 extra_class.save()
 
-            messages.success(request, 'Extra class scheduled successfully and announcement created.')
+                # === NEW: AUTOMATIC EMAIL NOTIFICATION LOGIC ===
+                try:
+                    student_group = extra_class.class_group
+                    students = User.objects.filter(profile__student_group=student_group)
+                    recipient_emails = [student.email for student in students if student.email]
+
+                    if recipient_emails:
+                        subject = f"Extra Class Scheduled: {extra_class.subject.subject.name} on {extra_class.date.strftime('%d-%b-%Y')}"
+                        email_context = {'extra_class': extra_class}
+
+                        # Render HTML and plain text versions of the email
+                        html_content = render_to_string('emails/extra_class_notification.html', email_context)
+                        plain_text_content = (
+                            f"Dear Student,\n\nAn extra class has been scheduled.\n\n"
+                            f"Subject: {extra_class.subject.subject.name}\n"
+                            f"Faculty: {extra_class.teacher.get_full_name()}\n"
+                            f"Date: {extra_class.date.strftime('%A, %B %d, %Y')}\n"
+                            f"Time: {extra_class.time_slot.start_time.strftime('%I:%M %p')} - {extra_class.time_slot.end_time.strftime('%I:%M %p')}\n\n"
+                            f"Please ensure your attendance."
+                        )
+
+                        # Send one email to all students via BCC for privacy
+                        send_database_email(
+                            subject=subject,
+                            body=plain_text_content,
+                            recipient_list=[AttendanceSettings.load().email_host_user],
+                            html_message=html_content,
+                            bcc_list=recipient_emails
+                        )
+                        messages.success(request,
+                                         f"Extra class scheduled and a notification email has been sent to {len(recipient_emails)} students.")
+                    else:
+                        messages.success(request,
+                                         'Extra class scheduled successfully (no students found in the group to notify).')
+
+                except Exception as e:
+                    messages.error(request,
+                                   f"Extra class was scheduled, but the notification email failed to send. Error: {e}")
+                # === END OF NOTIFICATION LOGIC ===
+
             return redirect('academics:extra_class_list')
         else:
             messages.warning(request, "Please complete all required fields.")
     else:
-        # --- FIX: Handle GET requests for filtering ---
         initial_data = {}
-        # If a teacher was selected via the dropdown reload, pass it to the form
         if 'teacher' in request.GET:
             initial_data['teacher'] = request.GET.get('teacher')
-
         form = ExtraClassForm(user=request.user, initial=initial_data)
-        # --- END FIX ---
 
     context = {
         'form': form,
@@ -2312,7 +2363,33 @@ def extra_class_delete(request, pk):
     extra_class = get_object_or_404(ExtraClass, pk=pk)
     if request.method == 'POST':
         with transaction.atomic():
-            # --- FIX 1: Use 'sender' instead of 'created_by' ---
+            # --- Step 1: Send Notifications FIRST ---
+            try:
+                # Get the list of students before the class is deleted
+                students = User.objects.filter(profile__student_group=extra_class.class_group)
+                recipient_emails = [student.email for student in students if student.email]
+
+                if recipient_emails:
+                    subject = f"Class Cancelled: {extra_class.subject.subject.name} on {extra_class.date.strftime('%d-%b-%Y')}"
+                    email_context = {'extra_class': extra_class}
+
+                    # Render the cancellation email templates
+                    html_content = render_to_string('emails/extra_class_cancelled_notification.html', email_context)
+                    plain_text_content = f"The extra class for {extra_class.subject.subject.name} on {extra_class.date} has been cancelled."
+
+                    # Use our utility to send the email via BCC
+                    send_database_email(
+                        subject=subject,
+                        body=plain_text_content,
+                        recipient_list=[AttendanceSettings.load().email_host_user],
+                        html_message=html_content,
+                        bcc_list=recipient_emails
+                    )
+            except Exception as e:
+                # If email fails, log it and inform the admin, but don't stop the process
+                messages.error(request, f"Could not send cancellation emails. Error: {e}")
+
+            # --- Step 2: Create the on-site announcement ---
             cancellation_announcement = Announcement.objects.create(
                 title=f"CANCELLED: Extra Class for {extra_class.subject}",
                 content=f"The extra class for {extra_class.subject} scheduled on {extra_class.date} has been cancelled.",
@@ -2320,13 +2397,13 @@ def extra_class_delete(request, pk):
             )
             cancellation_announcement.target_student_groups.add(extra_class.class_group)
 
+            # --- Step 3: Delete the record LAST ---
             extra_class.delete()
 
-        messages.success(request, 'Extra class deleted and cancellation announcement sent.')
-        # --- FIX 3: Use the correct namespaced URL for the redirect ---
+        messages.success(request, 'Extra class has been cancelled and students have been notified.')
         return redirect('academics:extra_class_list')
 
-    # --- FIX 2: Pass the context variables the template expects ---
+    # This part for the GET request remains the same
     context = {
         'item': extra_class,
         'type': 'Extra Class'
@@ -2338,12 +2415,24 @@ def extra_class_delete(request, pk):
 @nav_item(title="User Guide", icon="simple-icon-question", url_name="academics:guide",
           permission=None, order=10)
 def guide_view(request):
-    user_role = getattr(request.user.profile, 'role', 'student') if hasattr(request.user, 'profile') else 'student'
-    section = request.GET.get('section', 'getting-started')
+    """
+    Renders the user guide, passing the user's role and the
+    currently selected section to the template.
+    """
+    user_profile = request.user.profile
+
+    # Determine the role from the user's profile
+    # This matches the strings used in the guide.html template
+    user_role = user_profile.role
+
+    # Get the requested section from the URL (?section=...), defaulting to 'getting-started'
+    current_section = request.GET.get('section', 'getting-started')
+    print(user_role)
 
     context = {
+        'page_title': 'User Guide',
         'user_role': user_role,
-        'current_section': section,
+        'current_section': current_section
     }
     return render(request, 'academics/guide.html', context)
 
@@ -2593,3 +2682,381 @@ def get_subject_faculty_view(request):
             pass
 
     return JsonResponse({'faculty': faculty_data})
+
+
+@login_required
+@permission_required('academics.add_backup')
+@nav_item(title="Backup & Restore", icon="simple-icon-cloud-download", url_name="academics:backup_restore",
+          group="application_settings", order=50, role_required='admin')
+def backup_restore_view(request):
+    backup_dir = os.path.join(settings.BASE_DIR, 'backups')
+    os.makedirs(backup_dir, exist_ok=True)
+
+    if request.method == 'POST':
+        if 'create_backup' in request.POST:
+            try:
+                call_command('manage_backups')
+                messages.success(request, "New backup created and old backups rotated successfully.")
+            except Exception as e:
+                messages.error(request, f"An error occurred while creating the backup: {e}")
+
+        elif 'restore_backup' in request.POST:
+            backup_file = request.POST.get('backup_file')
+            backup_filepath = os.path.join(backup_dir, backup_file)
+
+            if os.path.exists(backup_filepath):
+                try:
+                    # DANGER: This is a destructive operation.
+                    # It will overwrite the current database.
+                    call_command('loaddata', backup_filepath)
+                    messages.warning(request, f"Successfully restored the database from {backup_file}.")
+                except Exception as e:
+                    messages.error(request, f"An error occurred during restore: {e}")
+            else:
+                messages.error(request, "The selected backup file was not found.")
+
+        return redirect('academics:backup_restore')  # Redirect to refresh the page
+
+    # For GET request, list available backups
+    backup_files = [f for f in os.listdir(backup_dir) if f.endswith('.json')]
+    backup_files.sort(reverse=True)  # Show newest first
+
+    context = {
+        'backup_files': backup_files,
+        'page_title': 'Backup & Restore'
+    }
+    return render(request, 'academics/backup_restore.html', context)
+
+
+@login_required
+@permission_required("academics.change_smtp_settings")
+@nav_item(title="SMTP Settings", icon="simple-icon-envelope-letter", url_name="academics:smtp_settings",
+          permission='academics.change_smtp_settings', group='application_settings', order=60)
+def smtp_settings_view(request):
+    settings = AttendanceSettings.load()
+    if request.method == 'POST':
+        form = SmtpSettingsForm(request.POST, instance=settings)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'SMTP settings have been updated successfully.')
+            return redirect('academics:smtp_settings')
+    else:
+        form = SmtpSettingsForm(instance=settings)
+
+    context = {
+        'form': form,
+        'page_title': 'SMTP Email Settings'
+    }
+    return render(request, 'academics/smtp_settings.html', context)
+
+
+@login_required
+@permission_required('academics.view_accesslog')
+@nav_item(title="System Reports", icon="simple-icon-chart", url_name="academics:system_reports",
+          permission='academics.view_accesslog', group='application_settings', order=70)
+def system_reports_view(request):
+    # Fetch the last 100 access logs, showing the newest first
+    activity_logs = UserActivityLog.objects.all().order_by('-timestamp')[:100]
+    log_file_path = os.path.join(settings.BASE_DIR, 'debug.log')
+    log_content = []
+    try:
+        with open(log_file_path, 'r') as f:
+            # Read the last 100 lines for efficiency
+            log_content = f.readlines()[-100:]
+    except FileNotFoundError:
+        log_content = ["Log file not found. It will be created when the first log message is written."]
+
+    context = {
+        'page_title': 'System Reports',
+        'activity_logs': activity_logs,
+        'log_content': log_content,
+    }
+    return render(request, 'academics/system_reports.html', context)
+
+
+@login_required
+@permission_required('academics.view_update_status')
+def update_status_view(request):
+    # Get the update count from the cache, just like in the context processor
+    update_count = cache.get('git_update_count', 0)
+
+    context = {
+        'page_title': 'Application Update Status',
+        'update_count': update_count
+    }
+    return render(request, 'academics/update_status.html', context)
+
+
+# In academics/views.py
+
+@login_required
+@permission_required('academics.send_bulk_email')
+@nav_item(title="Bulk Email", icon="simple-icon-envelope", url_name="academics:bulk_email",
+          permission='academics.send_bulk_email', group='admin_management', order=80)
+def bulk_email_view(request):
+    if request.method == 'POST':
+        form = BulkEmailForm(request.POST)
+        if form.is_valid():
+            recipients = form.cleaned_data['recipients']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+
+            # Prepare the email content
+            html_content = render_to_string('emails/custom_bulk_email.html', {'subject': subject, 'message': message})
+            from django.utils.html import strip_tags
+            plain_text_content = strip_tags(html_content)
+
+            # Get the list of email addresses
+            recipient_emails = []
+            for r in recipients:
+                if r == 'all_students':
+                    recipient_emails.extend(
+                        User.objects.filter(profile__role='student').values_list('email', flat=True))
+                elif r == 'all_faculty':
+                    recipient_emails.extend(
+                        User.objects.filter(profile__role='faculty').values_list('email', flat=True))
+                elif r.startswith('group_'):
+                    group_id = int(r.split('_')[1])
+                    recipient_emails.extend(
+                        User.objects.filter(profile__student_group__id=group_id).values_list('email', flat=True))
+
+            # Remove duplicate emails and filter out any empty strings
+            bcc_recipients = list(set(filter(None, recipient_emails)))
+
+            if bcc_recipients:
+                # === THIS IS THE NEW, EFFICIENT METHOD ===
+                # We send ONE email. The 'To' field can be the sender's own email or a no-reply address.
+                # All actual recipients are placed in the BCC list for privacy.
+                send_database_email(
+                    subject=subject,
+                    body=plain_text_content,
+                    recipient_list=[AttendanceSettings.load().email_host_user],  # Send "To" the system's own email
+                    html_message=html_content,
+                    bcc_list=bcc_recipients  # <-- All users are here
+                )
+                messages.success(request, f"Email successfully queued for sending to {len(bcc_recipients)} recipients.")
+                # ==========================================
+            else:
+                messages.warning(request, "No valid recipients found for the selected groups.")
+
+            return redirect('academics:bulk_email')
+    else:
+        form = BulkEmailForm()
+
+    context = {
+        'form': form,
+        'page_title': 'Send Bulk Email'
+    }
+    return render(request, 'academics/bulk_email.html', context)
+
+
+@login_required
+@permission_required('academics.publish_results')
+@nav_item(title="Publish Results", icon="simple-icon-check", url_name="academics:publish_results",
+          permission='academics.publish_results', group='admin_management', order=90)
+def publish_results_view(request):
+    student_groups = StudentGroup.objects.all()
+    selected_group = None
+    selected_semester = None
+    student_statuses = []
+
+    if request.method == 'GET' and 'student_group' in request.GET and 'semester' in request.GET:
+        group_id = request.GET.get('student_group')
+        semester_str = request.GET.get('semester')
+        if group_id and semester_str:
+            selected_group = get_object_or_404(StudentGroup, pk=group_id)
+            selected_semester = int(semester_str)
+
+            # Get all subjects for the selected course and semester
+            subjects_in_semester = CourseSubject.objects.filter(
+                course=selected_group.course, semester=selected_semester
+            )
+            total_subjects_count = subjects_in_semester.count()
+
+            # Get all students in the group
+            students_in_group = User.objects.filter(profile__student_group=selected_group)
+
+            for student in students_in_group:
+                # Count how many marks have been entered for this student for this semester's subjects
+                marks_entered_count = Mark.objects.filter(
+                    student=student,
+                    subject__in=subjects_in_semester
+                ).count()
+
+                # Check if results have already been published for this student/semester
+                is_published = ResultPublication.objects.filter(
+                    student=student,
+                    student_group=selected_group,
+                    semester=selected_semester
+                ).exists()
+
+                # Determine status
+                all_marks_entered = marks_entered_count >= total_subjects_count
+
+                student_statuses.append({
+                    'student': student,
+                    'all_marks_entered': all_marks_entered,
+                    'is_published': is_published,
+                    'parent_email': student.profile.parent_email
+                })
+
+    context = {
+        'page_title': 'Publish Student Results',
+        'student_groups': student_groups,
+        'selected_group': selected_group,
+        'selected_semester': selected_semester,
+        'student_statuses': student_statuses,
+    }
+    return render(request, 'academics/publish_results.html', context)
+
+
+@login_required
+@permission_required('academics.publish_results')
+def send_parent_report_email_view(request, student_id, group_id, semester):
+    if request.method == 'POST':
+        student = get_object_or_404(User, pk=student_id)
+        student_group = get_object_or_404(StudentGroup, pk=group_id)
+        parent_email = student.profile.parent_email
+
+        if not parent_email:
+            messages.error(request, f"No parent email found for {student.get_full_name()}.")
+            return redirect(request.META.get('HTTP_REFERER'))
+
+        # Check if already published to prevent duplicate sending
+        if ResultPublication.objects.filter(student=student, student_group=student_group, semester=semester).exists():
+            messages.warning(request, f"Results for {student.get_full_name()} have already been published.")
+            return redirect(request.META.get('HTTP_REFERER'))
+
+        # Get all marks for the report card
+        subjects_in_semester = CourseSubject.objects.filter(course=student_group.course, semester=semester)
+        marks = Mark.objects.filter(student=student, subject__in=subjects_in_semester)
+        settings = AttendanceSettings.load()
+
+        # Prepare email content
+        subject = f"Final Report Card for {student.get_full_name()} - Semester {semester}"
+        email_context = {
+            'student': student,
+            'student_group': student_group,
+            'semester': semester,
+            'marks': marks,
+            'passing_percentage': settings.passing_percentage,
+        }
+        html_content = render_to_string('emails/parent_report_card_email.html', email_context)
+        plain_text_content = f"Please find the attached report card for {student.get_full_name()}."  # Fallback text
+
+        # Send the email
+        success = send_database_email(
+            subject=subject,
+            body=plain_text_content,
+            recipient_list=[parent_email],
+            html_message=html_content
+        )
+
+        if success:
+            # Log that this report has been published
+            ResultPublication.objects.create(
+                student=student,
+                student_group=student_group,
+                semester=semester,
+                published_by=request.user
+            )
+            messages.success(request, f"Report card successfully sent to parent of {student.get_full_name()}.")
+        else:
+            messages.error(request, f"Failed to send email for {student.get_full_name()}. Please check SMTP settings.")
+
+        return redirect(request.META.get('HTTP_REFERER'))
+
+    return redirect('academics:publish_results')
+
+
+@login_required
+@permission_required('academics.publish_results')
+def bulk_publish_results_view(request, group_id, semester):
+    if request.method == 'POST':
+        student_group = get_object_or_404(StudentGroup, pk=group_id)
+
+        # Get all subjects for the semester
+        subjects_in_semester = CourseSubject.objects.filter(course=student_group.course, semester=semester)
+        # Get all possible grading criteria for this course's marking scheme
+        all_criteria = Criterion.objects.filter(scheme=student_group.course.marking_scheme).order_by('id')
+
+        students_in_group = User.objects.filter(profile__student_group=student_group)
+        settings = AttendanceSettings.load()
+
+        published_count = 0
+        error_count = 0
+
+        for student in students_in_group:
+            # --- Check eligibility for this student ---
+            is_already_published = ResultPublication.objects.filter(student=student, student_group=student_group,
+                                                                    semester=semester).exists()
+            marks_entered_count = Mark.objects.filter(student=student, subject__in=subjects_in_semester).count()
+
+            # This check ensures we have a mark for every subject-criterion pair
+            required_marks_count = subjects_in_semester.count() * all_criteria.count()
+
+            if marks_entered_count >= required_marks_count and not is_already_published and student.profile.parent_email:
+                # --- DYNAMICALLY PIVOT THE DATA FOR THE EMAIL TEMPLATE ---
+                all_marks = Mark.objects.filter(student=student, subject__in=subjects_in_semester).select_related(
+                    'subject__subject', 'criterion')
+
+                # Create a nested dictionary to hold the pivoted data: {subject_name: {criterion_name: marks, ...}, ...}
+                report_data = {s.subject.name: {} for s in subjects_in_semester}
+
+                for mark in all_marks:
+                    subject_name = mark.subject.subject.name
+                    criterion_name = mark.criterion.name
+                    report_data[subject_name][criterion_name] = {
+                        'obtained': mark.marks_obtained,
+                        'max': mark.criterion.max_marks
+                    }
+
+                # Calculate totals and pass/fail status for each subject
+                final_results = []
+                for subject_name, criteria_marks in report_data.items():
+                    total_obtained = sum(v['obtained'] for v in criteria_marks.values())
+                    total_max = sum(v['max'] for v in criteria_marks.values())
+                    percentage = (total_obtained / total_max * 100) if total_max > 0 else 0
+                    status = "Pass" if percentage >= settings.passing_percentage else "Fail"
+
+                    final_results.append({
+                        'subject': subject_name,
+                        'criteria_marks': criteria_marks,  # Pass the detailed breakdown
+                        'total_obtained': total_obtained,
+                        'total_max': total_max,
+                        'status': status
+                    })
+                # --- END OF DYNAMIC PIVOT LOGIC ---
+
+                subject = f"Final Report Card for {student.get_full_name()} - Semester {semester}"
+                email_context = {
+                    'student': student, 'student_group': student_group, 'semester': semester,
+                    'all_criteria': all_criteria,  # Pass the list of criteria for the headers
+                    'final_results': final_results,
+                }
+                html_content = render_to_string('emails/parent_report_card_email.html', email_context)
+                plain_text_content = f"Please find the attached report card for {student.get_full_name()}."
+
+                success = send_database_email(subject, plain_text_content, [student.profile.parent_email],
+                                              html_message=html_content)
+
+                if success:
+                    ResultPublication.objects.create(
+                        student=student, student_group=student_group,
+                        semester=semester, published_by=request.user
+                    )
+                    published_count += 1
+                else:
+                    error_count += 1
+
+        # --- Provide summary feedback to the admin ---
+        if published_count > 0:
+            messages.success(request, f"Successfully published and sent {published_count} report cards.")
+        if error_count > 0:
+            messages.error(request, f"Failed to send {error_count} report cards. Please check SMTP settings.")
+        if published_count == 0 and error_count == 0:
+            messages.info(request, "No new eligible students found to publish results for at this time.")
+
+        return redirect('academics:publish_results')
+
+    return redirect('academics:publish_results')

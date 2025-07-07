@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block page_title %}{{ page_title }}{% endblock page_title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>{{ page_title }}</h1>
+                <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                    <ol class="breadcrumb pt-0">
+                        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'academics:admin_settings' %}">System Settings</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">SMTP Settings</li>
+                    </ol>
+                </nav>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="text-muted">Configure the SMTP settings for sending system emails like password resets
+                            and notifications.
+                            <br/><strong class="text-warning">Important:</strong> For services like Gmail, it is highly
+                            recommended to use an "App Password" instead of your main account password.</p>
+
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>Email Host</label>
+                                {{ form.email_host }}
+                            </div>
+                            <div class="form-group">
+                                <label>Email Port</label>
+                                {{ form.email_port }}
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address (Username)</label>
+                                {{ form.email_host_user }}
+                            </div>
+                            <div class="form-group">
+                                <label>Email Password</label>
+                                {{ form.email_host_password }}
+                            </div>
+                            <div class="custom-control custom-checkbox mb-2">
+                                {{ form.email_use_tls }}
+                                <label class="custom-control-label" for="{{ form.email_use_tls.id_for_label }}">Use
+                                    TLS</label>
+                            </div>
+                            <div class="custom-control custom-checkbox mb-4">
+                                {{ form.email_use_ssl }}
+                                <label class="custom-control-label" for="{{ form.email_use_ssl.id_for_label }}">Use
+                                    SSL</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save SMTP Settings</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

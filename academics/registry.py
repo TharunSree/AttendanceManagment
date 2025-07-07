@@ -61,12 +61,14 @@ SUBGROUP_MAPPING = {
     'academics:subject_list': 'academic_setup',
     'academics:manage_timetable': 'academic_setup',
     'academics:scheme_list': 'academic_setup',
-    'academics:admin_settings': 'academic_setup',
+    'accounts:teacher_list': 'academic_setup',
 
     # Subgroup: 'user_management'
     'academics:admin_select_class': 'user_management',
     'academics:manage_substitutions': 'user_management',
     'academics:extra_class_list': 'user_management',
+    'academics:publish_results': 'user_management',
+    'accounts:bulk_user_import': 'user_management',
 
     # Subgroup: 'reporting'
     'academics:daily_log': 'reporting',

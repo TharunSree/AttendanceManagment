@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block page_title %}{{ page_title }}{% endblock page_title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">Select a class and semester to view the status of marks entry and publish final
+                    results to parents.</p>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+
+        {# === THIS IS THE SELECTION FORM THAT WAS MISSING === #}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Select Class and Semester</h5>
+                <form method="get" class="form-inline">
+                    <div class="form-group mr-3">
+                        <label for="student_group" class="mr-2">Class:</label>
+                        <select name="student_group" id="student_group" class="form-control" required>
+                            <option value="">-- Select a Class --</option>
+                            {% for group in student_groups %}
+                                <option value="{{ group.id }}"
+                                        {% if selected_group.id == group.id %}selected{% endif %}>{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mr-3">
+                        <label for="semester" class="mr-2">Semester:</label>
+                        <input type="number" name="semester" id="semester" class="form-control"
+                               value="{{ selected_semester|default:'' }}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Check Status</button>
+                </form>
+            </div>
+        </div>
+        {# ====================================================== #}
+
+
+        {% if selected_group and selected_semester %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Status for {{ selected_group.name }} -
+                            Semester {{ selected_semester }}</h5>
+
+                        <form method="post"
+                              action="{% url 'academics:bulk_publish_results' selected_group.id selected_semester %}"
+                              onsubmit="return confirm('Are you sure you want to publish results for all eligible students in this class? This will send emails to their parents.');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="simple-icon-envelope-letter"></i> Publish for All Eligible Students
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Parent's Email</th>
+                                <th>Marks Entry Status</th>
+                                <th>Publication Status</th>
+                                <th class="text-center">Eligible to Publish?</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for status in student_statuses %}
+                                <tr>
+                                    <td>{{ status.student.get_full_name }} ({{ status.student.username }})</td>
+                                    <td>{{ status.parent_email|default:"Not Provided" }}</td>
+                                    <td>
+                                        {% if status.all_marks_entered %}
+                                            <span class="badge badge-pill badge-success">Complete</span>
+                                        {% else %}
+                                            <span class="badge badge-pill badge-warning">Incomplete</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if status.is_published %}
+                                            <span class="badge badge-pill badge-info">Published</span>
+                                        {% else %}
+                                            <span class="badge badge-pill badge-secondary">Not Published</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if status.all_marks_entered and not status.is_published and status.parent_email %}
+                                            <i class="simple-icon-check text-success" title="Ready to publish"></i>
+                                        {% else %}
+                                            <i class="simple-icon-close text-danger" title="Not eligible"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No students found in this group.</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}

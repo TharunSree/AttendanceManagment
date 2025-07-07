@@ -26,6 +26,7 @@
             size: A4;
             margin: 0.7in;
         }
+
         body {
             background-color: #fff;
             font-family: "JetBrains Mono ExtraBold"
@@ -88,6 +89,11 @@
                                     Class</p>
                                 <p class="mb-3"
                                    style="font-family: 'JetBrains Mono ExtraBold'">{{ student_group.name|default:"N/A" }}</p>
+                                <p class="text-muted text-small mb-2" style="font-family: 'JetBrains Mono ExtraBold'">
+                                    Date of Birth</p>
+                                <p class="mb-3"
+                                   style="font-family: 'JetBrains Mono ExtraBold'">{{ student.profile.date_of_birth|date:"d M Y" }}</p>
+
                             </div>
                             <div class="col-6">
                                 <p class="text-muted text-small mb-2">Father's Name</p>
@@ -95,6 +101,10 @@
 
                                 <p class="text-muted text-small mb-2">Mother's Name</p>
                                 <p class="mb-3">{{ student.profile.mother_name|default:"N/A" }}</p>
+                                <p class="text-muted text-small mb-2" style="font-family: 'JetBrains Mono ExtraBold'">
+                                    Gender</p>
+                                <p class="mb-3"
+                                   style="font-family: 'JetBrains Mono ExtraBold'">{{ student.profile.gender }}</p>
                             </div>
                         </div>
                     </div>
@@ -105,48 +115,48 @@
         <!-- Display each semester's performance -->
         {% for semester, data in semester_performance.items %}
             <div class="row semester-section">
-            <div class="col-12">
-                <div class="card mb-4" style="box-shadow: #1a2833 0.5px 0.5px 9px 0.5px;">
-                    <div class="card-body">
-                        <h5 class="card-title">Academic Performance - Semester {{ semester }}</h5>
-                        <table class="table table-bordered"
-                               style="border-color: rgba(0,0,0,0.5); border: 1px solid #dee2e6;">
-                            <thead>
-                            <tr>
-                                <th scope="col">Subject</th>
-                                <th scope="col">Attendance</th>
-                                <th scope="col">Marks</th>
-                                <th scope="col">Remarks</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for item in data.performance_data %}
+                <div class="col-12">
+                    <div class="card mb-4" style="box-shadow: #1a2833 0.5px 0.5px 9px 0.5px;">
+                        <div class="card-body">
+                            <h5 class="card-title">Academic Performance - Semester {{ semester }}</h5>
+                            <table class="table table-bordered"
+                                   style="border-color: rgba(0,0,0,0.5); border: 1px solid #dee2e6;">
+                                <thead>
                                 <tr>
-                                    <td style="width: 25%;">{{ item.subject_name }}</td>
-                                    <td style="width: 15%;">{{ item.attendance_percentage }}%</td>
-                                    <td style="width: 15%;">{{ item.marks_obtained }} / {{ item.max_marks }}</td>
-                                    <td style="width: 45%;"></td>
+                                    <th scope="col">Subject</th>
+                                    <th scope="col">Attendance</th>
+                                    <th scope="col">Marks</th>
+                                    <th scope="col">Remarks</th>
                                 </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted">No performance data available for
-                                        this semester.
-                                    </td>
+                                </thead>
+                                <tbody>
+                                {% for item in data.performance_data %}
+                                    <tr>
+                                        <td style="width: 25%;">{{ item.subject_name }}</td>
+                                        <td style="width: 15%;">{{ item.attendance_percentage }}%</td>
+                                        <td style="width: 15%;">{{ item.marks_obtained }} / {{ item.max_marks }}</td>
+                                        <td style="width: 45%;"></td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No performance data available for
+                                            this semester.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr class="table-secondary">
+                                    <td><strong>Semester {{ semester }} Total</strong></td>
+                                    <td><strong>{{ data.semester_attendance }}%</strong></td>
+                                    <td><strong>{{ data.semester_marks_obtained }} / {{ data.semester_max_marks }}
+                                        ({{ data.semester_marks_percentage }}%)</strong></td>
+                                    <td></td>
                                 </tr>
-                            {% endfor %}
-                            <tr class="table-secondary">
-                                <td><strong>Semester {{ semester }} Total</strong></td>
-                                <td><strong>{{ data.semester_attendance }}%</strong></td>
-                                <td><strong>{{ data.semester_marks_obtained }} / {{ data.semester_max_marks }}
-                                    ({{ data.semester_marks_percentage }}%)</strong></td>
-                                <td></td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         {% empty %}
             <div class="row">
                 <div class="col-12">

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Notification from Attendance Management System{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #5c6bc0;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 30px;
+            line-height: 1.6;
+            color: #333333;
+        }
+
+        .content p {
+            margin: 0 0 15px;
+        }
+
+        .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #999999;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #5c6bc0;
+            color: #ffffff;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f8f8f8;">
+    <tr>
+        <td align="center">
+            <div class="main-container">
+                <div class="header">
+                    <h1>{% block preheader %}System Notification{% endblock %}</h1>
+                </div>
+                <div class="content">
+                    {% block content %}
+                        <p>This is a notification from the system.</p>
+                    {% endblock %}
+                </div>
+                <div class="footer">
+                    <p>&copy; {% now "Y" %} Academic Management System. All rights reserved.</p>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

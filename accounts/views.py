@@ -1,7 +1,10 @@
 import csv
 import json
+from datetime import datetime
 
 from django.apps import apps
+from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils import timezone
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -14,11 +17,13 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.contrib import messages
 
+from academics.email_utils import send_database_email
 from academics.models import Course, StudentGroup, Subject, Timetable, AttendanceRecord, DailySubstitution, \
-    ClassCancellation, AttendanceSettings, CourseSubject, Mark, Criterion, MarkingScheme, ExtraClass
+    ClassCancellation, AttendanceSettings, CourseSubject, Mark, Criterion, MarkingScheme, ExtraClass, ResultPublication
 from .decorators import nav_item
-from .forms import AddTeacherForm, EditTeacherForm, UserUpdateForm, ProfileUpdateForm, BulkImportForm
-from .models import Profile, Notification
+from .forms import AddTeacherForm, EditTeacherForm, UserUpdateForm, ProfileUpdateForm, BulkImportForm, \
+    CustomPasswordResetForm
+from .models import Profile, Notification, UserActivityLog
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -40,7 +45,7 @@ def login_view(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+            user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             if user is not None:
                 auth_login(request, user)
                 messages.info(request, f"Welcome back, {user.get_full_name() or user.username}.")
@@ -61,6 +66,13 @@ def login_view(request):
 
 
 def logout_view(request):
+    UserActivityLog.objects.create(
+        user=request.user,
+        username=request.user.username,
+        action='logout',
+        ip_address=request.META.get('REMOTE_ADDR'),
+        user_agent=request.META.get('HTTP_USER_AGENT')
+    )
     auth_logout(request)
     messages.info(request, "You have successfully logged out.")
     return redirect('accounts:login')
@@ -98,7 +110,7 @@ def teacher_list_view(request):
 @transaction.atomic
 def teacher_create_view(request):
     if request.method == 'POST':
-        form = AddTeacherForm(request.POST,request.FILES)
+        form = AddTeacherForm(request.POST, request.FILES)
         if form.is_valid():
             user = User.objects.create_user(
                 username=form.cleaned_data['username'],
@@ -135,7 +147,7 @@ def teacher_delete_view(request, pk):
 def teacher_update_view(request, pk):
     teacher_user = get_object_or_404(User, pk=pk, profile__role='faculty')
     if request.method == 'POST':
-        form = EditTeacherForm(request.POST,request.FILES, instance=teacher_user.profile)
+        form = EditTeacherForm(request.POST, request.FILES, instance=teacher_user.profile)
         if form.is_valid():
             form.save()
             teacher_user.first_name = form.cleaned_data['first_name']
@@ -180,7 +192,7 @@ def group_permission_edit_view(request, group_id):
     managed_models = [
         User, Course, Subject, StudentGroup, Timetable, AttendanceRecord,
         ClassCancellation, DailySubstitution, AttendanceSettings,
-        Mark, Criterion, MarkingScheme,Profile,ExtraClass
+        Mark, Criterion, MarkingScheme, Profile, ExtraClass, Notification, ResultPublication
     ]
     # --------------------------------------------------------
 
@@ -231,6 +243,7 @@ def group_permission_edit_view(request, group_id):
         'action_codes': ["view", "add", "change", "delete"],
     }
     return render(request, 'accounts/group_permission_edit.html', context)
+
 
 @login_required
 @permission_required('auth.view_user')
@@ -393,34 +406,33 @@ def student_dashboard_view(request):
 @permission_required('auth.change_user', raise_exception=True)
 def admin_trigger_password_reset_view(request, user_id):
     """
-    Allows an admin to trigger a password reset email for a specific user.
-    This view should only be accessible via a POST request.
+    Allows an admin to manually trigger a password reset email for a user.
     """
-    if request.method == 'POST':
-        user = get_object_or_404(User, pk=user_id)
+    user = get_object_or_404(User, pk=user_id)
 
-        if user.email:
-            form = PasswordResetForm(data={'email': user.email})
-            if form.is_valid():
-                # The save() method of this form handles sending the email.
-                # We pass the request to build the full URL in the email.
-                form.save(
-                    request=request,
-                    use_https=request.is_secure(),
-                    subject_template_name='registration/password_reset_subject.txt',
-                    email_template_name='registration/password_reset_email.html',
-                    html_email_template_name='registration/password_reset_email.html'
-                )
-                messages.success(request,
-                                 f"A password reset link has been sent to {user.get_full_name()}'s email address: {user.email}.")
-            else:
-                messages.error(request, "Could not process the password reset request.")
-        else:
-            messages.error(request,
-                           f"Cannot send reset link: User '{user.username}' does not have an email address on file.")
+    # === THIS IS THE CORRECTED LINE ===
+    # Use our custom form which knows how to send emails via the database settings
+    form = CustomPasswordResetForm({'email': user.email})
+    # ==================================
 
-    # Redirect back to the previous page
-    return redirect(request.META.get('HTTP_REFERER', '/'))
+    if form.is_valid():
+        opts = {
+            'use_https': request.is_secure(),
+            'request': request,
+            'subject_template_name': 'registration/password_reset_subject.txt.',
+            'email_template_name': 'registration/password_reset_email.txt',
+            'html_email_template_name': 'registration/password_reset_email.html',
+        }
+
+        # Now, when form.save() is called, it will correctly use the
+        # send_mail method we defined in CustomPasswordResetForm.
+        form.save(**opts)
+
+        messages.success(request, f"A password reset email has been sent to {user.email}.")
+    else:
+        messages.error(request, "Could not trigger a password reset for this user.")
+
+    return redirect(request.META.get('HTTP_REFERER', 'accounts:teacher_list'))
 
 
 @login_required
@@ -459,33 +471,37 @@ def bulk_user_import_view(request):
         form = BulkImportForm(request.POST, request.FILES)
         if form.is_valid():
             csv_file = request.FILES['file']
-            decoded_file = csv_file.read().decode('utf-8').splitlines()
-            reader = csv.DictReader(decoded_file)
+            try:
+                decoded_file = csv_file.read().decode('utf-8').splitlines()
+                reader = csv.DictReader(decoded_file)
+            except Exception as e:
+                messages.error(request, f"Error reading or decoding file: {e}")
+                return redirect('accounts:bulk_user_import')
 
             success_count = 0
             error_list = []
 
-            try:
-                with transaction.atomic():
-                    for row_num, row in enumerate(reader, 2):
-                        username = row.get('username')
-                        student_group_name = row.get('student_group_name')
+            for row_num, row in enumerate(reader, 2):
+                username = row.get('username')
+                student_group_name = row.get('student_group_name')
 
-                        if not username or not student_group_name:
-                            error_list.append(f"Row {row_num}: 'username' and 'student_group_name' are required.")
-                            continue
+                if not username or not student_group_name:
+                    error_list.append(f"Row {row_num}: 'username' and 'student_group_name' are required.")
+                    continue
 
-                        if User.objects.filter(username=username).exists():
-                            error_list.append(f"Row {row_num}: User '{username}' already exists.")
-                            continue
+                if User.objects.filter(username=username).exists():
+                    error_list.append(f"Row {row_num}: User '{username}' already exists.")
+                    continue
 
-                        try:
-                            student_group = StudentGroup.objects.get(name=student_group_name)
-                        except StudentGroup.DoesNotExist:
-                            error_list.append(f"Row {row_num}: Class '{student_group_name}' not found.")
-                            continue
+                try:
+                    student_group = StudentGroup.objects.get(name=student_group_name)
+                except StudentGroup.DoesNotExist:
+                    error_list.append(f"Row {row_num}: Class '{student_group_name}' not found.")
+                    continue
 
-                        # Create User and Profile
+                try:
+                    # Each user is created in their own transaction to isolate errors
+                    with transaction.atomic():
                         user = User.objects.create_user(
                             username=username,
                             password=row.get('password'),
@@ -493,7 +509,7 @@ def bulk_user_import_view(request):
                             last_name=row.get('last_name'),
                             email=row.get('email')
                         )
-                        # --- UPDATE PROFILE WITH NEW FIELDS ---
+
                         profile = user.profile
                         profile.role = 'student'
                         profile.student_id_number = row.get('student_id_number')
@@ -504,24 +520,58 @@ def bulk_user_import_view(request):
                         profile.father_phone = row.get('father_phone')
                         profile.mother_name = row.get('mother_name')
                         profile.mother_phone = row.get('mother_phone')
+                        profile.gender = row.get('gender')
+                        profile.parent_email = row.get('parent_email')
+
+                        # --- Robust Date of Birth Handling ---
+                        dob_str = row.get('date_of_birth')
+                        if dob_str:
+                            try:
+                                # First, try the standard YYYY-MM-DD format
+                                dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
+                            except ValueError:
+                                try:
+                                    # If that fails, try the dd-mm-yyyy format from Excel
+                                    dob = datetime.strptime(dob_str, '%d-%m-%Y').date()
+                                except ValueError:
+                                    raise Exception("Invalid 'date_of_birth' format. Please use YYYY-MM-DD.")
+                            profile.date_of_birth = dob
+
                         profile.save()
-                        # ------------------------------------
-                        success_count += 1
 
-                if error_list:
-                     raise Exception("Import failed, rolling back transaction.")
+                    # --- Send Welcome Email (outside the transaction) ---
+                    if user.email:
+                        login_url = request.build_absolute_uri(reverse('accounts:login'))
+                        email_context = {
+                            'user': user,
+                            'username': username,
+                            'password': row.get('password'),
+                            'login_url': login_url
+                        }
+                        html_content = render_to_string('emails/new_user_welcome.html', email_context)
+                        plain_text_content = f"Welcome! Your username is {username} and your password is {row.get('password')}. Please log in and change it."
 
-            except Exception as e:
-                 messages.error(request, f"An error occurred during import: {e}. The transaction was rolled back.")
+                        send_database_email(
+                            subject="Your New Account Details",
+                            body=plain_text_content,
+                            recipient_list=[user.email],
+                            html_message=html_content
+                        )
 
-            if not error_list:
-                messages.success(request, f"Successfully imported {success_count} students.")
-            else:
-                messages.warning(request, f"Import completed with errors. Successfully imported: {success_count}. Failed: {len(error_list)}.")
+                    success_count += 1
+
+                except Exception as e:
+                    error_list.append(f"Row {row_num}: Failed to import user {username}. Error: {e}")
+
+            if success_count > 0:
+                messages.success(request, f"Successfully imported and notified {success_count} students.")
+            if error_list:
+                messages.warning(request, f"Import finished with {len(error_list)} errors.")
 
             return render(request, 'accounts/bulk_user_import.html', {'form': BulkImportForm(), 'errors': error_list})
     else:
         form = BulkImportForm()
+
     return render(request, 'accounts/bulk_user_import.html', {'form': form})
 
 
@@ -529,18 +579,20 @@ def bulk_user_import_view(request):
 @permission_required('auth.add_user')
 def download_csv_template_view(request):
     """
-    Generates and serves a blank CSV template for bulk user import, including new profile fields.
+    Generates and serves a blank CSV template with the corrected header order.
     """
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="student_import_template.csv"'
 
     writer = csv.writer(response)
-    # --- UPDATED HEADER ROW ---
+
+    # === THIS IS THE UPDATED HEADER ROW ===
     writer.writerow([
-        'username', 'password', 'first_name', 'last_name', 'email',
+        'username', 'password', 'first_name', 'last_name', 'date_of_birth', 'gender', 'email',
         'student_id_number', 'contact_number', 'student_group_name',
-        'address', 'father_name', 'father_phone', 'mother_name', 'mother_phone'
+        'address', 'father_name', 'father_phone', 'mother_name', 'mother_phone', 'parent_email'
     ])
+    # ======================================
 
     return response
 

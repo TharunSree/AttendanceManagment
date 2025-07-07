@@ -11,7 +11,7 @@ from .models import (
     AttendanceRecord,
     CourseSubject,
     TimeSlot,
-    ClassCancellation, Mark, User
+    ClassCancellation, Mark, User, ExtraClass, ResultPublication
 )
 
 
@@ -53,20 +53,18 @@ class StudentGroupAdmin(admin.ModelAdmin):
 
 @admin.register(AttendanceSettings)
 class AttendanceSettingsAdmin(admin.ModelAdmin):
-    # This setup prevents adding new settings and redirects to the existing one
-    def changelist_view(self, request, extra_context=None):
-        settings_obj, created = AttendanceSettings.objects.get_or_create(pk=1)
-        return HttpResponseRedirect(reverse(
-            'admin:academics_attendancesettings_change',
-            args=[settings_obj.pk]
-        ))
+    # Update this list to include all the fields
+    list_display = (
+        'required_percentage', 'mark_deadline_days', 'edit_deadline_days',
+        'passing_percentage', 'cancellation_threshold_hours',
+        'number_of_backups_to_retain', 'session_timeout_seconds'
+    )
 
     def has_add_permission(self, request):
-        return False
+        return not AttendanceSettings.objects.exists()
 
     def has_delete_permission(self, request, obj=None):
         return False
-
 
 @admin.register(Timetable)
 class TimetableAdmin(admin.ModelAdmin):
@@ -114,3 +112,5 @@ admin.site.register(AttendanceRecord)
 admin.site.register(CourseSubject)
 admin.site.register(TimeSlot)
 admin.site.register(ClassCancellation)
+admin.site.register(ExtraClass)
+admin.site.register(ResultPublication)

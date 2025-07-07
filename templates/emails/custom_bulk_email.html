@@ -1,0 +1,9 @@
+{% extends 'emails/email_base.html' %}
+
+{% block title %}{{ subject }}{% endblock %}
+
+{% block preheader %}A Message from the Administration{% endblock %}
+
+{% block content %}
+    {{ message|linebreaksbr }}
+{% endblock %}

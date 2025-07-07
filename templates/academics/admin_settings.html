@@ -123,6 +123,35 @@
                             {{ settings_form.edit_deadline_days }}
                             <small class="form-text text-muted">{{ settings_form.edit_deadline_days.help_text }}</small>
                         </div>
+                        <div class="form-group">
+                            <label>Passing Percentage</label>
+                            {{ settings_form.passing_percentage }}
+                            <small class="form-text text-muted">The minimum percentage required to pass a
+                                subject.</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Auto-Cancel Class After (Hours)</label>
+                            {{ settings_form.cancellation_threshold_hours }}
+                            <small class="form-text text-muted">Cancel class if attendance isn't taken within this many
+                                hours.</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Number of Backups to Keep</label>
+                            {{ settings_form.number_of_backups_to_retain }}
+                            <small class="form-text text-muted">The number of recent daily backups to retain.</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Session Timeout (Seconds)</label>
+                            {{ settings_form.session_timeout_seconds }}
+                            <small class="form-text text-muted">Seconds of inactivity before auto-logout (e.g., 3600 for
+                                1 hour).</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Notification Recipient Email</label>
+                            {{ settings_form.notification_recipient_email }}
+                            <small class="form-text text-muted">The email address where system alerts (like
+                                auto-cancellations) will be sent.</small>
+                        </div>
                         <button type="submit" name="submit_settings" class="btn btn-primary">Save Settings</button>
                     </form>
                 </div>

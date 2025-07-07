@@ -4,47 +4,54 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="feat: Update logo and favicon to mobile version; enhance navigation role management">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="feat: Add migrations for attendance records, announcements, and marking schemes; enhance profile and subject models">
+      <change afterPath="$PROJECT_DIR$/academics/email_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/academics/management/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/academics/management/commands/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/academics/management/commands/cancel_missed_classes.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/academics/management/commands/check_for_updates.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/academics/management/commands/manage_backups.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/academics/templatetags/dict_helpers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/academics/templatetags/marks_helpers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/middleware.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/backup_restore.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/bulk_email.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/publish_results.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/smtp_settings.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/system_reports.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/update_status.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/emails/custom_bulk_email.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/emails/email_base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/emails/extra_class_cancelled_notification.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/emails/extra_class_notification.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/emails/new_user_welcome.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/emails/parent_report_card_email.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/registration/password_reset_subject.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AttendanceManagement/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AttendanceManagement/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/registry.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/academics/templatetags/nav_helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/templatetags/nav_helpers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/decorators.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/dore.dark.bluenavy.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/dore.dark.bluenavy.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/dore.light.yellowgranola.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/dore.light.yellowgranola.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/img/favicon.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/img/favicon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/img/logo-mobile.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/img/logo-mobile.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/img/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/img/logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/logos/black.svg" beforeDir="false" afterPath="$PROJECT_DIR$/static/logos/black.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/logos/mobile.svg" beforeDir="false" afterPath="$PROJECT_DIR$/static/logos/mobile.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/logos/white.svg" beforeDir="false" afterPath="$PROJECT_DIR$/static/logos/white.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/css/dore.dark.bluenavy.css" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/css/dore.dark.bluenavy.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/css/dore.dark.redruby.css" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/css/dore.dark.redruby.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/css/dore.light.yellowgranola.css" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/css/dore.light.yellowgranola.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/logos/black.svg" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/logos/black.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/logos/mobile.svg" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/logos/mobile.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/staticfiles/logos/white.svg" beforeDir="false" afterPath="$PROJECT_DIR$/staticfiles/logos/white.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/extra_class_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/extra_class_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/faculty_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/faculty_schedule.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/guide.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/guide.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/manage_timetable.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/manage_timetable.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/mark_attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/mark_attendance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/context_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/context_processors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/signals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/admin_settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_settings.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/admin_student_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_student_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/report_card.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/report_card.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/Login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/Login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/password_reset_complete.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/password_reset_complete.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/password_reset_confirm.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/password_reset_confirm.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/password_reset_done.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/password_reset_done.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/student_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/student_my_marks.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_my_marks.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/student_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/bulk_user_import.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/bulk_user_import.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/accounts/teacher_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/teacher_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/partials/_topnav.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/_topnav.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/registration/password_reset_email.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/password_reset_email.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/registration/password_reset_email.txt" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/password_reset_email.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,8 +64,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -124,11 +131,11 @@
       <recent name="D:\AttendanceManagement\static" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\AttendanceManagement\templates\emails" />
+      <recent name="D:\AttendanceManagement\templates\academics" />
       <recent name="D:\AttendanceManagement\static\css" />
       <recent name="D:\AttendanceManagement\staticfiles\font" />
       <recent name="D:\AttendanceManagement\static" />
-      <recent name="D:\AttendanceManagement\student_photos" />
-      <recent name="D:\AttendanceManagement\student_photos\default.png" />
     </key>
   </component>
   <component name="RunManager">
@@ -203,7 +210,9 @@
       <workItem from="1751561236988" duration="6637000" />
       <workItem from="1751608557795" duration="824000" />
       <workItem from="1751640025847" duration="7510000" />
-      <workItem from="1751746837717" duration="2808000" />
+      <workItem from="1751746837717" duration="3607000" />
+      <workItem from="1751793531840" duration="15704000" />
+      <workItem from="1751894981724" duration="16370000" />
     </task>
     <task id="LOCAL-00001" summary="Add initial project configuration files and user profile signal handling">
       <option name="closed" value="true" />
@@ -333,7 +342,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751561338045</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="feat: Update logo and favicon to mobile version; enhance navigation role management">
+      <option name="closed" value="true" />
+      <created>1751749829672</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1751749829672</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block page_title %}{{ page_title }}{% endblock page_title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>{{ page_title }}</h1>
+                <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                    <ol class="breadcrumb pt-0">
+                        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Send Bulk Email</li>
+                    </ol>
+                </nav>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+
+        {# --- CHANGE: Added offset-lg-2 to center the card on large screens --- #}
+        <div class="row">
+            <div class="col-12 col-lg-8 offset-lg-2">
+                <div class="card mb-4">
+                    <div class="card-body">
+
+                        {# --- CHANGE: Added an icon and improved the header --- #}
+                        <h5 class="card-title mb-4">
+                            <i class="simple-icon-envelope-letter"></i>
+                            Compose a New Message
+                        </h5>
+
+                        <p class="text-muted mb-4">
+                            Select your target audience, compose your message, and send an official email. The message
+                            will be automatically placed inside the standard school email template.
+                        </p>
+
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="font-weight-bold" for="{{ form.recipients.id_for_label }}">1. Select
+                                    Recipients</label>
+                                {{ form.recipients }}
+                                <small class="form-text text-muted">
+                                    You can select multiple groups. Simply click the recipient in the list to choose a
+                                    single recipient. Hold <strong>CTRL</strong> and click the recipients in the list
+                                    for multi-select.
+                                </small>
+                                {% if form.recipients.errors %}
+                                    <div class="alert alert-danger mt-1">{{ form.recipients.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group mt-4">
+                                <label class="font-weight-bold" for="{{ form.subject.id_for_label }}">2. Email
+                                    Subject</label>
+                                {{ form.subject }}
+                                {% if form.subject.errors %}
+                                    <div class="alert alert-danger mt-1">{{ form.subject.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group mt-4">
+                                <label class="font-weight-bold" for="{{ form.message.id_for_label }}">3. Compose Your
+                                    Message</label>
+                                {{ form.message }}
+                                <small class="form-text text-muted">{{ form.message.help_text }}</small>
+                                {% if form.message.errors %}
+                                    <div class="alert alert-danger mt-1">{{ form.message.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <hr class="my-4"/>
+
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                Send Email to Selected Groups
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block page_styles %}
+    {{ block.super }}
+{% endblock page_styles %}
+
+{% block page_scripts %}
+    {{ block.super }}
+    <script>
+        // This script initializes the multi-select dropdown.
+        $(document).ready(function () {
+            if ($.fn.select2) {
+                $('.select2-multiple').select2({
+                    theme: "bootstrap",
+                    placeholder: "Click to select recipients..."
+                });
+            }
+        });
+    </script>
+{% endblock page_scripts %}

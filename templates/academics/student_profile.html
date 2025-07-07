@@ -9,14 +9,10 @@
         <div class="col-12">
             <div class="card mb-4">
                 <div class="position-absolute card-top-buttons">
-                    <a href="{% url 'academics:student_update' student.pk %}" class="btn btn-primary btn-sm">Edit
-                        Profile</a>
-                </div>
-                <div class="position-relative card-top-buttons align-left">
-                <a href="{% url 'academics:student_report_html' student.id %}" class="btn btn-outline-primary"
-                   target="_blank">
-                    <i class="simple-icon-cloud-download"></i> Download Report Card
-                </a>
+                    <a href="{% url 'academics:student_report_html' student.id %}" class="btn btn-outline-primary"
+                       target="_blank">
+                        <i class="simple-icon-cloud-download"></i> Download Report Card
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="text-center">
@@ -37,94 +33,96 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="card mt-4">
-                <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs" role="tablist">
-                        <li class="nav-item"><a class="nav-link active" id="about-tab" data-toggle="tab" href="#about"
-                                                role="tab" aria-selected="true">About</a></li>
-                        <li class="nav-item"><a class="nav-link" id="parents-tab" data-toggle="tab" href="#parents"
-                                                role="tab" aria-selected="false">Parents</a></li>
-                        <li class="nav-item"><a class="nav-link" id="marks-tab" data-toggle="tab" href="#marks"
-                                                role="tab" aria-selected="false">Marks</a></li>
-                    </ul>
+    <div class="card mt-4">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item"><a class="nav-link active" id="about-tab" data-toggle="tab" href="#about"
+                                        role="tab" aria-selected="true">About</a></li>
+                <li class="nav-item"><a class="nav-link" id="parents-tab" data-toggle="tab" href="#parents"
+                                        role="tab" aria-selected="false">Parents</a></li>
+                <li class="nav-item"><a class="nav-link" id="marks-tab" data-toggle="tab" href="#marks"
+                                        role="tab" aria-selected="false">Marks</a></li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="about" role="tabpanel">
+                    <h5 class="mb-4">Academic & Contact Details</h5>
+                    <dl class="row">
+                        <dt class="col-sm-3 text-muted">Student ID</dt>
+                        <dd class="col-sm-9">
+                            : {{ student.profile.student_id_number|default:"Not Provided" }}</dd>
+                        <dt class="col-sm-3 text-muted">Course</dt>
+                        <dd class="col-sm-9">: {{ student.profile.student_group.course.name|default:"N/A" }}
+                            ({{ student.profile.student_group.start_year }}
+                            - {{ student.profile.student_group.passout_year }})
+                        </dd>
+                        <dt class="col-sm-3 text-muted">Email</dt>
+                        <dd class="col-sm-9">: {{ student.email|default:"Not Provided" }}</dd>
+                        <dt class="col-sm-3 text-muted">Phone</dt>
+                        <dd class="col-sm-9">: {{ student.profile.contact_number|default:"Not Provided" }}</dd>
+                        <dt class="col-sm-3 text-muted">Address</dt>
+                        <dd class="col-sm-9">{{ student.profile.address|default:"Not Provided"|linebreaksbr }}</dd>
+                    </dl>
                 </div>
-                <div class="card-body">
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="about" role="tabpanel">
-                            <h5 class="mb-4">Academic & Contact Details</h5>
-                            <dl class="row">
-                                <dt class="col-sm-3 text-muted">Student ID</dt>
-                                <dd class="col-sm-9">
-                                    : {{ student.profile.student_id_number|default:"Not Provided" }}</dd>
-                                <dt class="col-sm-3 text-muted">Course</dt>
-                                <dd class="col-sm-9">: {{ student.profile.student_group.course.name|default:"N/A" }}
-                                    ({{ student.profile.student_group.start_year }}
-                                    - {{ student.profile.student_group.passout_year }})
-                                </dd>
-                                <dt class="col-sm-3 text-muted">Email</dt>
-                                <dd class="col-sm-9">: {{ student.email|default:"Not Provided" }}</dd>
-                                <dt class="col-sm-3 text-muted">Phone</dt>
-                                <dd class="col-sm-9">: {{ student.profile.contact_number|default:"Not Provided" }}</dd>
-                                <dt class="col-sm-3 text-muted">Address</dt>
-                                <dd class="col-sm-9">{{ student.profile.address|default:"Not Provided"|linebreaksbr }}</dd>
-                            </dl>
+                <div class="tab-pane fade" id="parents" role="tabpanel">
+                    <h5 class="mb-4">Family Information</h5>
+                    <dl class="row">
+                        <dt class="col-sm-3 text-muted">Father's Name</dt>
+                        <dd class="col-sm-9">: {{ student.profile.father_name|default:"Not Provided" }}</dd>
+                        <dt class="col-sm-3 text-muted">Father's Phone</dt>
+                        <dd class="col-sm-9">: {{ student.profile.father_phone|default:"Not Provided" }}</dd>
+                        <dt class="col-sm-3 text-muted">Mother's Name</dt>
+                        <dd class="col-sm-9">: {{ student.profile.mother_name|default:"Not Provided" }}</dd>
+                        <dt class="col-sm-3 text-muted">Mother's Phone</dt>
+                        <dd class="col-sm-9">: {{ student.profile.mother_phone|default:"Not Provided" }}</dd>
+                    </dl>
+                </div>
+                <div class="tab-pane fade" id="marks" role="tabpanel">
+                    <h5 class="mb-4">Marks Summary (Current Semester)</h5>
+                    {% if marks_summary %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <tbody>
+                                {% for subject, data in marks_summary.items %}
+                                    <tr class="table-active">
+                                        <td colspan="3"><strong>{{ subject }}</strong></td>
+                                    </tr>
+                                    {% for criterion in data.criteria %}
+                                        <tr>
+                                            <td class="pl-4">{{ criterion.name }}</td>
+                                            <td class="text-right">{{ criterion.marks|floatformat:2 }}</td>
+                                            <td class="text-right">/ {{ criterion.max }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td class="pl-4 text-right"><strong>Subject Total:</strong></td>
+                                        <td class="text-right">
+                                            <strong>{{ data.total_obtained|floatformat:2 }}</strong></td>
+                                        <td class="text-right"><strong>/ {{ data.total_max }}</strong></td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3">No marks found for this subject.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="tab-pane fade" id="parents" role="tabpanel">
-                            <h5 class="mb-4">Family Information</h5>
-                            <dl class="row">
-                                <dt class="col-sm-3 text-muted">Father's Name</dt>
-                                <dd class="col-sm-9">: {{ student.profile.father_name|default:"Not Provided" }}</dd>
-                                <dt class="col-sm-3 text-muted">Father's Phone</dt>
-                                <dd class="col-sm-9">: {{ student.profile.father_phone|default:"Not Provided" }}</dd>
-                                <dt class="col-sm-3 text-muted">Mother's Name</dt>
-                                <dd class="col-sm-9">: {{ student.profile.mother_name|default:"Not Provided" }}</dd>
-                                <dt class="col-sm-3 text-muted">Mother's Phone</dt>
-                                <dd class="col-sm-9">: {{ student.profile.mother_phone|default:"Not Provided" }}</dd>
-                            </dl>
-                        </div>
-                        <div class="tab-pane fade" id="marks" role="tabpanel">
-                            <h5 class="mb-4">Marks Summary (Current Semester)</h5>
-                            {% if marks_summary %}
-                                <div class="table-responsive">
-                                    <table class="table table-sm table-hover">
-                                        <tbody>
-                                        {% for subject, data in marks_summary.items %}
-                                            <tr class="table-active">
-                                                <td colspan="3"><strong>{{ subject }}</strong></td>
-                                            </tr>
-                                            {% for criterion in data.criteria %}
-                                                <tr>
-                                                    <td class="pl-4">{{ criterion.name }}</td>
-                                                    <td class="text-right">{{ criterion.marks|floatformat:2 }}</td>
-                                                    <td class="text-right">/ {{ criterion.max }}</td>
-                                                </tr>
-                                            {% endfor %}
-                                            <tr>
-                                                <td class="pl-4 text-right"><strong>Subject Total:</strong></td>
-                                                <td class="text-right">
-                                                    <strong>{{ data.total_obtained|floatformat:2 }}</strong></td>
-                                                <td class="text-right"><strong>/ {{ data.total_max }}</strong></td>
-                                            </tr>
-                                        {% empty %}
-                                            <tr>
-                                                <td colspan="3">No marks found for this subject.</td>
-                                            </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <a href="{% url 'academics:admin_student_attendance_detail' student.pk %}?view_type=marks"
-                                   class="btn btn-link">
-                                    View Full Mark Sheet & Filter by Semester
-                                </a>
-                            {% else %}
-                                <p>No marks have been entered for the current semester.</p>
-                            {% endif %}
-                        </div>
-                    </div>
+                        <a href="{% url 'academics:admin_student_attendance_detail' student.pk %}?view_type=marks"
+                           class="btn btn-link">
+                            View Full Mark Sheet & Filter by Semester
+                        </a>
+                    {% else %}
+                        <p>No marks have been entered for the current semester.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 {% endblock content %}
