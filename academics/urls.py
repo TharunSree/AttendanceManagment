@@ -1,4 +1,5 @@
 from django.urls import path
+
 from . import views
 
 # This is a good practice for namespacing your URLs
@@ -95,6 +96,7 @@ urlpatterns = [
          name='send_parent_report'),
     path('publish-results/bulk/<int:group_id>/<int:semester>/', views.bulk_publish_results_view,
          name='bulk_publish_results'),
+    path('academic-session/<int:pk>/delete/', views.academic_session_delete_view, name='academic_session_delete'),
 
     # --- Academic Session Management URLs ---
 

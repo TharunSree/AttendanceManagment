@@ -14,13 +14,78 @@
     <div class="row">
 
         <div class="col-12 col-lg-6 mb-4">
+            {# --- NEW CARD FOR ACADEMIC SESSION MANAGEMENT --- #}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Academic Sessions</h5>
+                    <table class="data-table data-table-scrollable responsive nowrap">
+                        <thead>
+                        <tr>
+                            <th class="text-center">Session Name</th>
+                            <th class="text-center">Start</th>
+                            <th class="text-center">End</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for session in academic_sessions %}
+                            <tr>
+                                <td class="text-center">{{ session.name }}</td>
+                                <td class="text-center">{{ session.start_year }}</td>
+                                <td class="text-center">{{ session.end_year }}</td>
+                                <td class="text-center">
+                                    {% if session.is_current %}
+                                        <span class="badge badge-pill badge-success">Current</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-right">
+                                    <form action="{% url 'academics:academic_session_delete' session.pk %}"
+                                          method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-xs btn-outline-danger"
+                                                onclick="return confirm('Are you sure? This cannot be undone.');">Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No academic sessions created yet.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <hr/>
+                    <h6 class="mb-4">Create New Academic Session</h6>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="{{ academic_session_create_form.name.id_for_label }}">Name</label>
+                                {{ academic_session_create_form.name }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="{{ academic_session_create_form.start_year.id_for_label }}">Start
+                                    Year</label>
+                                {{ academic_session_create_form.start_year }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="{{ academic_session_create_form.end_year.id_for_label }}">End Year</label>
+                                {{ academic_session_create_form.end_year }}
+                            </div>
+                        </div>
+                        <button type="submit" name="create_academic_session" class="btn btn-primary">Create Session
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {#--- CARD FOR TIME SLOT MANAGEMENT (Your original code) ---#}
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Manage Time Slots</h5>
                     <p class="text-muted">Define the periods that make up a day for the timetable.</p>
-
-                    {# --- THIS IS THE FIX --- #}
-                    {# Using the data-table class from your theme file #}
                     <table class="data-table data-table-scrollable responsive nowrap"
                            data-order="[[ 1, &quot;asc&quot; ]]">
                         <thead>
@@ -35,16 +100,12 @@
                         <tbody>
                         {% for slot in timeslots %}
                             <tr>
-                                <td class='text-center'>
-                                    <p class="list-item-heading">{{ slot.label|default:"-" }}</p>
+                                <td class='text-center'><p class="list-item-heading">{{ slot.label|default:"-" }}</p>
                                 </td>
-                                <td class='text-center'>
-                                    <p class="text-muted">{{ slot.start_time|time:"g:i A" }}</p>
+                                <td class='text-center'><p class="text-muted">{{ slot.start_time|time:"g:i A" }}</p>
                                 </td>
-                                <td class='text-center'>
-                                    <p class="text-muted">{{ slot.end_time|time:"g:i A" }}</p>
-                                </td>
-                                <td class="text-center"> {# <-- New Column Data #}
+                                <td class='text-center'><p class="text-muted">{{ slot.end_time|time:"g:i A" }}</p></td>
+                                <td class="text-center">
                                     {% if slot.is_schedulable %}
                                         <span class="badge badge-pill badge-outline-success">Yes</span>
                                     {% else %}
@@ -62,37 +123,24 @@
                                     </form>
                                 </td>
                             </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">No time slots created yet.</td>
-                            </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                     <hr/>
-
                     <h6 class="mb-4">Add New Time Slot</h6>
                     <form method="post">
                         {% csrf_token %}
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                {{ timeslot_form.start_time.label_tag }}
-                                {{ timeslot_form.start_time }}
-                            </div>
+                                {{ timeslot_form.start_time.label_tag }}{{ timeslot_form.start_time }}</div>
                             <div class="form-group col-md-6">
-                                {{ timeslot_form.end_time.label_tag }}
-                                {{ timeslot_form.end_time }}
-                            </div>
+                                {{ timeslot_form.end_time.label_tag }}{{ timeslot_form.end_time }}</div>
                         </div>
-                        <div class="form-group">
-                            {{ timeslot_form.label.label_tag }}
-                            {{ timeslot_form.label }}
-                        </div>
+                        <div class="form-group">{{ timeslot_form.label.label_tag }}{{ timeslot_form.label }}</div>
                         <div class="custom-control custom-checkbox mb-3">
                             {{ timeslot_form.is_schedulable }}
-                            <label class="custom-control-label" for="{{ timeslot_form.is_schedulable.id_for_label }}">
-                                Is this a schedulable period? (Uncheck for breaks)
-                            </label>
+                            <label class="custom-control-label" for="{{ timeslot_form.is_schedulable.id_for_label }}">Is
+                                this a schedulable period? (Uncheck for breaks)</label>
                         </div>
                         <button type="submit" name="submit_timeslot" class="btn btn-primary">Add Time Slot</button>
                     </form>
@@ -101,65 +149,55 @@
         </div>
 
         <div class="col-12 col-lg-6 mb-4">
+            {# --- CARD FOR GENERAL AND CURRENT SESSION SETTINGS --- #}
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">General Settings</h5>
-                    <form method="post">
+                    <h5 class="card-title">System Settings</h5>
+
+                    <form method="post" class="mb-4">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="{{ settings_form.required_percentage.id_for_label }}">Required Attendance
-                                Percentage</label>
-                            {{ settings_form.required_percentage }}
+                            <label for="{{ session_form.current_session.id_for_label }}"><strong>Current Academic
+                                Session:</strong></label>
+                            {{ session_form.current_session }}
                         </div>
-                        <div class="form-group">
-                            <label for="{{ settings_form.mark_deadline_days.id_for_label }}">Deadline to Mark Attendance
-                                (in days)</label>
-                            {{ settings_form.mark_deadline_days }}
-                            <small class="form-text text-muted">{{ settings_form.mark_deadline_days.help_text }}</small>
+                        <button type="submit" name="set_academic_session" class="btn btn-secondary">Set as Current
+                        </button>
+                    </form>
+                    <hr/>
+
+                    <h5 class="card-title mt-4">General Configuration</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group"><label for="{{ settings_form.required_percentage.id_for_label }}">Required
+                            Attendance Percentage</label>{{ settings_form.required_percentage }}</div>
+                        <div class="form-group"><label for="{{ settings_form.mark_deadline_days.id_for_label }}">Deadline
+                            to Mark Attendance (in days)</label>{{ settings_form.mark_deadline_days }}</div>
+                        <div class="form-group"><label>Passing Percentage</label>{{ settings_form.passing_percentage }}
                         </div>
-                        <div class="form-group">
-                            <label for="{{ settings_form.edit_deadline_days.id_for_label }}">Deadline to Edit Attendance
-                                (in days)</label>
-                            {{ settings_form.edit_deadline_days }}
-                            <small class="form-text text-muted">{{ settings_form.edit_deadline_days.help_text }}</small>
+                        <div class="form-group"><label>Session Timeout
+                            (Seconds)</label>{{ settings_form.session_timeout_seconds }}</div>
+                        <div class="form-group"><label>Notification Recipient
+                            Email</label>{{ settings_form.notification_recipient_email }}</div>
+
+                        <hr/>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0">Email Server</h6>
+                            <a href="{% url 'academics:smtp_settings' %}" class="btn btn-outline-primary btn-sm">Configure
+                                SMTP</a>
                         </div>
-                        <div class="form-group">
-                            <label>Passing Percentage</label>
-                            {{ settings_form.passing_percentage }}
-                            <small class="form-text text-muted">The minimum percentage required to pass a
-                                subject.</small>
-                        </div>
-                        <div class="form-group">
-                            <label>Auto-Cancel Class After (Hours)</label>
-                            {{ settings_form.cancellation_threshold_hours }}
-                            <small class="form-text text-muted">Cancel class if attendance isn't taken within this many
-                                hours.</small>
-                        </div>
-                        <div class="form-group">
-                            <label>Number of Backups to Keep</label>
-                            {{ settings_form.number_of_backups_to_retain }}
-                            <small class="form-text text-muted">The number of recent daily backups to retain.</small>
-                        </div>
-                        <div class="form-group">
-                            <label>Session Timeout (Seconds)</label>
-                            {{ settings_form.session_timeout_seconds }}
-                            <small class="form-text text-muted">Seconds of inactivity before auto-logout (e.g., 3600 for
-                                1 hour).</small>
-                        </div>
-                        <div class="form-group">
-                            <label>Notification Recipient Email</label>
-                            {{ settings_form.notification_recipient_email }}
-                            <small class="form-text text-muted">The email address where system alerts (like
-                                auto-cancellations) will be sent.</small>
-                        </div>
-                        <button type="submit" name="submit_settings" class="btn btn-primary">Save Settings</button>
+                        <hr/>
+
+                        <button type="submit" name="submit_settings" class="btn btn-primary mt-3">Save General
+                            Settings
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
-
     </div>
 {% endblock content %}
+
 {% block vendor_scripts %}
     <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
 {% endblock vendor_scripts %}

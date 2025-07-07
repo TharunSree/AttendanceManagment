@@ -251,7 +251,7 @@
         </ol>
 
         <div class="row mt-4">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body text-center">
                         <div class="badge badge-success mb-2">Present</div>
@@ -259,15 +259,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <div class="badge badge-warning mb-2">Late</div>
-                        <p class="small mb-0">You were marked late</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body text-center">
                         <div class="badge badge-danger mb-2">Absent</div>
@@ -385,6 +377,7 @@
                             <li>Name and contact details</li>
                             <li>Student ID and registration number</li>
                             <li>Class group and course information</li>
+                            <li>Parent contact information</li>
                         </ul>
                     </div>
                 </div>
@@ -397,6 +390,7 @@
                             <li>Overall attendance percentage</li>
                             <li>Academic performance overview</li>
                             <li>Current semester information</li>
+                            <li>Student group assignment</li>
                         </ul>
                     </div>
                 </div>
@@ -490,8 +484,7 @@
             <li>The system will show all students in that class</li>
             <li>Mark each student as:
                 <ul>
-                    <li><span class="badge badge-success">Present</span> - Student attended on time</li>
-                    <li><span class="badge badge-warning">Late</span> - Student arrived late</li>
+                    <li><span class="badge badge-success">Present</span> - Student attended</li>
                     <li><span class="badge badge-danger">Absent</span> - Student didn't attend</li>
                 </ul>
             </li>
@@ -507,7 +500,6 @@
         <ul>
             <li><strong>Mark All Present:</strong> Quick way to mark all students present</li>
             <li><strong>Mark All Absent:</strong> Mark all students absent</li>
-            <li><strong>Copy from Previous:</strong> Copy attendance from the last class</li>
         </ul>
     </div>
 
@@ -545,8 +537,8 @@
         </div>
 
         <div class="alert alert-info">
-            <h6><i class="simple-icon-cloud-upload"></i> Bulk Import</h6>
-            <p class="mb-0">For large classes, you can use the bulk import feature to upload marks via CSV file.</p>
+            <h6><i class="simple-icon-info"></i> Marking Guidelines</h6>
+            <p class="mb-0">Ensure marks are within the maximum allowed for each criterion. The system will validate entries before saving.</p>
         </div>
     </div>
 
@@ -678,9 +670,8 @@
                         <h6>Student Operations</h6>
                         <ul class="small">
                             <li>Bulk student enrollment</li>
-
                             <li>Profile updates</li>
-
+                            <li>Student group assignments</li>
                         </ul>
                     </div>
                 </div>
@@ -691,9 +682,8 @@
                         <h6>Faculty Operations</h6>
                         <ul class="small">
                             <li>Subject assignments</li>
-
                             <li>Permission management</li>
-
+                            <li>Field of expertise settings</li>
                         </ul>
                     </div>
                 </div>
@@ -741,10 +731,9 @@
                     <div class="card-body">
                         <h6>Timetable Features</h6>
                         <ul class="small">
-                            <li>Day - Hour Scheduling</li>
+                            <li>Day-wise scheduling</li>
                             <li>Conflict detection</li>
-
-
+                            <li>Time slot management</li>
                         </ul>
                     </div>
                 </div>
@@ -754,11 +743,9 @@
                     <div class="card-body">
                         <h6>Substitution Management</h6>
                         <ul class="small">
-
+                            <li>Daily substitutions</li>
                             <li>Notification system</li>
-
                             <li>Historical records</li>
-
                         </ul>
                     </div>
                 </div>
@@ -812,7 +799,6 @@
         </div>
 
         <div class="row mt-3">
-
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
@@ -832,9 +818,7 @@
         <ol>
             <li>Navigate to the specific report section</li>
             <li>Select the desired filters (class, subject, date range)</li>
-
             <li>Click "Generate Report" to download</li>
-
         </ol>
 
         <div class="alert alert-info mt-4">
@@ -851,10 +835,10 @@
         <h5>Attendance Settings</h5>
         <p>Configure system-wide attendance parameters:</p>
         <ul>
-            <li><strong>Edit Deadline:</strong> How long faculty can edit attendance records (default: 24 hours)</li>
-            <li><strong>Minimum Attendance:</strong> Required attendance percentage for students (default: 75%)</li>
-
-            <li><strong>Auto-notifications:</strong> Automatic alerts for low attendance (default: enabled)</li>
+            <li><strong>Edit Deadline:</strong> How long faculty can edit attendance records</li>
+            <li><strong>Required Percentage:</strong> Required attendance percentage for students</li>
+            <li><strong>Passing Percentage:</strong> Minimum percentage required to pass</li>
+            <li><strong>Cancellation Threshold:</strong> Auto-cancellation time limit</li>
         </ul>
 
         <h5 class="mt-4">Academic Settings</h5>
@@ -866,38 +850,46 @@
                         <ul class="small">
                             <li>Create custom marking criteria</li>
                             <li>Set maximum marks for each criterion</li>
-                                                        <li>Define pass/fail thresholds</li>
+                            <li>Define pass/fail thresholds</li>
                         </ul>
                     </div>
                 </div>
             </div>
-
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Session Management</h6>
+                        <ul class="small">
+                            <li>Academic session setup</li>
+                            <li>Semester configuration</li>
+                            <li>Course management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <h5 class="mt-4">Notification Settings</h5>
+        <h5 class="mt-4">Email Configuration</h5>
         <ul>
-            <li><strong>Email Configuration:</strong> SMTP settings for system emails</li>
-            <li><strong>Alert Thresholds:</strong> When to send low attendance warnings</li>
-            <li><strong>Announcement Settings:</strong> Default recipients and notification preferences</li>
-            <li><strong>Reminder Schedule:</strong> Automated reminders for faculty and students</li>
+            <li><strong>SMTP Settings:</strong> Email server configuration</li>
+            <li><strong>Notification Recipients:</strong> System notification emails</li>
+            <li><strong>Alert Thresholds:</strong> When to send automated alerts</li>
         </ul>
 
         <h5 class="mt-4">Security Settings</h5>
         <div class="row">
             <div class="col-md-6">
                 <ul>
-                    <li>Password policy configuration</li>
-                    <li>Session timeout settings</li>
-                    <li>Login attempt restrictions</li>
-                    <li>Two-factor authentication</li>
+                    <li>Session timeout configuration</li>
+                    <li>User activity logging</li>
+                    <li>Password policy settings</li>
                 </ul>
             </div>
             <div class="col-md-6">
                 <ul>
-                    <li>User access logs</li>
-                    <li>Data backup settings</li>
-                    <li>System maintenance schedule</li>
-                    <li>Security audit configuration</li>
+                    <li>Backup retention settings</li>
+                    <li>Data backup schedule</li>
+                    <li>System maintenance windows</li>
                 </ul>
             </div>
         </div>

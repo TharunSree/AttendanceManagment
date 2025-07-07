@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'accounts.middleware.SessionTimeoutMiddleware',  # Custom middleware for session timeout
     'accounts.middleware.PerformanceBenchmarkMiddleware',
+    'accounts.middleware.AcademicSessionMiddleware',
     'axes.middleware.AxesMiddleware',
 ]
 

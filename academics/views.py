@@ -1,47 +1,44 @@
 # In academics/views.py
+import calendar
 import csv
 import json
-import calendar
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from itertools import chain
 
-from axes.models import AccessLog
+from django import forms
 from django.conf import settings
-from django.contrib.auth.models import User, Group
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.core.management import call_command
 from django.db import transaction
 from django.db.models import Count, Sum
-from django.db.models import ExpressionWrapper, fields, F, Q
+from django.db.models import Q
 from django.db.models.functions import TruncMonth
 from django.forms import inlineformset_factory, formset_factory
 from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib import messages
-from django import forms
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
-from django.views.decorators.http import require_POST
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment
+from pyppeteer import launch
 
-import academics.views
 from academics.forms import EditStudentForm, AttendanceSettingsForm, TimeSlotForm, MarkAttendanceForm, \
     TimetableEntryForm, SubstitutionForm, AttendanceReportForm, AnnouncementForm, CriterionFormSet, MarkingSchemeForm, \
-    MarkSelectForm, BulkMarksImportForm, MarksReportForm, ExtraClassForm, SmtpSettingsForm, BulkEmailForm
+    MarkSelectForm, BulkMarksImportForm, MarksReportForm, ExtraClassForm, SmtpSettingsForm, BulkEmailForm, \
+    AcademicSessionForm, AcademicSessionModelForm
+from accounts.decorators import nav_item
 from accounts.models import Profile, UserActivityLog
 from .email_utils import send_database_email
 from .forms import StudentGroupForm, CourseForm, AddStudentForm, SubjectForm
 from .models import StudentGroup, AttendanceSettings, Course, Subject, \
     Timetable, AttendanceRecord, CourseSubject, TimeSlot, ClassCancellation, DailySubstitution, Announcement, \
     UserNotificationStatus, MarkingScheme, Mark, Criterion, ExtraClass, AcademicSession, ResultPublication
-from accounts.decorators import nav_item
-from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment
-import asyncio
-from pyppeteer import launch
 
 
 # ... other views ...
@@ -51,9 +48,17 @@ from pyppeteer import launch
 @nav_item(title="Attendance Settings", icon="iconsminds-gears", url_name="academics:admin_settings",
           permission='academics.view_attendance_settings', group='application_settings', order=1)
 def admin_settings_view(request):
+    # Initialize all forms for the GET request
     timeslot_form = TimeSlotForm()
     settings_obj = AttendanceSettings.load()
     settings_form = AttendanceSettingsForm(instance=settings_obj)
+    academic_session_create_form = AcademicSessionModelForm()
+
+    try:
+        current_session = AcademicSession.objects.get(is_current=True)
+        session_set_form = AcademicSessionForm(initial={'current_session': current_session})
+    except AcademicSession.DoesNotExist:
+        session_set_form = AcademicSessionForm()
 
     if request.method == 'POST':
         # Check which form was submitted based on the button's name attribute
@@ -62,24 +67,54 @@ def admin_settings_view(request):
             if timeslot_form.is_valid():
                 timeslot_form.save()
                 messages.success(request, "New time slot has been created.")
-                return redirect('academics:admin_settings')
-
         elif 'submit_settings' in request.POST:
             settings_form = AttendanceSettingsForm(request.POST, instance=settings_obj)
             if settings_form.is_valid():
                 settings_form.save()
-                messages.success(request, "Attendance settings have been updated.")
-                return redirect('academics:admin_settings')
+                messages.success(request, "General system settings have been updated.")
+        elif 'set_academic_session' in request.POST:
+            session_set_form = AcademicSessionForm(request.POST)
+            if session_set_form.is_valid():
+                new_current_session = session_set_form.cleaned_data['current_session']
+                AcademicSession.objects.exclude(pk=new_current_session.pk).update(is_current=False)
+                new_current_session.is_current = True
+                new_current_session.save()
+                messages.success(request, f"'{new_current_session.name}' is now the current academic session.")
+        elif 'create_academic_session' in request.POST:
+            academic_session_create_form = AcademicSessionModelForm(request.POST)
+            if academic_session_create_form.is_valid():
+                academic_session_create_form.save()
+                messages.success(request, "New academic session has been created.")
 
-    timeslots = TimeSlot.objects.all()
+        # Redirect back to the same page after any POST action
+        return redirect('academics:admin_settings')
+
+    all_timeslots = TimeSlot.objects.all()
+    all_sessions = AcademicSession.objects.all().order_by('-start_year')
+
     context = {
-        'timeslots': timeslots,
+        'timeslots': all_timeslots,
         'timeslot_form': timeslot_form,
-        'settings_form': settings_form
+        'settings_form': settings_form,
+        'session_form': session_set_form,
+        'academic_session_create_form': academic_session_create_form,
+        'academic_sessions': all_sessions,
+        'page_title': 'Application Settings'
     }
     return render(request, 'academics/admin_settings.html', context)
 
 
+@login_required
+@permission_required('academics.delete_academicsession', raise_exception=True)
+def academic_session_delete_view(request, pk):
+    session = get_object_or_404(AcademicSession, pk=pk)
+    if request.method == 'POST':
+        if session.is_current:
+            messages.error(request, "Cannot delete the currently active academic session.")
+        else:
+            session.delete()
+            messages.success(request, "Academic session has been deleted.")
+    return redirect('academics:admin_settings')
 # In academics/views.py
 
 @login_required
@@ -567,12 +602,20 @@ def student_delete_view(request, pk):
 @login_required
 @permission_required('academics.delete_studentgroup', raise_exception=True)
 def student_group_delete_view(request, pk):
+    """
+    Delete a student group (class).
+    """
     student_group = get_object_or_404(StudentGroup, pk=pk)
+
     if request.method == 'POST':
         student_group.delete()
-        messages.success(request, f'Class "{student_group.name}" has been deleted.')
-        return redirect('academics:admin_select_class')
-    return render(request, 'academics/student_group_confirm_delete.html', {'student_group': student_group})
+        messages.success(request, f'Class "{student_group}" has been deleted successfully.')
+        return redirect('academics:course_list')
+
+    return render(request, 'academics/confirm_delete.html', {
+        'item': student_group,
+        'type': 'Class',
+    })
 
 
 @login_required
@@ -710,32 +753,6 @@ def faculty_daily_schedule_view(request):
         # Check if class is manually cancelled for today
         is_cancelled = ClassCancellation.objects.filter(timetable=entry, date=today).exists()
 
-        # Only check for auto-cancellation if:
-        # 1. Class is not manually cancelled
-        # 2. The date being checked is in the past (not today)
-        # 3. Attendance wasn't marked within the deadline
-        auto_cancelled = False
-        if not is_cancelled:
-            # Calculate deadline date for this specific class
-            deadline_date = today - timedelta(days=mark_deadline)
-
-            # Only auto-cancel if this class happened before the deadline
-            if today > deadline_date:  # This means we're past the deadline period
-                # Check if attendance was marked for classes that should have been auto-cancelled
-                past_date = deadline_date  # Check the exact deadline date
-                attendance_exists = AttendanceRecord.objects.filter(
-                    timetable=entry,
-                    date=past_date
-                ).exists()
-
-                # If no attendance was marked for the deadline date, create cancellation
-                if not attendance_exists and past_date.strftime('%A') == entry.day_of_week:
-                    # Create auto-cancellation for the past date, not today
-                    ClassCancellation.objects.get_or_create(
-                        timetable=entry,
-                        date=past_date,
-                        defaults={'cancelled_by': None}  # None indicates auto-cancellation
-                    )
 
         # Check if attendance has been marked for TODAY
         attendance_marked = AttendanceRecord.objects.filter(

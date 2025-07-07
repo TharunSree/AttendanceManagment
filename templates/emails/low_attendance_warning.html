@@ -1,0 +1,30 @@
+{% extends 'emails/email_base.html' %}
+
+{% block title %}Low Attendance Warning{% endblock %}
+{% block preheader %}Important: Low Attendance Warning{% endblock %}
+
+{% block content %}
+    <p>Dear {{ student.first_name|default:student.username }},</p>
+    <p>This is an automated warning to inform you that your attendance in the following subject has fallen below the
+        required minimum:</p>
+
+    <h3 style="text-align: center; color: #c05c5c; margin-top: 20px; margin-bottom: 20px;">
+        {{ subject.subject.name }}
+    </h3>
+
+    <table border="0" cellpadding="10" cellspacing="0"
+           style="width: 100%; border: 1px solid #e4e2e2; margin-top: 20px; margin-bottom: 20px;">
+        <tr>
+            <td style="background-color: #f8f8f8; width: 50%;"><strong>Your Current Attendance:</strong></td>
+            <td style="font-size: 18px;"><strong>{{ current_percentage|floatformat:2 }}%</strong></td>
+        </tr>
+        <tr>
+            <td style="background-color: #f8f8f8;"><strong>Required Minimum Attendance:</strong></td>
+            <td style="font-size: 18px;"><strong>{{ required_percentage }}%</strong></td>
+        </tr>
+    </table>
+
+    <p>Please make every effort to attend all future classes for this subject to avoid being ineligible for
+        examinations.</p>
+    <p>If you believe this is an error, please contact your subject faculty immediately.</p>
+{% endblock %}

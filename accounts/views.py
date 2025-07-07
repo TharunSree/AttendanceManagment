@@ -2,24 +2,23 @@ import csv
 import json
 from datetime import datetime
 
-from django.apps import apps
-from django.template.loader import render_to_string
-from django.urls import reverse
-from django.utils import timezone
-
+from django.contrib import messages
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
-from django.contrib import messages
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils import timezone
 
 from academics.email_utils import send_database_email
 from academics.models import Course, StudentGroup, Subject, Timetable, AttendanceRecord, DailySubstitution, \
-    ClassCancellation, AttendanceSettings, CourseSubject, Mark, Criterion, MarkingScheme, ExtraClass, ResultPublication
+    ClassCancellation, AttendanceSettings, CourseSubject, Mark, Criterion, MarkingScheme, ExtraClass, ResultPublication, \
+    LowAttendanceNotification
 from .decorators import nav_item
 from .forms import AddTeacherForm, EditTeacherForm, UserUpdateForm, ProfileUpdateForm, BulkImportForm, \
     CustomPasswordResetForm
@@ -187,46 +186,53 @@ def group_permission_list_view(request):
 def group_permission_edit_view(request, group_id):
     group = get_object_or_404(Group, pk=group_id)
 
-    # --- Using a direct list of models is more reliable ---
-    # I've added the new Mark, Criterion, and MarkingScheme models here.
+    # --- This list of models remains the same ---
     managed_models = [
         User, Course, Subject, StudentGroup, Timetable, AttendanceRecord,
         ClassCancellation, DailySubstitution, AttendanceSettings,
-        Mark, Criterion, MarkingScheme, Profile, ExtraClass, Notification, ResultPublication
+        Mark, Criterion, MarkingScheme, Profile, ExtraClass, Notification, ResultPublication,
+        UserActivityLog, LowAttendanceNotification
     ]
-    # --------------------------------------------------------
 
+    # Get all permissions related to our apps for a complete list
     content_types = ContentType.objects.get_for_models(*managed_models)
-    all_permissions = Permission.objects.filter(content_type__in=content_types.values())
-    group_permissions = group.permissions.all()
+    all_app_permissions = Permission.objects.filter(content_type__in=content_types.values())
 
+    # --- The logic to organize permissions is now improved ---
     permissions_by_model = []
     other_permissions = []
 
-    for ct in content_types.values():
+    # Keep track of standard permissions we have processed
+    processed_perms = set()
+
+    # Organize standard model permissions (add, change, delete, view)
+    model_content_types = ContentType.objects.get_for_models(*managed_models)
+    for ct in model_content_types.values():
         model_class = ct.model_class()
         if not model_class:
             continue
 
         model_name_lower = model_class._meta.model_name
-        perms_for_model = all_permissions.filter(content_type=ct)
+        perms_for_model = all_app_permissions.filter(content_type=ct)
 
-        model_perms = {
+        model_perms_dict = {
             'name': model_class._meta.verbose_name_plural.title(),
             'view': perms_for_model.filter(codename=f'view_{model_name_lower}').first(),
             'add': perms_for_model.filter(codename=f'add_{model_name_lower}').first(),
             'change': perms_for_model.filter(codename=f'change_{model_name_lower}').first(),
             'delete': perms_for_model.filter(codename=f'delete_{model_name_lower}').first(),
         }
-        permissions_by_model.append(model_perms)
+        permissions_by_model.append(model_perms_dict)
 
-        standard_codenames = {
-            f'view_{model_name_lower}', f'add_{model_name_lower}',
-            f'change_{model_name_lower}', f'delete_{model_name_lower}'
-        }
-        custom_perms_for_model = perms_for_model.exclude(codename__in=standard_codenames)
-        other_permissions.extend(list(custom_perms_for_model))
+        # Add the processed permissions to our set
+        for key, perm_object in model_perms_dict.items():
+            if key != 'name' and perm_object:
+                processed_perms.add(perm_object.pk)
 
+    # Find all remaining permissions that are not standard add/change/view/delete
+    other_permissions = all_app_permissions.exclude(id__in=processed_perms)
+
+    # --- The POST logic remains the same ---
     if request.method == 'POST':
         selected_permission_ids = request.POST.getlist('permissions')
         selected_permissions = Permission.objects.filter(pk__in=selected_permission_ids)
@@ -238,7 +244,7 @@ def group_permission_edit_view(request, group_id):
         'group': group,
         'permissions_by_model': sorted(permissions_by_model, key=lambda x: x['name']),
         'other_permissions': sorted(other_permissions, key=lambda x: x.name),
-        'group_permissions': group_permissions,
+        'group_permissions': group.permissions.all(),
         'actions': ["View", "Add", "Update", "Delete"],
         'action_codes': ["view", "add", "change", "delete"],
     }

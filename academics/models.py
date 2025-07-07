@@ -1,8 +1,37 @@
+from django.conf import settings  # To link to the User model
 from django.contrib.auth.models import Group, User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.conf import settings  # To link to the User model
 from django.db.models import Q
+
+from academics.thread_local import get_current_session
+
+
+class CurrentSessionManager(models.Manager):
+    """
+    A custom model manager that AUTOMATICALLY filters querysets
+    to only include objects from the currently active academic session.
+    """
+
+    def get_queryset(self):
+        # Start with all objects
+        queryset = super().get_queryset()
+
+        # Get the current session that was set by the middleware
+        current_session = get_current_session()
+
+        if current_session:
+            # If a session is active, automatically apply the filter
+            # This works on any model that has a 'start_year' field.
+            return queryset.filter(start_year=current_session.start_year)
+
+        # If no session is active, return the unfiltered queryset
+        # Or you could return queryset.none() if you prefer to show nothing
+        return queryset
+
+    def unfiltered(self):
+        """A method to bypass the automatic filtering when needed."""
+        return super().get_queryset()
 
 
 class AcademicSession(models.Model):
@@ -10,6 +39,17 @@ class AcademicSession(models.Model):
     start_year = models.PositiveIntegerField(validators=[MinValueValidator(2000), MaxValueValidator(2100)])
     end_year = models.PositiveIntegerField(validators=[MinValueValidator(2000), MaxValueValidator(2100)])
     is_current = models.BooleanField(default=False, help_text="Mark the currently active academic session.")
+
+    @classmethod
+    def get_current_session(cls):
+        """Returns the currently active academic session."""
+        try:
+            return cls.objects.get(is_current=True)
+        except cls.DoesNotExist:
+            return None
+        except cls.MultipleObjectsReturned:
+            # If multiple sessions are marked as current, return the latest one
+            return cls.objects.filter(is_current=True).order_by('-start_year').first()
 
     def __str__(self):
         return self.name
@@ -104,6 +144,7 @@ class StudentGroup(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='student_groups')
     start_year = models.PositiveIntegerField()
     passout_year = models.PositiveIntegerField()
+    objects = CurrentSessionManager()
 
     def __str__(self):
         # Now it uses the dedicated name field
@@ -200,6 +241,9 @@ class AttendanceSettings(models.Model):
         max_length=255, blank=True, null=True,
         help_text="The email address that receives system notifications (e.g., auto-cancellations)."
     )
+
+    class Meta:
+        verbose_name_plural = "Attendance Settings"
 
     @classmethod
     def load(cls):
@@ -441,3 +485,46 @@ class ResultPublication(models.Model):
 
     def __str__(self):
         return f"Results for {self.student.username} (Sem {self.semester}) published on {self.published_date.strftime('%Y-%m-%d')}"
+
+
+class LowAttendanceNotification(models.Model):
+    """A log to track when a low attendance warning has been sent."""
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.ForeignKey(CourseSubject, on_delete=models.CASCADE)
+    sent_at = models.DateTimeField(auto_now_add=True)
+    attendance_percentage = models.FloatField()
+
+    class Meta:
+        unique_together = ('student', 'subject')  # Ensures only one log entry per student/subject
+
+    def __str__(self):
+        return f"Low attendance warning for {self.student.username} in {self.subject.subject.name}"
+
+
+class StudentSubjectStatus(models.Model):
+    """
+    Tracks the official academic status of a student for a specific subject in a semester.
+    This acts as the final 'locked' record after all marks are entered.
+    """
+    STATUS_CHOICES = [
+        ('PASSED', 'Passed'),
+        ('FAILED', 'Failed - Eligible for Supplementary'),
+        ('PASSED_SUPPLEMENTARY', 'Passed in Supplementary'),
+        ('FAILED_SUPPLEMENTARY', 'Failed in Supplementary'),
+    ]
+
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subject_statuses')
+    subject = models.ForeignKey(CourseSubject, on_delete=models.CASCADE, related_name='student_statuses')
+    semester = models.PositiveIntegerField()
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES)
+
+    # This field will be updated when the status is finalized or changed.
+    last_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        # A student can only have one final status for a given subject in a semester.
+        unique_together = ('student', 'subject', 'semester')
+        ordering = ['student', 'semester', 'subject']
+
+    def __str__(self):
+        return f"{self.student.username} - {self.subject.subject.name} (Sem {self.semester}): {self.get_status_display()}"

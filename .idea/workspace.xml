@@ -4,54 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="feat: Add migrations for attendance records, announcements, and marking schemes; enhance profile and subject models">
-      <change afterPath="$PROJECT_DIR$/academics/email_utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/academics/management/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/academics/management/commands/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/academics/management/commands/cancel_missed_classes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/academics/management/commands/check_for_updates.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/academics/management/commands/manage_backups.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/academics/templatetags/dict_helpers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/academics/templatetags/marks_helpers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/middleware.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/backup_restore.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/bulk_email.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/publish_results.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/smtp_settings.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/system_reports.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/academics/update_status.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/emails/custom_bulk_email.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/emails/email_base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/emails/extra_class_cancelled_notification.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/emails/extra_class_notification.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/emails/new_user_welcome.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/emails/parent_report_card_email.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/registration/password_reset_subject.txt" afterDir="false" />
+    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="feat: Add update script for Django application deployment">
+      <change afterPath="$PROJECT_DIR$/academics/management/commands/check_low_attendance.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/academics/thread_local.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/emails/class_cancellation_alert.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/emails/low_attendance_warning.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AttendanceManagement/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/academics/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/academics/management/commands/cancel_missed_classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/management/commands/cancel_missed_classes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/academics/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/registry.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/context_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/context_processors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/signals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/middleware.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/middleware.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/academics/admin_settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_settings.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/admin_student_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_student_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/report_card.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/report_card.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/student_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/student_my_marks.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_my_marks.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/student_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/student_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/bulk_user_import.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/bulk_user_import.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/accounts/teacher_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/accounts/teacher_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/partials/_topnav.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/partials/_topnav.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/password_reset_email.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/password_reset_email.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/registration/password_reset_email.txt" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/password_reset_email.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/academics/guide.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/guide.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,7 +181,8 @@
       <workItem from="1751640025847" duration="7510000" />
       <workItem from="1751746837717" duration="3607000" />
       <workItem from="1751793531840" duration="15704000" />
-      <workItem from="1751894981724" duration="16370000" />
+      <workItem from="1751894981724" duration="19124000" />
+      <workItem from="1751918439944" duration="8291000" />
     </task>
     <task id="LOCAL-00001" summary="Add initial project configuration files and user profile signal handling">
       <option name="closed" value="true" />
@@ -350,7 +320,23 @@
       <option name="project" value="LOCAL" />
       <updated>1751749829672</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="feat: Add email templates and user activity logging; implement backup and restore functionality">
+      <option name="closed" value="true" />
+      <created>1751913775760</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1751913775760</updated>
+    </task>
+    <task id="LOCAL-00019" summary="feat: Add update script for Django application deployment">
+      <option name="closed" value="true" />
+      <created>1751913807391</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1751913807391</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -384,7 +370,9 @@
     <MESSAGE value="feat(academics): Create substitution management page&#10;&#10;Adds a new interface for managing faculty substitutions for scheduled classes.&#10;&#10;This new page allows administrative users to:&#10;- Select a specific date using a date picker to view the class schedule.&#10;- For each scheduled class, assign a substitute faculty from a dropdown list.&#10;- View the currently assigned substitute for a class.&#10;- Cancel an existing substitution, making the slot available again.&#10;&#10;The interface provides clear, inline forms for both assigning and canceling substitutions on a per-class basis." />
     <MESSAGE value="feat: Implement nested collapsible sidebar menu&#10;&#10;Refactors the sidebar generation to support a two-pane layout with nested, collapsible subgroups, improving UI organization and maintainability.&#10;&#10;The previous single-pane accordion menu was becoming cluttered as more items were added. This change introduces a more organized and scalable navigation system based on the theme's original two-pane design.&#10;&#10;Key changes:&#10;- **Centralized Menu Configuration:** The entire menu hierarchy, including main groups and nested collapsible subgroups, is now defined in `academics/registry.py`. This makes it easy to modify the sidebar from a single location without touching view decorators.&#10;&#10;- **Updated Templatetag:** The `get_sidebar_nav` templatetag has been rewritten to read the new centralized configuration and build the complex nested data structure required for the new layout.&#10;&#10;- **New Sidebar Template:** The `_sidebar.html` partial is updated to render the two-pane menu. The left pane (main menu) controls the content of the right pane (sub-menu), which now contains the collapsible sections.&#10;&#10;This new structure improves the user experience by reducing clutter and makes future maintenance of the navigation menu significantly simpler." />
     <MESSAGE value="feat: Update logo and favicon to mobile version; enhance navigation role management" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Update logo and favicon to mobile version; enhance navigation role management" />
+    <MESSAGE value="feat: Add email templates and user activity logging; implement backup and restore functionality" />
+    <MESSAGE value="feat: Add update script for Django application deployment" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Add update script for Django application deployment" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />

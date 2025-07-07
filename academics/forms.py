@@ -1,15 +1,12 @@
-from django import forms
-from django.contrib.auth.models import User, Group
 import datetime
 
+from django import forms
+from django.contrib.auth.models import User
 from django.forms import inlineformset_factory
 
 from accounts.models import Profile
 from .models import Course, StudentGroup, Subject, AttendanceRecord, CourseSubject, AttendanceSettings, TimeSlot, \
-    Timetable, Announcement, MarkingScheme, Criterion, ExtraClass
-
-from django import forms
-from django.contrib.auth.models import User
+    Timetable, Announcement, MarkingScheme, Criterion, ExtraClass, AcademicSession
 
 
 # --- NEW: Custom form field to display user's full name ---
@@ -29,6 +26,18 @@ class StudentGroupForm(forms.ModelForm):
             'start_year': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., 2024'}),
             'passout_year': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., 2028'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_year = cleaned_data.get("start_year")
+        passout_year = cleaned_data.get("passout_year")
+
+        if start_year and passout_year:
+            if start_year >= passout_year:
+                raise forms.ValidationError(
+                    "The passout year must be after the start year."
+                )
+        return cleaned_data
 
 
 class CourseForm(forms.ModelForm):
@@ -559,3 +568,27 @@ class BulkEmailForm(forms.Form):
         required=True,
         help_text="This message will be placed inside the standard email template."
     )
+
+
+class AcademicSessionForm(forms.ModelForm):
+    class Meta:
+        model = AcademicSession
+        fields = ['is_current']  # We only want to change the 'is_current' status
+
+    # We can use a custom field to make it a dropdown list
+    current_session = forms.ModelChoiceField(
+        queryset=AcademicSession.objects.all(),
+        empty_label=None,  # No empty label
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+
+class AcademicSessionModelForm(forms.ModelForm):
+    class Meta:
+        model = AcademicSession
+        fields = ['name', 'start_year', 'end_year']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'start_year': forms.NumberInput(attrs={'class': 'form-control'}),
+            'end_year': forms.NumberInput(attrs={'class': 'form-control'}),
+        }

@@ -1,0 +1,21 @@
+{% extends 'emails/email_base.html' %}
+
+{% block title %}System Alert: Classes Cancelled{% endblock %}
+
+{% block preheader %}Automated Class Cancellation Alert{% endblock %}
+
+{% block content %}
+    <p>Dear Administrator,</p>
+    <p>This is an automated notification from the Attendance Management System.</p>
+    <p>The following scheduled classes were automatically cancelled because attendance was not marked within the
+        configured time limit:</p>
+
+    {# Use a simple list for the email body #}
+    <ul>
+        {% for class_info in cancelled_classes %}
+            <li>{{ class_info }}</li>
+        {% endfor %}
+    </ul>
+
+    <p>No action is required, this is for your information.</p>
+{% endblock %}

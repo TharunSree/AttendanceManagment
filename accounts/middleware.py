@@ -1,11 +1,13 @@
-from django.conf import settings
+import time
+
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
-from academics.models import AttendanceSettings
-import time
+from django.utils.deprecation import MiddlewareMixin
 
+from academics.models import AttendanceSettings, AcademicSession
+from academics.thread_local import set_current_session
 from accounts.models import UserActivityLog
 
 
@@ -62,3 +64,21 @@ class PerformanceBenchmarkMiddleware:
         # Print the duration to the server console
         print(f"'{request.path}' took {duration:.4f} seconds to process.")
         return response
+
+
+class AcademicSessionMiddleware(MiddlewareMixin):
+    """
+    This middleware finds the active academic session and makes it
+    available globally for the duration of a single request.
+    """
+
+    def process_request(self, request):
+        current_session = None
+        try:
+            current_session = AcademicSession.objects.get(is_current=True)
+        except AcademicSession.DoesNotExist:
+            # If no session is active, we do nothing.
+            pass
+
+        # Store the found session in a thread-safe local storage
+        set_current_session(current_session)
