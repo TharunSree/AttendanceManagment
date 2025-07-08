@@ -4,23 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="feat: Add update script for Django application deployment">
-      <change afterPath="$PROJECT_DIR$/academics/management/commands/check_low_attendance.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/academics/thread_local.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/emails/class_cancellation_alert.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/emails/low_attendance_warning.html" afterDir="false" />
+    <list default="true" id="df1e0217-f19d-4de0-947a-7700b4de05cf" name="Changes" comment="feat: Implement academic session management; add low attendance notifications and cancellation alerts">
+      <change afterPath="$PROJECT_DIR$/templates/academics/finalize_results.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/supplementary_management.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/academics/supplementary_mark_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AttendanceManagement/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/AttendanceManagement/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/academics/management/commands/cancel_missed_classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/management/commands/cancel_missed_classes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/academics/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/academics/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/academics/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/middleware.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/middleware.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/admin_settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/admin_settings.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/academics/guide.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/academics/guide.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,8 +25,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -137,8 +129,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-PY-251.26094.141" />
-        <option value="bundled-python-sdk-9f8e2b94138c-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26094.141" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-PY-251.26927.74" />
+        <option value="bundled-python-sdk-657d8234b839-64d779b69b7a-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26927.74" />
       </set>
     </attachedChunks>
   </component>
@@ -182,7 +174,8 @@
       <workItem from="1751746837717" duration="3607000" />
       <workItem from="1751793531840" duration="15704000" />
       <workItem from="1751894981724" duration="19124000" />
-      <workItem from="1751918439944" duration="8291000" />
+      <workItem from="1751918439944" duration="9106000" />
+      <workItem from="1751955650682" duration="1198000" />
     </task>
     <task id="LOCAL-00001" summary="Add initial project configuration files and user profile signal handling">
       <option name="closed" value="true" />
@@ -336,7 +329,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751913807391</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="feat: Implement academic session management; add low attendance notifications and cancellation alerts">
+      <option name="closed" value="true" />
+      <created>1751928014279</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1751928014279</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -372,7 +373,8 @@
     <MESSAGE value="feat: Update logo and favicon to mobile version; enhance navigation role management" />
     <MESSAGE value="feat: Add email templates and user activity logging; implement backup and restore functionality" />
     <MESSAGE value="feat: Add update script for Django application deployment" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Add update script for Django application deployment" />
+    <MESSAGE value="feat: Implement academic session management; add low attendance notifications and cancellation alerts" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Implement academic session management; add low attendance notifications and cancellation alerts" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />

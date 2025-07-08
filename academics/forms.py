@@ -592,3 +592,11 @@ class AcademicSessionModelForm(forms.ModelForm):
             'start_year': forms.NumberInput(attrs={'class': 'form-control'}),
             'end_year': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+
+class SupplementaryMarkForm(forms.Form):
+    marks_obtained = forms.DecimalField(
+        max_digits=5, decimal_places=2,
+        widget=forms.NumberInput(attrs={'class': 'form-control'}),
+        label="New Marks Obtained"
+    )

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block page_title %}{{ page_title }}{% endblock page_title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">This page lists all students who are eligible to take supplementary exams based on
+                    the finalized semester results.</p>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Eligible Students for Supplementary Exams</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Subject</th>
+                            <th>Semester</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for record in eligible_students %}
+                            <tr>
+                                <td>{{ record.student.get_full_name }} ({{ record.student.username }})</td>
+                                <td>{{ record.subject.subject.name }}</td>
+                                <td>{{ record.semester }}</td>
+                                <td class="text-center">
+                                    {# This will be the button to enter marks #}
+                                    <a href="{% url 'academics:enter_supplementary_marks' record.pk %}"
+                                       class="btn btn-xs btn-primary">Enter Supplementary Marks</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No students are currently eligible for supplementary
+                                    exams.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block page_title %}{{ page_title }}{% endblock page_title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-6 offset-lg-3">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">Enter the new marks obtained by the student in the supplementary exam.</p>
+                <div class="separator mb-5"></div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Student Details</h5>
+                        <p>
+                            <strong>Student:</strong> {{ status_record.student.get_full_name }}<br>
+                            <strong>Subject:</strong> {{ status_record.subject.subject.name }}<br>
+                            <strong>Semester:</strong> {{ status_record.semester }}
+                        </p>
+                        <hr>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ form.marks_obtained.label_tag }}
+                                {{ form.marks_obtained }}
+                                {% if form.marks_obtained.errors %}
+                                    <div class="alert alert-danger mt-1">{{ form.marks_obtained.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Update Marks and Finalize Status
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

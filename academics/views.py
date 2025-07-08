@@ -31,14 +31,15 @@ from pyppeteer import launch
 from academics.forms import EditStudentForm, AttendanceSettingsForm, TimeSlotForm, MarkAttendanceForm, \
     TimetableEntryForm, SubstitutionForm, AttendanceReportForm, AnnouncementForm, CriterionFormSet, MarkingSchemeForm, \
     MarkSelectForm, BulkMarksImportForm, MarksReportForm, ExtraClassForm, SmtpSettingsForm, BulkEmailForm, \
-    AcademicSessionForm, AcademicSessionModelForm
+    AcademicSessionForm, AcademicSessionModelForm, SupplementaryMarkForm
 from accounts.decorators import nav_item
 from accounts.models import Profile, UserActivityLog
 from .email_utils import send_database_email
 from .forms import StudentGroupForm, CourseForm, AddStudentForm, SubjectForm
 from .models import StudentGroup, AttendanceSettings, Course, Subject, \
     Timetable, AttendanceRecord, CourseSubject, TimeSlot, ClassCancellation, DailySubstitution, Announcement, \
-    UserNotificationStatus, MarkingScheme, Mark, Criterion, ExtraClass, AcademicSession, ResultPublication
+    UserNotificationStatus, MarkingScheme, Mark, Criterion, ExtraClass, AcademicSession, ResultPublication, \
+    StudentSubjectStatus
 
 
 # ... other views ...
@@ -115,6 +116,8 @@ def academic_session_delete_view(request, pk):
             session.delete()
             messages.success(request, "Academic session has been deleted.")
     return redirect('academics:admin_settings')
+
+
 # In academics/views.py
 
 @login_required
@@ -752,7 +755,6 @@ def faculty_daily_schedule_view(request):
 
         # Check if class is manually cancelled for today
         is_cancelled = ClassCancellation.objects.filter(timetable=entry, date=today).exists()
-
 
         # Check if attendance has been marked for TODAY
         attendance_marked = AttendanceRecord.objects.filter(
@@ -3077,3 +3079,137 @@ def bulk_publish_results_view(request, group_id, semester):
         return redirect('academics:publish_results')
 
     return redirect('academics:publish_results')
+
+
+@login_required
+@permission_required('academics.finalize_results')
+@nav_item(title="Finalize Results", icon="simple-icon-check", url_name="academics:finalize_results",
+          permission='academics.finalize_results', group='admin_management', order=100)
+def finalize_results_view(request):
+    if request.method == 'POST':
+        group_id = request.POST.get('student_group')
+        semester_str = request.POST.get('semester')
+
+        if group_id and semester_str:
+            student_group = get_object_or_404(StudentGroup, pk=group_id)
+            semester = int(semester_str)
+            settings = AttendanceSettings.load()
+
+            # Get all subjects and students for the selected group/semester
+            subjects_in_semester = CourseSubject.objects.filter(course=student_group.course, semester=semester)
+            students_in_group = User.objects.filter(profile__student_group=student_group)
+
+            finalized_count = 0
+            for student in students_in_group:
+                for subject in subjects_in_semester:
+                    # Check if a status for this subject has already been finalized to avoid duplicates
+                    is_finalized = StudentSubjectStatus.objects.filter(student=student, subject=subject,
+                                                                       semester=semester).exists()
+                    if is_finalized:
+                        continue
+
+                    # Calculate the total marks and percentage for this subject
+                    marks_for_subject = Mark.objects.filter(student=student, subject=subject)
+                    total_obtained = sum(m.marks_obtained for m in marks_for_subject)
+                    total_max = sum(m.criterion.max_marks for m in marks_for_subject)
+                    percentage = (total_obtained / total_max * 100) if total_max > 0 else 0
+
+                    # Determine the final status
+                    final_status = 'PASSED' if percentage >= settings.passing_percentage else 'FAILED'
+
+                    # Create the final status record
+                    StudentSubjectStatus.objects.create(
+                        student=student,
+                        subject=subject,
+                        semester=semester,
+                        status=final_status
+                    )
+                    finalized_count += 1
+
+            if finalized_count > 0:
+                messages.success(request,
+                                 f"Successfully finalized results for {finalized_count} student-subject records.")
+            else:
+                messages.info(request, "All results for this group/semester have already been finalized.")
+
+        return redirect('academics:finalize_results')
+
+    # For a GET request, get student groups from the current session to populate the dropdown
+    student_groups = StudentGroup.objects.all()
+    context = {
+        'page_title': 'Finalize Semester Results',
+        'student_groups': student_groups,
+    }
+    return render(request, 'academics/finalize_results.html', context)
+
+
+@login_required
+@permission_required('academics.manage_supplementary_exams')
+@nav_item(title="Supplementary Exam Marks", icon="simple-icon-graduation",
+          url_name="academics:supplementary_exam_management",
+          permission='academics.manage_supplementary_exams', group='admin_management', order=110)
+def supplementary_exam_management_view(request):
+    # Get all records where the student has failed and is eligible
+    eligible_students = StudentSubjectStatus.objects.filter(
+        status='FAILED'
+    ).select_related(
+        'student__profile', 'subject__subject', 'subject__course'
+    ).order_by('subject__subject', 'student__username')
+
+    context = {
+        'page_title': 'Supplementary Exam Management',
+        'eligible_students': eligible_students,
+    }
+    return render(request, 'academics/supplementary_management.html', context)
+
+
+@login_required
+@permission_required('academics.change_mark')  # Or a more specific permission
+def enter_supplementary_marks_view(request, status_pk):
+    status_record = get_object_or_404(StudentSubjectStatus, pk=status_pk)
+
+    # We need to find the specific mark record to update.
+    # This assumes the supplementary exam replaces the 'External' or main exam mark.
+    # You may need to adjust the filter based on your specific Criterion names.
+    try:
+        mark_to_update = Mark.objects.get(
+            student=status_record.student,
+            subject=status_record.subject,
+            criterion__name__icontains='external'  # Or 'Final Exam', etc.
+        )
+    except Mark.DoesNotExist:
+        messages.error(request, "Could not find the original mark record to update.")
+        return redirect('academics:supplementary_exam_management')
+
+    if request.method == 'POST':
+        form = SupplementaryMarkForm(request.POST)
+        if form.is_valid():
+            # --- Update the original mark ---
+            mark_to_update.marks_obtained = form.cleaned_data['marks_obtained']
+            mark_to_update.save()
+
+            # --- Recalculate the total percentage ---
+            settings = AttendanceSettings.load()
+            all_marks_for_subject = Mark.objects.filter(student=status_record.student, subject=status_record.subject)
+            total_obtained = sum(m.marks_obtained for m in all_marks_for_subject)
+            total_max = sum(m.criterion.max_marks for m in all_marks_for_subject)
+            percentage = (total_obtained / total_max * 100) if total_max > 0 else 0
+
+            # --- Update the final status ---
+            if percentage >= settings.passing_percentage:
+                status_record.status = 'PASSED_SUPPLEMENTARY'
+            else:
+                status_record.status = 'FAILED_SUPPLEMENTARY'
+            status_record.save()
+
+            messages.success(request, f"Marks updated successfully for {status_record.student.username}.")
+            return redirect('academics:supplementary_exam_management')
+    else:
+        form = SupplementaryMarkForm()
+
+    context = {
+        'page_title': 'Enter Supplementary Marks',
+        'form': form,
+        'status_record': status_record
+    }
+    return render(request, 'academics/supplementary_mark_form.html', context)

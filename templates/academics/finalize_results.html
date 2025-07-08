@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block page_title %}{{ page_title }}{% endblock page_title %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1>{{ page_title }}</h1>
+                <p class="text-muted">Select a class and semester to finalize the results. This will lock in the current
+                    marks and calculate the pass/fail status for each student in each subject. This action should only
+                    be performed once all marks are entered.</p>
+                <div class="separator mb-5"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-lg-6 offset-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Select Group and Semester to Finalize</h5>
+                        <form method="post"
+                              onsubmit="return confirm('Are you sure you want to finalize these results? This will lock the current marks as the official results and cannot be undone easily.');">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="student_group">Class Group:</label>
+                                <select name="student_group" id="student_group" class="form-control" required>
+                                    <option value="">-- Select a Class from Current Session --</option>
+                                    {% for group in student_groups %}
+                                        <option value="{{ group.id }}">{{ group.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="semester">Semester:</label>
+                                <input type="number" name="semester" id="semester" class="form-control"
+                                       placeholder="Enter semester number" required>
+                            </div>
+                            <button type="submit" class="btn btn-danger btn-block">Finalize Results Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
