@@ -27,6 +27,10 @@ from django.utils import timezone
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from pyppeteer import launch
+import subprocess
+import logging
+
+logger = logging.getLogger(__name__)
 
 from academics.forms import EditStudentForm, AttendanceSettingsForm, TimeSlotForm, MarkAttendanceForm, \
     TimetableEntryForm, SubstitutionForm, AttendanceReportForm, AnnouncementForm, CriterionFormSet, MarkingSchemeForm, \
