@@ -14,7 +14,7 @@ echo "Virtual environment activated."
 
 # Pull the latest changes from the Git repository's main branch
 echo "Pulling latest changes from Git..."
-git pull origin main
+git pull origin website-server
 if [ $? -ne 0 ]; then
     echo "Error pulling from Git. Aborting."
     exit 1
