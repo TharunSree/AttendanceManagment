@@ -23,6 +23,11 @@
 <body class="background show-spinner no-footer">
 <div class="fixed-background"></div>
 <main>
+    {% if 'restore_success' in request.GET %}
+        <div class="alert alert-success">
+            Database successfully restored. Please log in again.
+        </div>
+    {% endif %}
     <div class="container">
         <div class="row h-100">
             <div class="col-12 col-md-10 mx-auto my-auto">
@@ -42,6 +47,7 @@
                         {% if messages %}
                             {% for message in messages %}
                                 <div class="alert alert-
+
                                         {% if message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show"
                                      role="alert">
                                     {{ message }}

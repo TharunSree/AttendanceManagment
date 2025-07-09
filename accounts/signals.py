@@ -1,6 +1,6 @@
 from django.contrib.auth import user_login_failed, user_logged_in
-from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 
@@ -96,3 +96,16 @@ def log_user_login_failure(sender, credentials, request, **kwargs):
         ip_address=ip,
         user_agent=user_agent
     )
+
+
+def add_superuser_to_admin_group(sender, instance, created, **kwargs):
+    """
+    Automatically adds a newly created superuser to the 'Admin' group.
+    """
+    if created and instance.is_superuser:
+        try:
+            admin_group, created = Group.objects.get_or_create(name='admin')
+            instance.groups.add(admin_group)
+        except Exception as e:
+            # Log an error if the group can't be found or created
+            print(f"Error adding superuser to admin group: {e}")
