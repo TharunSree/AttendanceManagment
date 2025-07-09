@@ -98,14 +98,20 @@ def log_user_login_failure(sender, credentials, request, **kwargs):
     )
 
 
-def add_superuser_to_admin_group(sender, instance, created, **kwargs):
+@receiver(post_save, sender=User)
+def set_superuser_profile_role(sender, instance, created, **kwargs):
     """
-    Automatically adds a newly created superuser to the 'Admin' group.
+    Automatically sets the profile role to 'admin' for a newly created superuser.
     """
     if created and instance.is_superuser:
         try:
-            admin_group, created = Group.objects.get_or_create(name='admin')
-            instance.groups.add(admin_group)
+            # Get the profile associated with the new superuser
+            profile = instance.profile
+            # Set the role and save the profile
+            profile.role = 'admin'
+            profile.save()
+        except Profile.DoesNotExist:
+            # This case might happen in rare circumstances or during fixtures
+            print(f"Warning: Profile for superuser {instance.username} not found. Could not set role.")
         except Exception as e:
-            # Log an error if the group can't be found or created
-            print(f"Error adding superuser to admin group: {e}")
+            print(f"Error setting role for superuser {instance.username}: {e}")
