@@ -27,10 +27,7 @@ from django.utils import timezone
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from pyppeteer import launch
-import subprocess
-import logging
 
-logger = logging.getLogger(__name__)
 
 from academics.forms import EditStudentForm, AttendanceSettingsForm, TimeSlotForm, MarkAttendanceForm, \
     TimetableEntryForm, SubstitutionForm, AttendanceReportForm, AnnouncementForm, CriterionFormSet, MarkingSchemeForm, \
@@ -44,7 +41,10 @@ from .models import StudentGroup, AttendanceSettings, Course, Subject, \
     Timetable, AttendanceRecord, CourseSubject, TimeSlot, ClassCancellation, DailySubstitution, Announcement, \
     UserNotificationStatus, MarkingScheme, Mark, Criterion, ExtraClass, AcademicSession, ResultPublication, \
     StudentSubjectStatus
+import subprocess
+import logging
 
+logger = logging.getLogger(__name__)
 
 # ... other views ...
 
