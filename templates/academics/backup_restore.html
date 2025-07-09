@@ -1,92 +1,239 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block page_title %}{{ page_title }}{% endblock page_title %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <h1>{{ page_title }}</h1>
-                <div class="separator mb-5"></div>
-            </div>
-        </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">{{ page_title }}</h4>
 
-        <div class="row">
-            <div class="col-12 col-lg-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Create New Backup</h5>
-                        <p class="card-text">
-                            Click the button below to create a new backup of the database.
-                            This will also automatically delete the oldest backups according to the retention policy you
-                            set in the settings.
-                        </p>
-                        <form method="post" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" name="create_backup" class="btn btn-primary">Create New Backup Now
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Restore from Backup</h5>
-                        <p class="card-text text-danger font-weight-bold">
-                            Warning: Restoring will completely overwrite the current database with the data from the
-                            selected backup file. This action cannot be undone.
-                        </p>
-                        <form method="post"
-                              onsubmit="return confirm('Are you absolutely sure you want to restore? This will overwrite all current data.');">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="backup_file_select">Select a backup file to restore:</label>
-                                <select class="form-control" id="backup_file_select" name="backup_file" required>
-                                    {% for file in backup_files %}
-                                        <option value="{{ file }}">{{ file }}</option>
-                                    {% empty %}
-                                        <option disabled>No backup files found.</option>
-                                    {% endfor %}
-                                </select>
+                    <div class="row">
+                        <!-- Create Backup Section -->
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header card-header-custom">
+                                    <h5 class="mb-0"><i class="simple-icon-cloud-upload mr-2"></i>Create Database Backup</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted">Create a complete backup of your database. This includes all users, attendance records, marks, and system settings.</p>
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" name="create_backup" class="btn btn-outline-primary">
+                                            <i class="simple-icon-cloud-upload mr-2"></i>Create Backup Now
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-                            <button type="submit" name="restore_backup" class="btn btn-danger"
-                                    {% if not backup_files %}disabled{% endif %}>
-                                Restore from this Backup
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        </div>
 
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Available Backup Files</h5>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Filename</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for file in backup_files %}
-                                <tr>
-                                    <td>{{ file }}</td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td>No backup files have been created yet.</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                        <!-- Restore Backup Section -->
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header card-header-custom">
+                                    <h5 class="mb-0"><i class="simple-icon-cloud-download mr-2"></i>Restore Database</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-danger">
+                                        <i class="simple-icon-exclamation mr-2"></i>
+                                        <strong>Warning:</strong> Restoring a backup will completely replace your current database. This action cannot be undone.
+                                    </div>
+
+                                    {% if backup_files %}
+                                        <form method="post" onsubmit="return confirm('Are you sure you want to restore this backup? This will permanently replace all current data!');">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="backup_file" class="font-weight-medium">Select Backup to Restore:</label>
+                                                <select name="backup_file" id="backup_file" class="form-control" required>
+                                                    <option value="">Choose a backup file...</option>
+                                                    {% for backup in backup_files %}
+                                                        <option value="{{ backup.name }}">
+                                                            {{ backup.created }} ({{ backup.size }} MB)
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <button type="submit" name="restore_backup" class="btn btn-outline-danger">
+                                                <i class="simple-icon-cloud-download mr-2"></i>Restore Selected Backup
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <p class="text-muted">No backup files available. Create a backup first.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Available Backups List -->
+                    {% if backup_files %}
+                    <div class="card">
+                        <div class="card-header card-header-custom">
+                            <h5 class="mb-0"><i class="simple-icon-folder mr-2"></i>Available Backup Files</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="data-table data-table-scrollable responsive nowrap" id="backupTable">
+                                <thead>
+                                    <tr>
+                                        <th><i class="simple-icon-doc mr-2"></i>File</th>
+                                        <th><i class="simple-icon-calendar mr-2"></i>Created</th>
+                                        <th><i class="simple-icon-size-fullscreen mr-2"></i>Size</th>
+                                        <th class="text-center"><i class="simple-icon-options mr-2"></i>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for backup in backup_files %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="file-icon mr-3">
+                                                    <i class="simple-icon-doc text-primary"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-weight-medium">{{ backup.name }}</div>
+                                                    <small class="text-muted">JSON Database Backup</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>{{ backup.created }}</div>
+                                            {% if backup.display_name %}
+                                                <small class="text-muted">{{ backup.display_name }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-outline-secondary">{{ backup.size }} MB</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-outline-primary btn-sm mr-1"
+                                                    onclick="selectBackupFile('{{ backup.name }}')"
+                                                    title="Select for restore">
+                                                <i class="simple-icon-check"></i>
+                                            </button>
+                                            <button class="btn btn-outline-secondary btn-sm"
+                                                    onclick="viewBackupDetails('{{ backup.name }}', '{{ backup.created }}', '{{ backup.size }}')"
+                                                    title="View details">
+                                                <i class="simple-icon-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
-{% endblock content %}
+</div>
+
+<script>
+$(document).ready(function() {
+    {% if backup_files %}
+    $('#backupTable').DataTable({
+        "order": [[ 1, "desc" ]],
+        "pageLength": 10,
+        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "responsive": true,
+        "columnDefs": [
+            { "orderable": false, "targets": 3 }
+        ],
+        "language": {
+            "search": "Search backups:",
+            "lengthMenu": "Show _MENU_ backups per page",
+            "info": "Showing _START_ to _END_ of _TOTAL_ backups",
+            "infoEmpty": "No backups found",
+            "infoFiltered": "(filtered from _MAX_ total backups)",
+            "emptyTable": "No backup files available"
+        }
+    });
+    {% endif %}
+});
+
+function selectBackupFile(filename) {
+    const selectElement = document.getElementById('backup_file');
+    if (selectElement) {
+        selectElement.value = filename;
+        selectElement.focus();
+
+        // Scroll to the restore section
+        $('html, body').animate({
+            scrollTop: $('.card-header:contains("Restore Database")').parent().offset().top - 20
+        }, 500);
+
+        // Highlight the selected option temporarily
+        $(selectElement).addClass('is-valid');
+        setTimeout(() => {
+            $(selectElement).removeClass('is-valid');
+        }, 2000);
+
+        // Show success toast if available
+        if (typeof toastr !== 'undefined') {
+            toastr.success('Backup file selected for restore');
+        }
+    }
+}
+
+function viewBackupDetails(filename, created, size) {
+    const content = `
+        <div class="backup-details">
+            <p><strong>File:</strong> ${filename}</p>
+            <p><strong>Created:</strong> ${created}</p>
+            <p><strong>Size:</strong> ${size} MB</p>
+        </div>
+    `;
+
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Backup Details',
+            html: content,
+            icon: 'info',
+            confirmButtonText: 'Close'
+        });
+    } else {
+        alert(`Backup Details:\n\nFile: ${filename}\nCreated: ${created}\nSize: ${size} MB`);
+    }
+}
+</script>
+
+<style>
+.file-icon {
+    font-size: 1.5rem;
+    width: 30px;
+    text-align: center;
+}
+
+.font-weight-medium {
+    font-weight: 500;
+}
+
+.card-header-custom {
+    padding: 1rem 1.25rem;
+}
+
+
+.backup-details p {
+    margin-bottom: 0.5rem;
+    text-align: left;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.badge-outline-secondary {
+    color: #6c757d;
+    border: 1px solid #6c757d;
+    background-color: transparent;
+}
+</style>
+{% endblock %}
+{% block vendor_scripts %}
+    <script src="{% static 'js/vendor/datatables.min.js' %}"></script>
+{% endblock vendor_scripts %}

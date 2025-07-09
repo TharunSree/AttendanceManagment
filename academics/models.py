@@ -21,12 +21,14 @@ class CurrentSessionManager(models.Manager):
         current_session = get_current_session()
 
         if current_session:
-            # If a session is active, automatically apply the filter
-            # This works on any model that has a 'start_year' field.
-            return queryset.filter(start_year=current_session.start_year)
+            # Show classes that are currently active during this academic session
+            # A class is active if the current session year falls within the class duration
+            return queryset.filter(
+                start_year__lte=current_session.start_year,  # Class started before or in current session
+                passout_year__gte=current_session.start_year  # Class hasn't graduated yet
+            )
 
         # If no session is active, return the unfiltered queryset
-        # Or you could return queryset.none() if you prefer to show nothing
         return queryset
 
     def unfiltered(self):

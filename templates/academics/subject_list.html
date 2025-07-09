@@ -26,53 +26,58 @@
                         <a href="{% url 'academics:subject_create' %}" class="btn btn-primary">ADD NEW SUBJECT</a>
                     </div>
                     <hr/>
-
-                    <table class="data-table data-table-scrollable responsive nowrap">
-                        <thead>
-                        <tr>
-                            <th class="text-center">Subject Name</th>
-                            <th class="text-center">Subject Code</th>
-                            <th class="text-center">Subject Type</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for subject in subjects %}
+                    {% if subjects %}
+                        <table class="data-table data-table-scrollable responsive nowrap">
+                            <thead>
                             <tr>
-                                <td class="text-center">
-                                    <p class="list-item-heading">{{ subject.name }}</p>
-                                </td>
-                                <td class="text-center">
-                                    <p class="text-muted">{{ subject.code }}</p>
-                                </td>
-                                <td class="text-center">
-                                    {% if subject.subject_type == 'theory' %}
-                                        <span class="badge badge-pill badge-outline-primary">Theory</span>
-                                    {% else %}
-                                        <span class="badge badge-pill badge-outline-warning">Practical</span>
-                                    {% endif %}
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group" role="group">
-                                        <a href="{% url 'academics:subject_update' subject.pk %}"
-                                           class="btn btn-outline-primary btn-xs">Edit</a>
-                                        <a href="{% url 'academics:subject_delete' subject.pk %}"
-                                           class="btn btn-outline-danger btn-xs">Delete</a>
-                                    </div>
-                                </td>
+                                <th class="text-center">Subject Name</th>
+                                <th class="text-center">Subject Code</th>
+                                <th class="text-center">Subject Type</th>
+                                <th class="text-center">Actions</th>
                             </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">
-                                    <div class="alert alert-secondary p-4">
-                                        <h5 class="alert-heading">No Subjects Found!</h5>
-                                        <p class="mb-0">Please add a subject to get started.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% for subject in subjects %}
+                                <tr>
+                                    <td class="text-center">
+                                        <p class="list-item-heading">{{ subject.name }}</p>
+                                    </td>
+                                    <td class="text-center">
+                                        <p class="text-muted">{{ subject.code }}</p>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if subject.subject_type == 'theory' %}
+                                            <span class="badge badge-pill badge-outline-primary">Theory</span>
+                                        {% else %}
+                                            <span class="badge badge-pill badge-outline-warning">Practical</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'academics:subject_update' subject.pk %}"
+                                               class="btn btn-outline-primary btn-xs">Edit</a>
+                                            <a href="{% url 'academics:subject_delete' subject.pk %}"
+                                               class="btn btn-outline-danger btn-xs">Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">
+                                        <div class="alert alert-secondary p-4">
+                                            <h5 class="alert-heading">No Subjects Found!</h5>
+                                            <p class="mb-0">Please add a subject to get started.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted">No subjects found. Click "Add New Subject" to get started.</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

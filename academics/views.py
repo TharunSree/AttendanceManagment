@@ -2714,35 +2714,99 @@ def backup_restore_view(request):
     if request.method == 'POST':
         if 'create_backup' in request.POST:
             try:
-                call_command('manage_backups')
-                messages.success(request, "New backup created and old backups rotated successfully.")
+                timestamp = timezone.now().strftime('%Y-%m-%d_%H-%M-%S')
+                backup_filename = f'database_backup_{timestamp}.json'
+                backup_filepath = os.path.join(backup_dir, backup_filename)
+
+                with open(backup_filepath, 'w') as backup_file:
+                    call_command('dumpdata',
+                                 '--natural-foreign',
+                                 '--natural-primary',
+                                 '--exclude=contenttypes',
+                                 '--exclude=auth.permission',
+                                 '--exclude=sessions.session',
+                                 '--exclude=admin.logentry',
+                                 '--indent=2',
+                                 stdout=backup_file)
+
+                # Clean up old backups (keep only last 10)
+                backup_files = sorted([f for f in os.listdir(backup_dir) if f.endswith('.json')])
+                if len(backup_files) > 10:
+                    for old_file in backup_files[:-10]:
+                        os.remove(os.path.join(backup_dir, old_file))
+
+                messages.success(request, f"Database backup created successfully: {backup_filename}")
             except Exception as e:
                 messages.error(request, f"An error occurred while creating the backup: {e}")
 
         elif 'restore_backup' in request.POST:
             backup_file = request.POST.get('backup_file')
-            backup_filepath = os.path.join(backup_dir, backup_file)
+            if backup_file:
+                backup_filepath = os.path.join(backup_dir, backup_file)
+                if os.path.exists(backup_filepath):
+                    try:
+                        from django.contrib.auth import logout
+                        from django.http import HttpResponseRedirect
+                        from django.db import transaction
 
-            if os.path.exists(backup_filepath):
-                try:
-                    # DANGER: This is a destructive operation.
-                    # It will overwrite the current database.
-                    call_command('loaddata', backup_filepath)
-                    messages.warning(request, f"Successfully restored the database from {backup_file}.")
-                except Exception as e:
-                    messages.error(request, f"An error occurred during restore: {e}")
+                        # Store superuser info before logout
+                        superusers = list(User.objects.filter(is_superuser=True).values(
+                            'username', 'email', 'first_name', 'last_name', 'password', 'is_staff', 'is_active'
+                        ))
+
+                        # Log out the user BEFORE restoration
+                        logout(request)
+
+                        # Use the enhanced restore command with clear option
+                        with transaction.atomic():
+                            # Call the management command with clear flag
+                            call_command('manage_backups', 'restore',
+                                         '--file', backup_filepath,
+                                         '--clear',
+                                         '--preserve-superusers')
+
+                        return HttpResponseRedirect(f"{reverse('accounts:login')}?restore_success=1")
+
+                    except Exception as e:
+                        messages.error(request, f"An error occurred during restore: {e}")
+                        return redirect('academics:backup_restore')
+                else:
+                    messages.error(request, "The selected backup file was not found.")
             else:
-                messages.error(request, "The selected backup file was not found.")
+                messages.error(request, "You must select a backup file to restore.")
 
-        return redirect('academics:backup_restore')  # Redirect to refresh the page
+        return redirect('academics:backup_restore')
 
-    # For GET request, list available backups
-    backup_files = [f for f in os.listdir(backup_dir) if f.endswith('.json')]
-    backup_files.sort(reverse=True)  # Show newest first
+    # List available backups
+    backup_files = []
+    try:
+        files = [f for f in os.listdir(backup_dir) if f.endswith('.json')]
+        for filename in sorted(files, reverse=True):
+            filepath = os.path.join(backup_dir, filename)
+            stat = os.stat(filepath)
+
+            try:
+                timestamp_str = filename.replace('database_backup_', '').replace('.json', '')
+                timestamp_str = timestamp_str.replace('_', ' ').replace('-', ':')
+                created_date = timezone.datetime.strptime(timestamp_str.replace(':', '-', 2), '%Y-%m-%d %H-%M-%S')
+                formatted_date = created_date.strftime('%B %d, %Y at %I:%M %p')
+            except:
+                formatted_date = timezone.datetime.fromtimestamp(stat.st_mtime).strftime('%B %d, %Y at %I:%M %p')
+
+            backup_files.append({
+                'name': filename,
+                'size': round(stat.st_size / (1024 * 1024), 2),
+                'created': formatted_date,
+                'display_name': filename.replace('database_backup_', '').replace('.json', '').replace('_',
+                                                                                                      ' at ').replace(
+                    '-', '/')
+            })
+    except OSError:
+        pass
 
     context = {
         'backup_files': backup_files,
-        'page_title': 'Backup & Restore'
+        'page_title': 'Database Backup & Restore'
     }
     return render(request, 'academics/backup_restore.html', context)
 
