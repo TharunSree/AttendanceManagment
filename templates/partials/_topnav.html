@@ -48,15 +48,14 @@
 
             <div class="position-relative d-inline-block">
                 {% if is_admin %}
-
-                    <a href="{% url 'academics:update_status' %}" class="btn btn-empty header-icon"
-                       title="Check for updates">
-                        <i class="simple-icon-refresh"></i>
-                        {% if update_count > 0 %}
-                            <span class="badge badge-pill badge-danger position-absolute"
-                                  style="top: -5px; right: -5px;">{{ update_count }}</span>
-                        {% endif %}
-                    </a>
+{% if git_update_count > 0 %}
+                        <a href="{% url 'academics:update_status' %}" class="header-icon btn btn-empty"
+                           data-toggle="tooltip"
+                           title="Application Updates Available">
+                            <i class="simple-icon-refresh"></i>
+                            <span class="count bg-danger text-white">{{ git_update_count }}</span>
+                        </a>
+                    {% endif %}
                 {% endif %}
                 <button class="header-icon btn btn-empty" type="button" id="notificationButton" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
