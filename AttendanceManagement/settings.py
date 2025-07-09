@@ -106,16 +106,12 @@ WSGI_APPLICATION = 'AttendanceManagement.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sihm_attendance',
-        'USER': 'root',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'attendancems_db',
+        'USER': 'attendancems_user',
         'PASSWORD': '24022005',
         'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
-        },
+        'PORT': '5432',
     }
 }
 
