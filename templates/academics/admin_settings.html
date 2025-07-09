@@ -18,44 +18,52 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Manage Academic Sessions</h5>
-                    <table class="data-table data-table-scrollable responsive nowrap">
-                        <thead>
-                        <tr>
-                            <th class="text-center">Session Name</th>
-                            <th class="text-center">Start</th>
-                            <th class="text-center">End</th>
-                            <th class="text-center">Status</th>
-                            <th class="text-right">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for session in academic_sessions %}
+                    {% if academic_sessions %}
+                        <table class="data-table data-table-scrollable responsive nowrap">
+                            <thead>
                             <tr>
-                                <td class="text-center">{{ session.name }}</td>
-                                <td class="text-center">{{ session.start_year }}</td>
-                                <td class="text-center">{{ session.end_year }}</td>
-                                <td class="text-center">
-                                    {% if session.is_current %}
-                                        <span class="badge badge-pill badge-success">Current</span>
-                                    {% endif %}
-                                </td>
-                                <td class="text-right">
-                                    <form action="{% url 'academics:academic_session_delete' session.pk %}"
-                                          method="post" class="d-inline">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-xs btn-outline-danger"
-                                                onclick="return confirm('Are you sure? This cannot be undone.');">Delete
-                                        </button>
-                                    </form>
-                                </td>
+                                <th class="text-center">Session Name</th>
+                                <th class="text-center">Start</th>
+                                <th class="text-center">End</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-right">Actions</th>
                             </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="5" class="text-center text-muted">No academic sessions created yet.</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% for session in academic_sessions %}
+                                <tr>
+                                    <td class="text-center">{{ session.name }}</td>
+                                    <td class="text-center">{{ session.start_year }}</td>
+                                    <td class="text-center">{{ session.end_year }}</td>
+                                    <td class="text-center">
+                                        {% if session.is_current %}
+                                            <span class="badge badge-pill badge-success">Current</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right">
+                                        <form action="{% url 'academics:academic_session_delete' session.pk %}"
+                                              method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-xs btn-outline-danger"
+                                                    onclick="return confirm('Are you sure? This cannot be undone.');">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">No academic sessions created yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted">No Academic Session found. Add a Academic Session to get started.</p>
+                        </div>
+                    {% endif %}
                     <hr/>
                     <h6 class="mb-4">Create New Academic Session</h6>
                     <form method="post">
@@ -86,46 +94,54 @@
                 <div class="card-body">
                     <h5 class="card-title">Manage Time Slots</h5>
                     <p class="text-muted">Define the periods that make up a day for the timetable.</p>
-                    <table class="data-table data-table-scrollable responsive nowrap"
-                           data-order="[[ 1, &quot;asc&quot; ]]">
-                        <thead>
-                        <tr>
-                            <th class='text-center' scope="col">Label</th>
-                            <th class='text-center' scope="col">Start Time</th>
-                            <th class='text-center' scope="col">End Time</th>
-                            <th scope="col" class="text-center">Schedulable</th>
-                            <th scope="col" class="text-right">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for slot in timeslots %}
+                    {% if timeslots %}
+                        <table class="data-table data-table-scrollable responsive nowrap"
+                               data-order="[[ 1, &quot;asc&quot; ]]">
+                            <thead>
                             <tr>
-                                <td class='text-center'><p class="list-item-heading">{{ slot.label|default:"-" }}</p>
-                                </td>
-                                <td class='text-center'><p class="text-muted">{{ slot.start_time|time:"g:i A" }}</p>
-                                </td>
-                                <td class='text-center'><p class="text-muted">{{ slot.end_time|time:"g:i A" }}</p></td>
-                                <td class="text-center">
-                                    {% if slot.is_schedulable %}
-                                        <span class="badge badge-pill badge-outline-success">Yes</span>
-                                    {% else %}
-                                        <span class="badge badge-pill badge-outline-secondary">No</span>
-                                    {% endif %}
-                                </td>
-                                <td class="text-right">
-                                    <form action="{% url 'academics:timeslot_delete' slot.pk %}" method="post"
-                                          class="d-inline">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-xs btn-outline-danger"
-                                                onclick="return confirm('Are you sure you want to delete this time slot?');">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </td>
+                                <th class='text-center' scope="col">Label</th>
+                                <th class='text-center' scope="col">Start Time</th>
+                                <th class='text-center' scope="col">End Time</th>
+                                <th scope="col" class="text-center">Schedulable</th>
+                                <th scope="col" class="text-right">Actions</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% for slot in timeslots %}
+                                <tr>
+                                    <td class='text-center'><p
+                                            class="list-item-heading">{{ slot.label|default:"-" }}</p>
+                                    </td>
+                                    <td class='text-center'><p class="text-muted">{{ slot.start_time|time:"g:i A" }}</p>
+                                    </td>
+                                    <td class='text-center'><p class="text-muted">{{ slot.end_time|time:"g:i A" }}</p>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if slot.is_schedulable %}
+                                            <span class="badge badge-pill badge-outline-success">Yes</span>
+                                        {% else %}
+                                            <span class="badge badge-pill badge-outline-secondary">No</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right">
+                                        <form action="{% url 'academics:timeslot_delete' slot.pk %}" method="post"
+                                              class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-xs btn-outline-danger"
+                                                    onclick="return confirm('Are you sure you want to delete this time slot?');">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted">No timeslots found. Add a timeslot to get started.</p>
+                        </div>
+                    {% endif %}
                     <hr/>
                     <h6 class="mb-4">Add New Time Slot</h6>
                     <form method="post">

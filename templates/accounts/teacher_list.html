@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Teachers{% endblock %}
+
 {% block vendor_styles %}
     {# These are the required CSS files for the styled datatable #}
     <link rel="stylesheet" href="{% static 'css/vendor/dataTables.bootstrap4.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/vendor/datatables.responsive.bootstrap4.min.css' %}"/>
 {% endblock vendor_styles %}
+
 {% block main_page_title %}Manage Teachers{% endblock %}
 
 {% block content %}
@@ -19,60 +21,62 @@
                             Teacher</a>
                     </div>
 
-                    <table class="data-table data-table-scrollable responsive nowrap">
-                        <thead>
-                        <tr>
-                            <th class="text-center">Name</th>
-                            <th class="text-center">Username</th>
-                            <th class="text-center">Email</th>
-                            <th class="text-center">Contact No.</th>
-                            <th class="text-center">Subjects Taught</th>
-                            <th class="text-center">Actions</th>
-                            <th class="text-right">Password</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for teacher in teachers %}
+                    {% if teachers %}
+                        <table class="data-table data-table-scrollable responsive nowrap">
+                            <thead>
                             <tr>
-                                <td class="text-center">{{ teacher.get_full_name|default:"N/A" }}</td>
-                                <td class="text-center">{{ teacher.username }}</td>
-                                <td class="text-center">{{ teacher.email|default:"N/A" }}</td>
-                                <td class="text-center">{{ teacher.profile.contact_number|default:"N/A" }}</td>
-                                <td class="text-center">
-                                    {% for subject in teacher.profile.field_of_expertise.all %}
-                                        {% if subject.subject_type == 'Theory' %}
-                                            <span class="badge badge-pill badge-outline-primary">{{ subject.name }}</span>
-                                        {% else %}
-                                            <span class="badge badge-pill badge-outline-warning">{{ subject.name }}</span>
-                                        {% endif %}
-                                    {% empty %}
-                                        <span class="text-muted">Not Assigned</span>
-                                    {% endfor %}
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group" role="group">
-                                        <a href="{% url 'accounts:teacher_update' teacher.pk %}"
-                                           class="btn btn-outline-primary btn-xs">Edit</a>
-                                        <a href="{% url 'accounts:teacher_delete' teacher.pk %}"
-                                           class="btn btn-outline-danger btn-xs">Delete</a>
-                                    </div>
-                                </td>
-                                <td class="text-right">
-                                    <form action="{% url 'accounts:admin_trigger_password_reset' teacher.pk %}"
-                                          method="post" class="d-inline">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-xs btn-outline-warning">Send Reset Link
-                                        </button>
-                                    </form>
-                                </td>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Username</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Contact No.</th>
+                                <th class="text-center">Subjects Taught</th>
+                                <th class="text-center">Actions</th>
+                                <th class="text-right">Password</th>
                             </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="6" class="text-center">No teachers found.</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% for teacher in teachers %}
+                                <tr>
+                                    <td class="text-center">{{ teacher.get_full_name|default:"N/A" }}</td>
+                                    <td class="text-center">{{ teacher.username }}</td>
+                                    <td class="text-center">{{ teacher.email|default:"N/A" }}</td>
+                                    <td class="text-center">{{ teacher.profile.contact_number|default:"N/A" }}</td>
+                                    <td class="text-center">
+                                        {% for subject in teacher.profile.field_of_expertise.all %}
+                                            {% if subject.subject_type == 'Theory' %}
+                                                <span class="badge badge-pill badge-outline-primary">{{ subject.name }}</span>
+                                            {% else %}
+                                                <span class="badge badge-pill badge-outline-warning">{{ subject.name }}</span>
+                                            {% endif %}
+                                        {% empty %}
+                                            <span class="text-muted">Not Assigned</span>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'accounts:teacher_update' teacher.pk %}"
+                                               class="btn btn-outline-primary btn-xs">Edit</a>
+                                            <a href="{% url 'accounts:teacher_delete' teacher.pk %}"
+                                               class="btn btn-outline-danger btn-xs">Delete</a>
+                                        </div>
+                                    </td>
+                                    <td class="text-right">
+                                        <form action="{% url 'accounts:admin_trigger_password_reset' teacher.pk %}"
+                                              method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-xs btn-outline-warning">Send Reset Link
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted">No teachers found. Click "Add New Teacher" to get started.</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
