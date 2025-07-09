@@ -61,7 +61,7 @@ def login_view(request):
         form = CustomAuthenticationForm()
 
     # Pass the 'next' url to the template context
-    return render(request, 'accounts/login.html', {'form': form, 'next': next_url})
+    return render(request, 'accounts/Login.html', {'form': form, 'next': next_url})
 
 
 def logout_view(request):
