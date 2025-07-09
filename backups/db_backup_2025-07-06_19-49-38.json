@@ -1,0 +1,5390 @@
+[
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2025-06-16T13:32:47.415Z",
+      "user": 1,
+      "content_type": 7,
+      "object_id": "1",
+      "object_repr": "admin - Admin",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Role\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+      "action_time": "2025-06-16T13:33:20.766Z",
+      "user": 1,
+      "content_type": 10,
+      "object_id": "1",
+      "object_repr": "BCA",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+      "action_time": "2025-06-16T14:44:50.807Z",
+      "user": 1,
+      "content_type": 13,
+      "object_id": "1",
+      "object_repr": "BCA Section A",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 4,
+    "fields": {
+      "action_time": "2025-06-16T14:45:40.940Z",
+      "user": 1,
+      "content_type": 13,
+      "object_id": "2",
+      "object_repr": "Hospitality Batch 2024",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Students\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 5,
+    "fields": {
+      "action_time": "2025-06-16T14:46:51.667Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "1",
+      "object_repr": "2025-2026",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+      "action_time": "2025-06-16T15:21:23.416Z",
+      "user": 1,
+      "content_type": 10,
+      "object_id": "2",
+      "object_repr": "B.Sc. Hospitality Administration",
+      "action_flag": 2,
+      "change_message": "[]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 7,
+    "fields": {
+      "action_time": "2025-06-16T15:21:34.746Z",
+      "user": 1,
+      "content_type": 13,
+      "object_id": "2",
+      "object_repr": "Hospitality Batch 2024",
+      "action_flag": 2,
+      "change_message": "[]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 8,
+    "fields": {
+      "action_time": "2025-06-16T16:53:03.888Z",
+      "user": 1,
+      "content_type": 14,
+      "object_id": "1",
+      "object_repr": "B.Sc. Hospitality Administration - Science (40 hrs)",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 9,
+    "fields": {
+      "action_time": "2025-06-16T16:53:40.676Z",
+      "user": 1,
+      "content_type": 15,
+      "object_id": "1",
+      "object_repr": "10:00 - 11:00",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 10,
+    "fields": {
+      "action_time": "2025-06-16T16:53:42.363Z",
+      "user": 1,
+      "content_type": 16,
+      "object_id": "1",
+      "object_repr": "Hospitality Batch 2024 | Science | Tuesday at 10:00 - 11:00",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 11,
+    "fields": {
+      "action_time": "2025-06-16T16:53:46.509Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "1",
+      "object_repr": "Rooke on 2025-06-16 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 12,
+    "fields": {
+      "action_time": "2025-06-16T17:09:50.915Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "2",
+      "object_repr": "Rooke on 2025-06-15 - Absent",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 13,
+    "fields": {
+      "action_time": "2025-06-16T17:21:40.701Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "3",
+      "object_repr": "Rooke on 2025-06-09 - Absent",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 14,
+    "fields": {
+      "action_time": "2025-06-16T17:22:04.736Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "4",
+      "object_repr": "Rooke on 2025-06-08 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 15,
+    "fields": {
+      "action_time": "2025-06-16T17:51:37.196Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "5",
+      "object_repr": "Rooke on 2025-06-17 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 16,
+    "fields": {
+      "action_time": "2025-06-16T17:56:21.042Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "6",
+      "object_repr": "Rooke on 2025-06-03 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 17,
+    "fields": {
+      "action_time": "2025-06-16T18:00:55.116Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "7",
+      "object_repr": "Rooke on 2025-06-11 - Late",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 18,
+    "fields": {
+      "action_time": "2025-06-16T18:01:13.098Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "7",
+      "object_repr": "Rooke on 2025-06-11 - Excused",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Status\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 19,
+    "fields": {
+      "action_time": "2025-06-16T18:01:25.718Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "7",
+      "object_repr": "Rooke on 2025-06-11 - Present",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Status\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 20,
+    "fields": {
+      "action_time": "2025-06-16T19:36:09.650Z",
+      "user": 1,
+      "content_type": 9,
+      "object_id": "1",
+      "object_repr": "Global Attendance Settings",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Required percentage\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 21,
+    "fields": {
+      "action_time": "2025-06-16T19:36:38.820Z",
+      "user": 1,
+      "content_type": 9,
+      "object_id": "1",
+      "object_repr": "Global Attendance Settings",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Required percentage\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 22,
+    "fields": {
+      "action_time": "2025-06-16T20:30:39.575Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "3",
+      "object_repr": "tarun",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 23,
+    "fields": {
+      "action_time": "2025-06-16T20:32:27.215Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "8",
+      "object_repr": "tar",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 24,
+    "fields": {
+      "action_time": "2025-06-17T20:14:45.503Z",
+      "user": 1,
+      "content_type": 9,
+      "object_id": "1",
+      "object_repr": "Global Attendance Settings",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Required percentage\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 25,
+    "fields": {
+      "action_time": "2025-06-17T20:14:56.201Z",
+      "user": 1,
+      "content_type": 9,
+      "object_id": "1",
+      "object_repr": "Global Attendance Settings",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Required percentage\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 26,
+    "fields": {
+      "action_time": "2025-06-17T20:56:36.868Z",
+      "user": 1,
+      "content_type": 13,
+      "object_id": "3",
+      "object_repr": "BCA Section A",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Students\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 27,
+    "fields": {
+      "action_time": "2025-06-17T21:45:47.634Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "5",
+      "object_repr": "Rooke",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"name\": \"profile\", \"object\": \"Rooke - Student\", \"fields\": [\"Student group\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 28,
+    "fields": {
+      "action_time": "2025-06-17T22:42:17.669Z",
+      "user": 1,
+      "content_type": 11,
+      "object_id": "2",
+      "object_repr": "Python",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Subject type\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 29,
+    "fields": {
+      "action_time": "2025-06-17T22:45:00.781Z",
+      "user": 1,
+      "content_type": 14,
+      "object_id": "2",
+      "object_repr": "B.Sc. Hospitality Administration - Python (40 hrs)",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 30,
+    "fields": {
+      "action_time": "2025-06-17T22:45:15.460Z",
+      "user": 1,
+      "content_type": 16,
+      "object_id": "2",
+      "object_repr": "Hospitality Batch 2024 | Python | Thursday at 10:00 - 11:00",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 31,
+    "fields": {
+      "action_time": "2025-06-17T22:45:23.375Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "8",
+      "object_repr": "Rooke on 2025-06-17 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 32,
+    "fields": {
+      "action_time": "2025-06-17T22:46:26.035Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "9",
+      "object_repr": "Rooke on 2025-06-02 - Absent",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 33,
+    "fields": {
+      "action_time": "2025-06-18T17:33:58.018Z",
+      "user": 1,
+      "content_type": 14,
+      "object_id": "3",
+      "object_repr": "BCA - Python (40 hrs)",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 34,
+    "fields": {
+      "action_time": "2025-06-18T17:34:03.965Z",
+      "user": 1,
+      "content_type": 16,
+      "object_id": "3",
+      "object_repr": "BCA Section A | Python | Monday at 10:00 - 11:00",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 35,
+    "fields": {
+      "action_time": "2025-06-18T17:35:25.784Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "10",
+      "object_repr": "tharun on 2025-06-17 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 36,
+    "fields": {
+      "action_time": "2025-06-18T18:03:28.091Z",
+      "user": 1,
+      "content_type": 11,
+      "object_id": "3",
+      "object_repr": "C++",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 37,
+    "fields": {
+      "action_time": "2025-06-18T18:03:29.851Z",
+      "user": 1,
+      "content_type": 14,
+      "object_id": "4",
+      "object_repr": "B.Sc. Hospitality Administration - C++ (40 hrs)",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 38,
+    "fields": {
+      "action_time": "2025-06-18T18:03:37.966Z",
+      "user": 1,
+      "content_type": 16,
+      "object_id": "4",
+      "object_repr": "Hospitality Batch 2024 | C++ | Friday at 10:00 - 11:00",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 39,
+    "fields": {
+      "action_time": "2025-06-18T18:03:44.734Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "11",
+      "object_repr": "Rooke on 2025-06-18 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 40,
+    "fields": {
+      "action_time": "2025-06-18T18:18:22.587Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "3",
+      "object_repr": "tarun",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"name\": \"profile\", \"object\": \"tarun - Student\", \"fields\": [\"Student group\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 41,
+    "fields": {
+      "action_time": "2025-06-18T19:26:27.545Z",
+      "user": 1,
+      "content_type": 11,
+      "object_id": "3",
+      "object_repr": "CS0001 - C++",
+      "action_flag": 2,
+      "change_message": "[]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 42,
+    "fields": {
+      "action_time": "2025-06-18T19:35:43.424Z",
+      "user": 1,
+      "content_type": 13,
+      "object_id": "3",
+      "object_repr": "BCA Section A",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 43,
+    "fields": {
+      "action_time": "2025-06-18T19:35:59.809Z",
+      "user": 1,
+      "content_type": 13,
+      "object_id": "4",
+      "object_repr": "BCA Section A",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 44,
+    "fields": {
+      "action_time": "2025-06-18T19:36:24.647Z",
+      "user": 1,
+      "content_type": 16,
+      "object_id": "5",
+      "object_repr": "BCA Section A | C++ | Saturday at 10:00 - 11:00",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 45,
+    "fields": {
+      "action_time": "2025-06-18T19:36:31.750Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "12",
+      "object_repr": "tharun on 2025-06-18 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 46,
+    "fields": {
+      "action_time": "2025-06-18T19:37:14.070Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "10",
+      "object_repr": "tharun",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"name\": \"profile\", \"object\": \"tharun - Student\", \"fields\": [\"Student group\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 47,
+    "fields": {
+      "action_time": "2025-06-18T19:39:20.145Z",
+      "user": 1,
+      "content_type": 16,
+      "object_id": "6",
+      "object_repr": "BCA Section A | Python | Monday at 10:00 - 11:00",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 48,
+    "fields": {
+      "action_time": "2025-06-18T19:39:26.161Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "13",
+      "object_repr": "tharun on 2025-06-18 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 49,
+    "fields": {
+      "action_time": "2025-06-18T20:34:14.370Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "13",
+      "object_repr": "tharun on 2025-06-18 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 50,
+    "fields": {
+      "action_time": "2025-06-19T14:31:30.290Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "7",
+      "object_repr": "ThST",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 51,
+    "fields": {
+      "action_time": "2025-06-19T15:48:46.524Z",
+      "user": 1,
+      "content_type": 16,
+      "object_id": "7",
+      "object_repr": "BCA Section A | C++ | Monday at 09:00 - 10:00",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 52,
+    "fields": {
+      "action_time": "2025-06-19T15:49:06.760Z",
+      "user": 1,
+      "content_type": 16,
+      "object_id": "7",
+      "object_repr": "BCA Section A | C++ | Thursday at 09:00 - 10:00",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Day of week\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 53,
+    "fields": {
+      "action_time": "2025-06-19T16:32:16.200Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "11",
+      "object_repr": "Sr",
+      "action_flag": 2,
+      "change_message": "[]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 54,
+    "fields": {
+      "action_time": "2025-06-19T16:32:29.005Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "15",
+      "object_repr": "Sr on 2025-06-19 - On Duty",
+      "action_flag": 2,
+      "change_message": "[]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 55,
+    "fields": {
+      "action_time": "2025-06-19T16:33:17.978Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "17",
+      "object_repr": "Sr on 2025-06-02 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 56,
+    "fields": {
+      "action_time": "2025-06-19T16:34:02.526Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "18",
+      "object_repr": "Sr on 2025-06-14 - On Duty",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 57,
+    "fields": {
+      "action_time": "2025-06-19T16:34:31.921Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "18",
+      "object_repr": "Sr on 2025-06-16 - On Duty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Timetable\", \"Date\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 58,
+    "fields": {
+      "action_time": "2025-06-19T16:35:07.038Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "19",
+      "object_repr": "Sr on 2025-06-09 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 59,
+    "fields": {
+      "action_time": "2025-06-19T16:35:41.404Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "15",
+      "object_repr": "Sr on 2025-06-19 - On Duty",
+      "action_flag": 2,
+      "change_message": "[]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 60,
+    "fields": {
+      "action_time": "2025-06-19T16:36:08.461Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "15",
+      "object_repr": "Sr on 2025-06-19 - On Duty",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 61,
+    "fields": {
+      "action_time": "2025-06-19T16:38:52.609Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "20",
+      "object_repr": "Sr on 2025-06-14 - On Duty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Date\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 62,
+    "fields": {
+      "action_time": "2025-06-19T16:46:17.955Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "21",
+      "object_repr": "Sr on 2025-06-19 - On Duty",
+      "action_flag": 2,
+      "change_message": "[]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 63,
+    "fields": {
+      "action_time": "2025-06-19T16:46:37.150Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "21",
+      "object_repr": "Sr on 2025-06-19 - Present",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Status\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 64,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "21",
+      "object_repr": "Sr on 2025-06-19 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 65,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "20",
+      "object_repr": "Sr on 2025-06-14 - On Duty",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 66,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "19",
+      "object_repr": "Sr on 2025-06-09 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 67,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "18",
+      "object_repr": "Sr on 2025-06-16 - On Duty",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 68,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "17",
+      "object_repr": "Sr on 2025-06-02 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 69,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "16",
+      "object_repr": "tharun on 2025-06-19 - On Duty",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 70,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "14",
+      "object_repr": "Rooke on 2025-06-19 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 71,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "12",
+      "object_repr": "tharun on 2025-06-18 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 72,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "11",
+      "object_repr": "Rooke on 2025-06-18 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 73,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "9",
+      "object_repr": "Rooke on 2025-06-02 - Absent",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 74,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "8",
+      "object_repr": "Rooke on 2025-06-17 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 75,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "7",
+      "object_repr": "Rooke on 2025-06-11 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 76,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "6",
+      "object_repr": "Rooke on 2025-06-03 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 77,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "5",
+      "object_repr": "Rooke on 2025-06-17 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 78,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.901Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "4",
+      "object_repr": "Rooke on 2025-06-08 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 79,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.902Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "3",
+      "object_repr": "Rooke on 2025-06-09 - Absent",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 80,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.902Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "2",
+      "object_repr": "Rooke on 2025-06-15 - Absent",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 81,
+    "fields": {
+      "action_time": "2025-06-19T16:47:00.902Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "1",
+      "object_repr": "Rooke on 2025-06-16 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 82,
+    "fields": {
+      "action_time": "2025-06-19T16:47:48.447Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "23",
+      "object_repr": "tharun on 2025-06-19 - Present",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Status\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 83,
+    "fields": {
+      "action_time": "2025-06-19T16:50:02.342Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "24",
+      "object_repr": "Sr on 2025-06-09 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 84,
+    "fields": {
+      "action_time": "2025-06-19T16:50:37.855Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "22",
+      "object_repr": "Sr on 2025-06-19 - On Duty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Timetable\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 85,
+    "fields": {
+      "action_time": "2025-06-19T16:51:08.488Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "22",
+      "object_repr": "Sr on 2025-06-19 - On Duty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Timetable\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 86,
+    "fields": {
+      "action_time": "2025-06-19T16:52:56.695Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "7",
+      "object_repr": "ThST",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"User permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 87,
+    "fields": {
+      "action_time": "2025-06-19T17:13:09.801Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 88,
+    "fields": {
+      "action_time": "2025-06-19T17:13:44.515Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "7",
+      "object_repr": "ThST",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Groups\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 89,
+    "fields": {
+      "action_time": "2025-06-19T17:16:52.103Z",
+      "user": 1,
+      "content_type": 18,
+      "object_id": "1",
+      "object_repr": "Cancelled: Hospitality Batch 2024 | Python | Thursday at 10:00 - 11:00 on 2025-06-19",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 90,
+    "fields": {
+      "action_time": "2025-06-19T17:18:04.790Z",
+      "user": 1,
+      "content_type": 18,
+      "object_id": "2",
+      "object_repr": "Cancelled: BCA Section A | C++ | Thursday at 09:00 - 10:00 on 2025-06-19",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 91,
+    "fields": {
+      "action_time": "2025-06-19T17:24:17.526Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "2",
+      "object_repr": "Admin",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 92,
+    "fields": {
+      "action_time": "2025-06-19T17:26:58.545Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 93,
+    "fields": {
+      "action_time": "2025-06-19T17:30:19.126Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 94,
+    "fields": {
+      "action_time": "2025-06-19T17:31:32.308Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 95,
+    "fields": {
+      "action_time": "2025-06-19T17:50:36.719Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "10",
+      "object_repr": "tharun",
+      "action_flag": 2,
+      "change_message": "[]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 96,
+    "fields": {
+      "action_time": "2025-06-19T17:51:45.894Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 97,
+    "fields": {
+      "action_time": "2025-06-19T18:20:03.428Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 98,
+    "fields": {
+      "action_time": "2025-06-19T18:20:43.913Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 99,
+    "fields": {
+      "action_time": "2025-06-19T18:21:28.370Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 100,
+    "fields": {
+      "action_time": "2025-06-19T18:21:44.862Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 101,
+    "fields": {
+      "action_time": "2025-06-19T18:23:13.795Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 102,
+    "fields": {
+      "action_time": "2025-06-19T18:24:26.252Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 103,
+    "fields": {
+      "action_time": "2025-06-19T18:24:50.366Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 104,
+    "fields": {
+      "action_time": "2025-06-19T18:25:23.142Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 105,
+    "fields": {
+      "action_time": "2025-06-19T18:25:46.839Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 106,
+    "fields": {
+      "action_time": "2025-06-19T18:26:04.069Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "1",
+      "object_repr": "Faculty",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 107,
+    "fields": {
+      "action_time": "2025-06-20T15:03:22.899Z",
+      "user": 1,
+      "content_type": 15,
+      "object_id": "3",
+      "object_repr": "LUNCH (13:00 - 14:00)",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Is schedulable\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 108,
+    "fields": {
+      "action_time": "2025-06-22T10:26:19.418Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "15",
+      "object_repr": "SrK",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Groups\"]}}, {\"changed\": {\"name\": \"profile\", \"object\": \"SrK - Student\", \"fields\": [\"Role\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 109,
+    "fields": {
+      "action_time": "2025-06-22T10:26:56.660Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "3",
+      "object_repr": "tarun",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"User permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 110,
+    "fields": {
+      "action_time": "2025-06-22T10:27:51.731Z",
+      "user": 1,
+      "content_type": 3,
+      "object_id": "5",
+      "object_repr": "Student",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 111,
+    "fields": {
+      "action_time": "2025-06-22T10:52:34.281Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "26",
+      "object_repr": "SrK on 2025-06-21 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 112,
+    "fields": {
+      "action_time": "2025-06-22T14:58:04.347Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "29",
+      "object_repr": "tharun on 2025-06-22 - Late",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 113,
+    "fields": {
+      "action_time": "2025-06-22T14:58:04.347Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "28",
+      "object_repr": "Sr on 2025-06-22 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 114,
+    "fields": {
+      "action_time": "2025-06-22T14:58:04.347Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "27",
+      "object_repr": "SrK on 2025-06-22 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 115,
+    "fields": {
+      "action_time": "2025-06-22T14:58:04.347Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "26",
+      "object_repr": "SrK on 2025-06-21 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 116,
+    "fields": {
+      "action_time": "2025-06-22T14:58:04.347Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "25",
+      "object_repr": "Rooke on 2025-06-20 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 117,
+    "fields": {
+      "action_time": "2025-06-22T14:58:04.347Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "24",
+      "object_repr": "Sr on 2025-06-09 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 118,
+    "fields": {
+      "action_time": "2025-06-22T14:58:04.347Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "23",
+      "object_repr": "tharun on 2025-06-19 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 119,
+    "fields": {
+      "action_time": "2025-06-22T14:58:04.347Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "22",
+      "object_repr": "Sr on 2025-06-19 - On Duty",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 120,
+    "fields": {
+      "action_time": "2025-06-22T15:10:33.821Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "30",
+      "object_repr": "tarun on 2025-06-16 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 121,
+    "fields": {
+      "action_time": "2025-06-22T15:26:16.749Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "33",
+      "object_repr": "tharun on 2025-06-22 - Absent",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 122,
+    "fields": {
+      "action_time": "2025-06-22T15:26:16.749Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "32",
+      "object_repr": "Sr on 2025-06-22 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 123,
+    "fields": {
+      "action_time": "2025-06-22T15:26:29.389Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "31",
+      "object_repr": "SrK on 2025-06-22 - Present",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 124,
+    "fields": {
+      "action_time": "2025-06-23T19:18:24.853Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "15",
+      "object_repr": "SrK",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 125,
+    "fields": {
+      "action_time": "2025-06-23T20:05:34.916Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "3",
+      "object_repr": "tarun",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Groups\"]}}, {\"changed\": {\"name\": \"profile\", \"object\": \"tarun - Student\", \"fields\": [\"Student group\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 126,
+    "fields": {
+      "action_time": "2025-06-28T11:57:00.421Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "15",
+      "object_repr": "SrK",
+      "action_flag": 2,
+      "change_message": "[]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 127,
+    "fields": {
+      "action_time": "2025-06-28T11:59:26.119Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "14",
+      "object_repr": "SSk",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 128,
+    "fields": {
+      "action_time": "2025-06-28T12:02:29.958Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "3",
+      "object_repr": "tarun",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 129,
+    "fields": {
+      "action_time": "2025-06-28T23:00:47.311Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "3",
+      "object_repr": "tarun",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 130,
+    "fields": {
+      "action_time": "2025-06-29T07:29:52.526Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "3",
+      "object_repr": "tarun",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 131,
+    "fields": {
+      "action_time": "2025-06-29T07:30:49.291Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "3",
+      "object_repr": "tarun",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"User permissions\", \"Last login\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 132,
+    "fields": {
+      "action_time": "2025-06-29T09:47:56.546Z",
+      "user": 1,
+      "content_type": 10,
+      "object_id": "1",
+      "object_repr": "BCA",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Subjects\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 133,
+    "fields": {
+      "action_time": "2025-06-29T09:51:04.539Z",
+      "user": 1,
+      "content_type": 17,
+      "object_id": "48",
+      "object_repr": "tarun on 2025-06-10 - Present",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 134,
+    "fields": {
+      "action_time": "2025-07-03T18:52:24.354Z",
+      "user": 1,
+      "content_type": 18,
+      "object_id": "5",
+      "object_repr": "Cancelled: Hospitality Batch 2024 | Python | Thursday at 10:00 - 11:00 on 2025-07-03",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 135,
+    "fields": {
+      "action_time": "2025-07-04T06:12:21.928Z",
+      "user": 1,
+      "content_type": 4,
+      "object_id": "3",
+      "object_repr": "tarun",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 136,
+    "fields": {
+      "action_time": "2025-07-04T15:32:30.888Z",
+      "user": 1,
+      "content_type": 25,
+      "object_id": "4",
+      "object_repr": "Mark for tarun in C++ (Internal)",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"Subject\"]}}]"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 1,
+    "fields": {
+      "name": "Can add log entry",
+      "content_type": 1,
+      "codename": "add_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 2,
+    "fields": {
+      "name": "Can change log entry",
+      "content_type": 1,
+      "codename": "change_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 3,
+    "fields": {
+      "name": "Can delete log entry",
+      "content_type": 1,
+      "codename": "delete_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 4,
+    "fields": {
+      "name": "Can view log entry",
+      "content_type": 1,
+      "codename": "view_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 5,
+    "fields": {
+      "name": "Can add permission",
+      "content_type": 2,
+      "codename": "add_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 6,
+    "fields": {
+      "name": "Can change permission",
+      "content_type": 2,
+      "codename": "change_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 7,
+    "fields": {
+      "name": "Can delete permission",
+      "content_type": 2,
+      "codename": "delete_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 8,
+    "fields": {
+      "name": "Can view permission",
+      "content_type": 2,
+      "codename": "view_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 9,
+    "fields": {
+      "name": "Can add group",
+      "content_type": 3,
+      "codename": "add_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 10,
+    "fields": {
+      "name": "Can change group",
+      "content_type": 3,
+      "codename": "change_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 11,
+    "fields": {
+      "name": "Can delete group",
+      "content_type": 3,
+      "codename": "delete_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 12,
+    "fields": {
+      "name": "Can view group",
+      "content_type": 3,
+      "codename": "view_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 13,
+    "fields": {
+      "name": "Can add user",
+      "content_type": 4,
+      "codename": "add_user"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 14,
+    "fields": {
+      "name": "Can change user",
+      "content_type": 4,
+      "codename": "change_user"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 15,
+    "fields": {
+      "name": "Can delete user",
+      "content_type": 4,
+      "codename": "delete_user"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 16,
+    "fields": {
+      "name": "Can view user",
+      "content_type": 4,
+      "codename": "view_user"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 17,
+    "fields": {
+      "name": "Can add content type",
+      "content_type": 5,
+      "codename": "add_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 18,
+    "fields": {
+      "name": "Can change content type",
+      "content_type": 5,
+      "codename": "change_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 19,
+    "fields": {
+      "name": "Can delete content type",
+      "content_type": 5,
+      "codename": "delete_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 20,
+    "fields": {
+      "name": "Can view content type",
+      "content_type": 5,
+      "codename": "view_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 21,
+    "fields": {
+      "name": "Can add session",
+      "content_type": 6,
+      "codename": "add_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 22,
+    "fields": {
+      "name": "Can change session",
+      "content_type": 6,
+      "codename": "change_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 23,
+    "fields": {
+      "name": "Can delete session",
+      "content_type": 6,
+      "codename": "delete_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 24,
+    "fields": {
+      "name": "Can view session",
+      "content_type": 6,
+      "codename": "view_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 25,
+    "fields": {
+      "name": "Can add profile",
+      "content_type": 7,
+      "codename": "add_profile"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 26,
+    "fields": {
+      "name": "Can change profile",
+      "content_type": 7,
+      "codename": "change_profile"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 27,
+    "fields": {
+      "name": "Can delete profile",
+      "content_type": 7,
+      "codename": "delete_profile"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 28,
+    "fields": {
+      "name": "Can view profile",
+      "content_type": 7,
+      "codename": "view_profile"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 29,
+    "fields": {
+      "name": "Can add academic session",
+      "content_type": 8,
+      "codename": "add_academicsession"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 30,
+    "fields": {
+      "name": "Can change academic session",
+      "content_type": 8,
+      "codename": "change_academicsession"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 31,
+    "fields": {
+      "name": "Can delete academic session",
+      "content_type": 8,
+      "codename": "delete_academicsession"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 32,
+    "fields": {
+      "name": "Can view academic session",
+      "content_type": 8,
+      "codename": "view_academicsession"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 33,
+    "fields": {
+      "name": "Can add attendance settings",
+      "content_type": 9,
+      "codename": "add_attendancesettings"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 34,
+    "fields": {
+      "name": "Can change attendance settings",
+      "content_type": 9,
+      "codename": "change_attendancesettings"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 35,
+    "fields": {
+      "name": "Can delete attendance settings",
+      "content_type": 9,
+      "codename": "delete_attendancesettings"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 36,
+    "fields": {
+      "name": "Can view attendance settings",
+      "content_type": 9,
+      "codename": "view_attendancesettings"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 37,
+    "fields": {
+      "name": "Can add course",
+      "content_type": 10,
+      "codename": "add_course"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 38,
+    "fields": {
+      "name": "Can change course",
+      "content_type": 10,
+      "codename": "change_course"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 39,
+    "fields": {
+      "name": "Can delete course",
+      "content_type": 10,
+      "codename": "delete_course"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 40,
+    "fields": {
+      "name": "Can view course",
+      "content_type": 10,
+      "codename": "view_course"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 41,
+    "fields": {
+      "name": "Can add subject",
+      "content_type": 11,
+      "codename": "add_subject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 42,
+    "fields": {
+      "name": "Can change subject",
+      "content_type": 11,
+      "codename": "change_subject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 43,
+    "fields": {
+      "name": "Can delete subject",
+      "content_type": 11,
+      "codename": "delete_subject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 44,
+    "fields": {
+      "name": "Can view subject",
+      "content_type": 11,
+      "codename": "view_subject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 45,
+    "fields": {
+      "name": "Can add department",
+      "content_type": 12,
+      "codename": "add_department"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 46,
+    "fields": {
+      "name": "Can change department",
+      "content_type": 12,
+      "codename": "change_department"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 47,
+    "fields": {
+      "name": "Can delete department",
+      "content_type": 12,
+      "codename": "delete_department"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 48,
+    "fields": {
+      "name": "Can view department",
+      "content_type": 12,
+      "codename": "view_department"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 49,
+    "fields": {
+      "name": "Can add student group",
+      "content_type": 13,
+      "codename": "add_studentgroup"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 50,
+    "fields": {
+      "name": "Can change student group",
+      "content_type": 13,
+      "codename": "change_studentgroup"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 51,
+    "fields": {
+      "name": "Can delete student group",
+      "content_type": 13,
+      "codename": "delete_studentgroup"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 52,
+    "fields": {
+      "name": "Can view student group",
+      "content_type": 13,
+      "codename": "view_studentgroup"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 53,
+    "fields": {
+      "name": "Can add course subject",
+      "content_type": 14,
+      "codename": "add_coursesubject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 54,
+    "fields": {
+      "name": "Can change course subject",
+      "content_type": 14,
+      "codename": "change_coursesubject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 55,
+    "fields": {
+      "name": "Can delete course subject",
+      "content_type": 14,
+      "codename": "delete_coursesubject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 56,
+    "fields": {
+      "name": "Can view course subject",
+      "content_type": 14,
+      "codename": "view_coursesubject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 57,
+    "fields": {
+      "name": "Can add time slot",
+      "content_type": 15,
+      "codename": "add_timeslot"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 58,
+    "fields": {
+      "name": "Can change time slot",
+      "content_type": 15,
+      "codename": "change_timeslot"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 59,
+    "fields": {
+      "name": "Can delete time slot",
+      "content_type": 15,
+      "codename": "delete_timeslot"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 60,
+    "fields": {
+      "name": "Can view time slot",
+      "content_type": 15,
+      "codename": "view_timeslot"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 61,
+    "fields": {
+      "name": "Can add timetable",
+      "content_type": 16,
+      "codename": "add_timetable"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 62,
+    "fields": {
+      "name": "Can change timetable",
+      "content_type": 16,
+      "codename": "change_timetable"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 63,
+    "fields": {
+      "name": "Can delete timetable",
+      "content_type": 16,
+      "codename": "delete_timetable"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 64,
+    "fields": {
+      "name": "Can view timetable",
+      "content_type": 16,
+      "codename": "view_timetable"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 65,
+    "fields": {
+      "name": "Can add attendance record",
+      "content_type": 17,
+      "codename": "add_attendancerecord"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 66,
+    "fields": {
+      "name": "Can change attendance record",
+      "content_type": 17,
+      "codename": "change_attendancerecord"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 67,
+    "fields": {
+      "name": "Can delete attendance record",
+      "content_type": 17,
+      "codename": "delete_attendancerecord"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 68,
+    "fields": {
+      "name": "Can view attendance record",
+      "content_type": 17,
+      "codename": "view_attendancerecord"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 69,
+    "fields": {
+      "name": "Can add class cancellation",
+      "content_type": 18,
+      "codename": "add_classcancellation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 70,
+    "fields": {
+      "name": "Can change class cancellation",
+      "content_type": 18,
+      "codename": "change_classcancellation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 71,
+    "fields": {
+      "name": "Can delete class cancellation",
+      "content_type": 18,
+      "codename": "delete_classcancellation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 72,
+    "fields": {
+      "name": "Can view class cancellation",
+      "content_type": 18,
+      "codename": "view_classcancellation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 73,
+    "fields": {
+      "name": "Can add daily substitution",
+      "content_type": 19,
+      "codename": "add_dailysubstitution"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 74,
+    "fields": {
+      "name": "Can change daily substitution",
+      "content_type": 19,
+      "codename": "change_dailysubstitution"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 75,
+    "fields": {
+      "name": "Can delete daily substitution",
+      "content_type": 19,
+      "codename": "delete_dailysubstitution"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 76,
+    "fields": {
+      "name": "Can view daily substitution",
+      "content_type": 19,
+      "codename": "view_dailysubstitution"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 77,
+    "fields": {
+      "name": "Can view own attendance page",
+      "content_type": 17,
+      "codename": "view_own_attendance"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 78,
+    "fields": {
+      "name": "Can view own timetable",
+      "content_type": 16,
+      "codename": "view_own_timetable"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 79,
+    "fields": {
+      "name": "Can add notification",
+      "content_type": 20,
+      "codename": "add_notification"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 80,
+    "fields": {
+      "name": "Can change notification",
+      "content_type": 20,
+      "codename": "change_notification"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 81,
+    "fields": {
+      "name": "Can delete notification",
+      "content_type": 20,
+      "codename": "delete_notification"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 82,
+    "fields": {
+      "name": "Can view notification",
+      "content_type": 20,
+      "codename": "view_notification"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 83,
+    "fields": {
+      "name": "Can add user notification status",
+      "content_type": 21,
+      "codename": "add_usernotificationstatus"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 84,
+    "fields": {
+      "name": "Can change user notification status",
+      "content_type": 21,
+      "codename": "change_usernotificationstatus"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 85,
+    "fields": {
+      "name": "Can delete user notification status",
+      "content_type": 21,
+      "codename": "delete_usernotificationstatus"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 86,
+    "fields": {
+      "name": "Can view user notification status",
+      "content_type": 21,
+      "codename": "view_usernotificationstatus"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 87,
+    "fields": {
+      "name": "Can add announcement",
+      "content_type": 22,
+      "codename": "add_announcement"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 88,
+    "fields": {
+      "name": "Can change announcement",
+      "content_type": 22,
+      "codename": "change_announcement"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 89,
+    "fields": {
+      "name": "Can delete announcement",
+      "content_type": 22,
+      "codename": "delete_announcement"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 90,
+    "fields": {
+      "name": "Can view announcement",
+      "content_type": 22,
+      "codename": "view_announcement"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 91,
+    "fields": {
+      "name": "Can send announcements",
+      "content_type": 22,
+      "codename": "can_send_announcement"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 92,
+    "fields": {
+      "name": "Can add criterion",
+      "content_type": 23,
+      "codename": "add_criterion"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 93,
+    "fields": {
+      "name": "Can change criterion",
+      "content_type": 23,
+      "codename": "change_criterion"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 94,
+    "fields": {
+      "name": "Can delete criterion",
+      "content_type": 23,
+      "codename": "delete_criterion"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 95,
+    "fields": {
+      "name": "Can view criterion",
+      "content_type": 23,
+      "codename": "view_criterion"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 96,
+    "fields": {
+      "name": "Can add marking scheme",
+      "content_type": 24,
+      "codename": "add_markingscheme"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 97,
+    "fields": {
+      "name": "Can change marking scheme",
+      "content_type": 24,
+      "codename": "change_markingscheme"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 98,
+    "fields": {
+      "name": "Can delete marking scheme",
+      "content_type": 24,
+      "codename": "delete_markingscheme"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 99,
+    "fields": {
+      "name": "Can view marking scheme",
+      "content_type": 24,
+      "codename": "view_markingscheme"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 100,
+    "fields": {
+      "name": "Can add mark",
+      "content_type": 25,
+      "codename": "add_mark"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 101,
+    "fields": {
+      "name": "Can change mark",
+      "content_type": 25,
+      "codename": "change_mark"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 102,
+    "fields": {
+      "name": "Can delete mark",
+      "content_type": 25,
+      "codename": "delete_mark"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 103,
+    "fields": {
+      "name": "Can view mark",
+      "content_type": 25,
+      "codename": "view_mark"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 104,
+    "fields": {
+      "name": "Can view own marks",
+      "content_type": 25,
+      "codename": "view_own_marks"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 105,
+    "fields": {
+      "name": "Can view own profile",
+      "content_type": 7,
+      "codename": "view_own_profile"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 106,
+    "fields": {
+      "name": "Can add extra class",
+      "content_type": 26,
+      "codename": "add_extraclass"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 107,
+    "fields": {
+      "name": "Can change extra class",
+      "content_type": 26,
+      "codename": "change_extraclass"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 108,
+    "fields": {
+      "name": "Can delete extra class",
+      "content_type": 26,
+      "codename": "delete_extraclass"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 109,
+    "fields": {
+      "name": "Can view extra class",
+      "content_type": 26,
+      "codename": "view_extraclass"
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "Faculty",
+      "permissions": [
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        37,
+        38,
+        39,
+        40,
+        73,
+        74,
+        75,
+        76,
+        106,
+        107,
+        108,
+        109,
+        100,
+        101,
+        102,
+        103
+      ]
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": {
+      "name": "Admin",
+      "permissions": [
+        65,
+        66,
+        67,
+        68,
+        33,
+        34,
+        35,
+        36,
+        69,
+        70,
+        71,
+        72,
+        37,
+        38,
+        39,
+        40,
+        92,
+        93,
+        94,
+        95,
+        73,
+        74,
+        75,
+        76,
+        49,
+        50,
+        51,
+        52,
+        41,
+        42,
+        43,
+        44,
+        61,
+        62,
+        63,
+        64,
+        25,
+        26,
+        27,
+        28,
+        13,
+        14,
+        15,
+        16
+      ]
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 5,
+    "fields": {
+      "name": "Student",
+      "permissions": [
+        77,
+        104,
+        78,
+        105
+      ]
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$qRPuXDrYjAe9gM2BzWuhbY$15EV9R6w2vJ0dyZ2fTyznen7VNWbmQ1BheAg5SSjuxk=",
+      "last_login": "2025-06-30T22:10:23.443Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-06-16T13:31:53.474Z",
+      "groups": [
+        2
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$LbaT6WTcDPHUX08y6KaiHl$fRqmUEK2SbOwQlaCMam7uS90W1GA0b4uX8giVLkLXLA=",
+      "last_login": "2025-07-06T13:43:38.790Z",
+      "is_superuser": false,
+      "username": "tarun",
+      "first_name": "Tharun",
+      "last_name": "Sreejith",
+      "email": "tarunsee@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-16T13:40:53Z",
+      "groups": [
+        5
+      ],
+      "user_permissions": [
+        77,
+        103
+      ]
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$yH1oxieQmdncRKv7mRdvgz$nwIIC/9Mtr9Ritsi2nS4AfLRAqVa/mxv4Q9vAVhFwR0=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "ths",
+      "first_name": "t",
+      "last_name": "a",
+      "email": "tarunsre@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-16T13:41:24.982Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$8R74XVSCpgeppBeenyyj7C$6F+muVzUP7mxcp0QdBl1/kcG0990ETG8hf2XLMOskkM=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "Rooke",
+      "first_name": "R",
+      "last_name": "S",
+      "email": "tarunsrree@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-16T14:54:35Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$AXUz6Nrlh0EqDSzmTfXgL2$n/JY6acBBsXQjwYsQ62SrJsrsy//dg3J0RXLsiaMUVk=",
+      "last_login": "2025-07-06T13:43:02.988Z",
+      "is_superuser": false,
+      "username": "ThST",
+      "first_name": "Tharun",
+      "last_name": "SReej",
+      "email": "tarunsree@outlook.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-16T16:35:59Z",
+      "groups": [
+        1
+      ],
+      "user_permissions": [
+        36
+      ]
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 8,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$wZvNvCLhCYzcbv9m7UFMbS$CMoaBX3jeIoilIl2dzYMTPd/5ZZeS3Ckmpzjpmq1+m4=",
+      "last_login": "2025-06-16T20:42:08.797Z",
+      "is_superuser": false,
+      "username": "tar",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-16T20:32:25.884Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 10,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$aOGafH6214gpOxn5Cr7kDh$rSflNaHmuOj6Q+AO38qnlJaFsnXgfU66DEfvgVKfOPg=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "tharun",
+      "first_name": "T",
+      "last_name": "S",
+      "email": "tarunsreee@outlook.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-17T21:26:14Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 11,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$hyvcFbzXHYm5wgMZj0zeMR$1TytlIorjHMAunMGGTR5X3bW+YFmBSKYE5aYqMittBk=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "Sr",
+      "first_name": "Samuel",
+      "last_name": "",
+      "email": "ssk@onemail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-19T15:54:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 14,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$eI6r0g3tN5UleVw593JCFZ$r8CYV6nc7xprrNel+a0qU01vHy52gLWrVjBIeZlHL5w=",
+      "last_login": "2025-06-28T14:39:14.660Z",
+      "is_superuser": false,
+      "username": "SSk",
+      "first_name": "Samuel",
+      "last_name": "K",
+      "email": "sskr@onplusmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-19T17:51:12.061Z",
+      "groups": [
+        1
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 15,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$rRm1kPbWkglhqA8Dee3Qlk$EWxU3zAo4J6ae/VlQXflAlrgHe6HofP4RxKv583bCLc=",
+      "last_login": "2025-06-23T19:28:56Z",
+      "is_superuser": false,
+      "username": "SrK",
+      "first_name": "S",
+      "last_name": "K",
+      "email": "Sk@somemail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-22T10:17:16Z",
+      "groups": [
+        5
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 16,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$u9NvXEAQwo6Dj1DFD0A0dg$AsGIyPG3CmxHxQRxNxqooMlm+Hgd3+ftrZxAopwn99s=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "t1234",
+      "first_name": "T S",
+      "last_name": "R",
+      "email": "tarunsree@onemail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-23T21:34:43.951Z",
+      "groups": [
+        5
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 17,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$IxlU44aGzMKXm1cU8d8wrY$25jlLJrpEREUwZdlW4nTiHMFaof13ZAIFVH74zy92Nc=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "t2345",
+      "first_name": "T",
+      "last_name": "R S",
+      "email": "tarunsree@on2email.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-23T21:34:44.971Z",
+      "groups": [
+        5
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 18,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$W7TYrm8uhNM0d4RNcN133i$Pteo6/38X+hvzaJNbujcUiQGf783+4RUvShq2PoU5ic=",
+      "last_login": "2025-06-24T06:38:55.434Z",
+      "is_superuser": false,
+      "username": "ROOMSDIVISION",
+      "first_name": "ATHULYA",
+      "last_name": "MURALI",
+      "email": "1@gmail.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-06-24T06:38:14.554Z",
+      "groups": [
+        1
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 19,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$8I9wNbwDF26bYNcMBn6fBW$PbjGP2CpbBmD5Rv0aiDRQtf34U+ZFf7EvDtab6qqKAE=",
+      "last_login": "2025-06-28T12:10:44.718Z",
+      "is_superuser": false,
+      "username": "ss1",
+      "first_name": "a",
+      "last_name": "s",
+      "email": "as@amail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-28T12:10:21.879Z",
+      "groups": [
+        5
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 1,
+    "fields": {
+      "app_label": "admin",
+      "model": "logentry"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 2,
+    "fields": {
+      "app_label": "auth",
+      "model": "permission"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 3,
+    "fields": {
+      "app_label": "auth",
+      "model": "group"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 4,
+    "fields": {
+      "app_label": "auth",
+      "model": "user"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 5,
+    "fields": {
+      "app_label": "contenttypes",
+      "model": "contenttype"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 6,
+    "fields": {
+      "app_label": "sessions",
+      "model": "session"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 7,
+    "fields": {
+      "app_label": "accounts",
+      "model": "profile"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 8,
+    "fields": {
+      "app_label": "academics",
+      "model": "academicsession"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 9,
+    "fields": {
+      "app_label": "academics",
+      "model": "attendancesettings"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 10,
+    "fields": {
+      "app_label": "academics",
+      "model": "course"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 11,
+    "fields": {
+      "app_label": "academics",
+      "model": "subject"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 12,
+    "fields": {
+      "app_label": "academics",
+      "model": "department"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 13,
+    "fields": {
+      "app_label": "academics",
+      "model": "studentgroup"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 14,
+    "fields": {
+      "app_label": "academics",
+      "model": "coursesubject"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 15,
+    "fields": {
+      "app_label": "academics",
+      "model": "timeslot"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 16,
+    "fields": {
+      "app_label": "academics",
+      "model": "timetable"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 17,
+    "fields": {
+      "app_label": "academics",
+      "model": "attendancerecord"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 18,
+    "fields": {
+      "app_label": "academics",
+      "model": "classcancellation"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 19,
+    "fields": {
+      "app_label": "academics",
+      "model": "dailysubstitution"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 20,
+    "fields": {
+      "app_label": "accounts",
+      "model": "notification"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 21,
+    "fields": {
+      "app_label": "academics",
+      "model": "usernotificationstatus"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 22,
+    "fields": {
+      "app_label": "academics",
+      "model": "announcement"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 23,
+    "fields": {
+      "app_label": "academics",
+      "model": "criterion"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 24,
+    "fields": {
+      "app_label": "academics",
+      "model": "markingscheme"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 25,
+    "fields": {
+      "app_label": "academics",
+      "model": "mark"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 26,
+    "fields": {
+      "app_label": "academics",
+      "model": "extraclass"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "097c0gajylr9j6txxu635fcowqnvmhfk",
+    "fields": {
+      "session_data": "e30:1uTmZ0:PmiyGTBviMR1Ii0Nk-3bIwE0qZCvsfZFqTIVIT4DKW4",
+      "expire_date": "2025-07-07T19:10:42.587Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "38cd21no8lypk8thg73agwp2iywdwsdr",
+    "fields": {
+      "session_data": ".eJxVjDEOAiEQRe9CbQiEZURLe89AhplBVg0ky25lvLuSbKHl_-_lvVTEbS1x67LEmdVZOXX4_RLSQ-oAfMd6a5paXZc56aHonXZ9bSzPy-7-BQr2MrIEyIBZXLIAEnzCU7JehEismRisQwhpCgbsdxytdy4w5-yyJzKs3h8CYTiI:1uXZfl:Yi7HyMm9DwGyvGPfuMNmrN2Q0fp65gz0BI059Tjy37M",
+      "expire_date": "2025-07-18T06:13:21.845Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "3xcjg9nojdovtac9m9ezsdfwp7ooi9ni",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGln-J6Gk5wzWeneDA8iW4qRCuXuIlALaNzPvIyKsS45r4zlOJK6iE5ffLQG-uByAnlAeVWItyzwleSjypE3eK_H7drp_Bxla_tbOOA4mGLScNBCw9ymNSo9oBgraeke96pwakKnXEKwlpR1bDh6BjBLbDuoZN-g:1uVli0:SMrxsbzjP838ZKx9IlBvnR10553adc8AbxM2jVmTVRo",
+      "expire_date": "2025-07-13T06:40:12.058Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "4ju2dsasrhluyk7u3kemha5h9ku7jp9k",
+    "fields": {
+      "session_data": "e30:1uTmW4:557Dsf-KoEyfZGYmpJBTrlGEXT4uTO-w1pNtslHe7ro",
+      "expire_date": "2025-07-07T19:07:40.536Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "9k1fjao41nk4oiw9poikcdawb3v77b32",
+    "fields": {
+      "session_data": "e30:1uTmXG:BgLFUS0HO_AOzjLBiQQcUuxnxEiRQS7iBhk1SBhc21w",
+      "expire_date": "2025-07-07T19:08:54.122Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "bz7u38l86e5vgxxgdi3t643r7rwi8u9e",
+    "fields": {
+      "session_data": ".eJxVjMEOwiAQRP-FsyEg0GU9evcbyLKAVA1NSnsy_rtt0oPeJvPezFsEWpca1p7nMCZxEdqJ028ZiZ-57SQ9qN0nyVNb5jHKXZEH7fI2pfy6Hu7fQaVetzVHbcm7lBn5HNkDagA2jJpVKTiQM6yNA41IBbfkqSibFSSw1gxOfL4Voze5:1uTHqz:IOV55NWh-hCapviO3dTuJ3gfh3NRnXxhFB8w-okvldk",
+      "expire_date": "2025-07-06T10:23:13.303Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "c3khhfc0qwfq4ulpjwl3uxk16ip24e47",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGlne9TeU9JzBWttrHECJFCcV4u4QKQW0b2beS0Ta1ha3zkscizgLMOL0OybKD552Uu403WaZ52ldxiR3RR60y-tc-Hk53L-DRr19a5sR0A4akkNDulrjIWV0oJAsGx_y4IMPg6qawXGCUFCzdqEiqRyUeH8A0-I24g:1uVUDa:kodSFvyEb8fW2yyFv80HWp2UiII1CsX-voNJsUOQHdQ",
+      "expire_date": "2025-07-12T11:59:38.670Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "chugatnc96d0hzesqjmt9clu81erk763",
+    "fields": {
+      "session_data": ".eJxVjDEOAiEQRe9CbQiEZURLe89AhplBVg0ky25lvLuSbKHl_-_lvVTEbS1x67LEmdVZOXX4_RLSQ-oAfMd6a5paXZc56aHonXZ9bSzPy-7-BQr2MrIEyIBZXLIAEnzCU7JehEismRisQwhpCgbsdxytdy4w5-yyJzKs3h8CYTiI:1uYPec:HlH6vguR7vLyNPQQvFkMls17Pv5_b3NiifXE2oye6n0",
+      "expire_date": "2025-07-20T13:43:38.818Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "d23d23hm4h9r8yzt1uwkd7pgrxznflbj",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGln-J6Gk5wzWeneDA8iW4qRCuXuIlALaNzPvIyKsS45r4zlOJK6iE5ffLQG-uByAnlAeVWItyzwleSjypE3eK_H7drp_Bxla_tbOOA4mGLScNBCw9ymNSo9oBgraeke96pwakKnXEKwlpR1bDh6BjBLbDuoZN-g:1uYPe3:z0Tkscm8t-ZXJ-iTItnkxqffrlsQZl8VM_WVrEQ_9Jk",
+      "expire_date": "2025-07-20T13:43:03.043Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "hauob23zelc1nqoo18ezymb4ptq8ja3n",
+    "fields": {
+      "session_data": ".eJxVjEsOwjAMBe-SNYqcj0NhyZ4zVI7tkAJqpaZdIe4OlbqA7ZuZ9zI9rUvt16ZzP4g5G2cOv1smfui4AbnTeJssT-MyD9luit1ps9dJ9HnZ3b-DSq1-69gV9QyBS0fACpghRI1ZUhFBCE6wOKTkMaIvPp0gKzpwTlmOgdi8P_EgOA4:1uRBxa:Spn3pRmnZmhUPOLVaa1-EfpfeTmSjDBfjuTTOCY9C8w",
+      "expire_date": "2025-06-30T15:41:22.706Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "hhfq11paxyk7u7dhhvh8fxscj240us8k",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGln-J6Gk5wzWeneDA8iW4qRCuXuIlALaNzPvIyKsS45r4zlOJK6iE5ffLQG-uByAnlAeVWItyzwleSjypE3eK_H7drp_Bxla_tbOOA4mGLScNBCw9ymNSo9oBgraeke96pwakKnXEKwlpR1bDh6BjBLbDuoZN-g:1uTmnM:rRLM6QjUVRWsCBB7BWxvkzJ0YI-EXLL1WWkq7sP9lqg",
+      "expire_date": "2025-07-07T19:25:32.234Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "l9kh77xj4rh1l78lhda1j0vj1wnavczj",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGln-J6Gk5wzWeneDA8iW4qRCuXuIlALaNzPvIyKsS45r4zlOJK6iE5ffLQG-uByAnlAeVWItyzwleSjypE3eK_H7drp_Bxla_tbOOA4mGLScNBCw9ymNSo9oBgraeke96pwakKnXEKwlpR1bDh6BjBLbDuoZN-g:1uTLwH:8InF-vJNxHwZFwEeF2Fv7C_M48s8R-Gi_TEEME4wthM",
+      "expire_date": "2025-07-06T14:44:57.180Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "pdlwzy17mlsl4v23euiswtequh9lle9f",
+    "fields": {
+      "session_data": "e30:1uTmTB:7DiNY29Ia0nzfB4f-qnLgWyX18J_0980brJiVGOU1yc",
+      "expire_date": "2025-07-07T19:04:41.811Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "prm9ypcgcrnwljotgov38o0rraubxdt9",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGln-J6Gk5wzWeneDA8iW4qRCuXuIlALaNzPvIyKsS45r4zlOJK6iE5ffLQG-uByAnlAeVWItyzwleSjypE3eK_H7drp_Bxla_tbOOA4mGLScNBCw9ymNSo9oBgraeke96pwakKnXEKwlpR1bDh6BjBLbDuoZN-g:1uTxL8:sY-aOX5EuMPfsGOj_Mcpa9cOXlUXgtjGi6fI5dxdf54",
+      "expire_date": "2025-07-08T06:41:06.261Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "q2jzm58ym4wsh5mz60n91witt31sa377",
+    "fields": {
+      "session_data": ".eJxVjEsOwjAMBe-SNYqcj0NhyZ4zVI7tkAJqpaZdIe4OlbqA7ZuZ9zI9rUvt16ZzP4g5G2cOv1smfui4AbnTeJssT-MyD9luit1ps9dJ9HnZ3b-DSq1-69gV9QyBS0fACpghRI1ZUhFBCE6wOKTkMaIvPp0gKzpwTlmOgdi8P_EgOA4:1uVelc:auy0yTyvfkJJuIAmlURXP8PYApm4S1KIy-o3cMEKHA0",
+      "expire_date": "2025-07-12T23:15:28.637Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "rej02j0mt447necctgi76f0pdegqiw2d",
+    "fields": {
+      "session_data": ".eJxVjEsOwjAMBe-SNYqcj0NhyZ4zVI7tkAJqpaZdIe4OlbqA7ZuZ9zI9rUvt16ZzP4g5G2cOv1smfui4AbnTeJssT-MyD9luit1ps9dJ9HnZ3b-DSq1-69gV9QyBS0fACpghRI1ZUhFBCE6wOKTkMaIvPp0gKzpwTlmOgdi8P_EgOA4:1uXZen:0MIZQXc7gfbnc43k9vWVYH4YUMtxdauhVnfHNw6pflU",
+      "expire_date": "2025-07-18T06:12:21.961Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "v1wbh7n15ewntdvmftyarrxremn0176v",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGln-J6Gk5wzWeneDA8iW4qRCuXuIlALaNzPvIyKsS45r4zlOJK6iE5ffLQG-uByAnlAeVWItyzwleSjypE3eK_H7drp_Bxla_tbOOA4mGLScNBCw9ymNSo9oBgraeke96pwakKnXEKwlpR1bDh6BjBLbDuoZN-g:1uY9s7:dEEd54GXL40xpzSv-JKkTJ_KyVtqvVPz-i9_BcpqAFE",
+      "expire_date": "2025-07-19T20:52:31.627Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "wx4hszrdtsl9sn5pcj4j5wej8ej5m20a",
+    "fields": {
+      "session_data": ".eJxVjEsOwjAMBe-SNYqcj0NhyZ4zVI7tkAJqpaZdIe4OlbqA7ZuZ9zI9rUvt16ZzP4g5G2cOv1smfui4AbnTeJssT-MyD9luit1ps9dJ9HnZ3b-DSq1-69gV9QyBS0fACpghRI1ZUhFBCE6wOKTkMaIvPp0gKzpwTlmOgdi8P_EgOA4:1uVlIH:USXobePk1FZIiJgruogEeJoTh3j-0k713C-sDnubvqM",
+      "expire_date": "2025-07-13T06:13:37.953Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "xh0h2bug408c5nz5oemkb4xhv5x1yhos",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGlleE9srSnrOEO3H4ACypTipEHeHSCmgfTPzXmakdSnj2vM8TmpOBgZz-B2Z5JHrRvRO9dastLrME9tNsTvt9tI0P8-7-3dQqJdv7aLniF6OjJ69G5CcsAPSAJwykFfBQQJeAUOIyWWViBEoR59AUzDvD_Y_N5E:1uSe8K:1nl8W-xvLNgVNgsW0pWsYWDiCKl3Og3gORyR8jJTBX4",
+      "expire_date": "2025-07-04T15:58:28.396Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "yugd582f9puqkhbpzls5v9ev08lo8o3g",
+    "fields": {
+      "session_data": ".eJxVjDsOwjAQBe_iGln-J6Gk5wzWeneDA8iW4qRCuXuIlALaNzPvIyKsS45r4zlOJK6iE5ffLQG-uByAnlAeVWItyzwleSjypE3eK_H7drp_Bxla_tbOOA4mGLScNBCw9ymNSo9oBgraeke96pwakKnXEKwlpR1bDh6BjBLbDuoZN-g:1uSHP7:BABCHy2upvFTrCLAnNrhK6SFnoZm_W9b_sai7lRjf6s",
+      "expire_date": "2025-07-03T15:42:17.518Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "z4iy3wqv657rczsfvgorsoj8lqnjn1y5",
+    "fields": {
+      "session_data": ".eJxVjEsOwjAMBe-SNYqcj0NhyZ4zVI7tkAJqpaZdIe4OlbqA7ZuZ9zI9rUvt16ZzP4g5G2cOv1smfui4AbnTeJssT-MyD9luit1ps9dJ9HnZ3b-DSq1-69gV9QyBS0fACpghRI1ZUhFBCE6wOKTkMaIvPp0gKzpwTlmOgdi8P_EgOA4:1uWMhj:O9fZAwjaGDn2JR7owd8S63rbGF7H_xrE7qn0-5ZSmEs",
+      "expire_date": "2025-07-14T22:10:23.483Z"
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "role": "admin",
+      "student_id_number": null,
+      "contact_number": null,
+      "student_group": null,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": []
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 4,
+    "fields": {
+      "user": 3,
+      "role": "student",
+      "student_id_number": "2005",
+      "contact_number": "8301967659",
+      "student_group": 4,
+      "photo": "student_photos/Shadow-Fight-2.jpg",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": []
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 5,
+    "fields": {
+      "user": 4,
+      "role": "student",
+      "student_id_number": "2301",
+      "contact_number": "654646464",
+      "student_group": null,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": []
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 6,
+    "fields": {
+      "user": 5,
+      "role": "student",
+      "student_id_number": "2456",
+      "contact_number": "6464646",
+      "student_group": 2,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": []
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 8,
+    "fields": {
+      "user": 7,
+      "role": "faculty",
+      "student_id_number": null,
+      "contact_number": null,
+      "student_group": null,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": [
+        2,
+        1
+      ]
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 9,
+    "fields": {
+      "user": 8,
+      "role": "student",
+      "student_id_number": null,
+      "contact_number": null,
+      "student_group": null,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": []
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 11,
+    "fields": {
+      "user": 10,
+      "role": "student",
+      "student_id_number": "7894",
+      "contact_number": null,
+      "student_group": 4,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": []
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 12,
+    "fields": {
+      "user": 11,
+      "role": "student",
+      "student_id_number": "2405",
+      "contact_number": null,
+      "student_group": 4,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": []
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 15,
+    "fields": {
+      "user": 14,
+      "role": "faculty",
+      "student_id_number": null,
+      "contact_number": "",
+      "student_group": null,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 16,
+    "fields": {
+      "user": 15,
+      "role": "student",
+      "student_id_number": "14567",
+      "contact_number": null,
+      "student_group": 4,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": []
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 17,
+    "fields": {
+      "user": 16,
+      "role": "student",
+      "student_id_number": "4567",
+      "contact_number": "",
+      "student_group": 4,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": []
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 18,
+    "fields": {
+      "user": 17,
+      "role": "student",
+      "student_id_number": "4587",
+      "contact_number": "",
+      "student_group": 4,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": []
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 19,
+    "fields": {
+      "user": 18,
+      "role": "faculty",
+      "student_id_number": null,
+      "contact_number": null,
+      "student_group": null,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "accounts.profile",
+    "pk": 20,
+    "fields": {
+      "user": 19,
+      "role": "student",
+      "student_id_number": "11456",
+      "contact_number": "",
+      "student_group": 4,
+      "photo": "student_photos/default.png",
+      "father_name": "",
+      "father_phone": "",
+      "mother_name": "",
+      "mother_phone": "",
+      "address": "",
+      "field_of_expertise": []
+    }
+  },
+  {
+    "model": "accounts.notification",
+    "pk": 1,
+    "fields": {
+      "recipient": 14,
+      "message": "You have been assigned as a substitute for 'C++' at 10:00 AM.",
+      "url": "/academics/faculty/schedule/",
+      "is_read": true,
+      "timestamp": "2025-06-28T10:31:35.044Z"
+    }
+  },
+  {
+    "model": "accounts.notification",
+    "pk": 2,
+    "fields": {
+      "recipient": 7,
+      "message": "You have been assigned as a substitute for 'Python' at 10:00 AM.",
+      "url": "/academics/faculty/schedule/",
+      "is_read": true,
+      "timestamp": "2025-06-28T11:00:07.971Z"
+    }
+  },
+  {
+    "model": "accounts.notification",
+    "pk": 3,
+    "fields": {
+      "recipient": 14,
+      "message": "You have been assigned as a substitute for 'Python' at 10:00 AM.",
+      "url": "/academics/faculty/schedule/",
+      "is_read": true,
+      "timestamp": "2025-06-28T11:01:02.791Z"
+    }
+  },
+  {
+    "model": "accounts.notification",
+    "pk": 4,
+    "fields": {
+      "recipient": 7,
+      "message": "You have been assigned as a substitute for 'Python' at 10:00 AM.",
+      "url": "/academics/faculty/schedule/",
+      "is_read": true,
+      "timestamp": "2025-06-28T11:01:15.336Z"
+    }
+  },
+  {
+    "model": "accounts.notification",
+    "pk": 5,
+    "fields": {
+      "recipient": 7,
+      "message": "You have been assigned as a substitute for 'Python' at 10:00 AM.",
+      "url": "/academics/faculty/schedule/",
+      "is_read": true,
+      "timestamp": "2025-06-28T14:43:57.009Z"
+    }
+  },
+  {
+    "model": "academics.academicsession",
+    "pk": 1,
+    "fields": {
+      "name": "2025-2026",
+      "start_year": 2025,
+      "end_year": 2026,
+      "is_current": true
+    }
+  },
+  {
+    "model": "academics.subject",
+    "pk": 1,
+    "fields": {
+      "name": "Science",
+      "code": "2004",
+      "subject_type": "theory",
+      "description": "",
+      "required_hours": 40
+    }
+  },
+  {
+    "model": "academics.subject",
+    "pk": 2,
+    "fields": {
+      "name": "Python",
+      "code": "CS2025",
+      "subject_type": "practical",
+      "description": "",
+      "required_hours": 40
+    }
+  },
+  {
+    "model": "academics.subject",
+    "pk": 3,
+    "fields": {
+      "name": "C++",
+      "code": "CS0001",
+      "subject_type": "theory",
+      "description": "",
+      "required_hours": 40
+    }
+  },
+  {
+    "model": "academics.course",
+    "pk": 1,
+    "fields": {
+      "name": "BCA",
+      "course_type": "UG",
+      "duration_years": 3,
+      "required_hours_per_semester": 300,
+      "description": "",
+      "marking_scheme": 1,
+      "subjects": [
+        3
+      ]
+    }
+  },
+  {
+    "model": "academics.course",
+    "pk": 2,
+    "fields": {
+      "name": "B.Sc. Hospitality Administration",
+      "course_type": "UG",
+      "duration_years": 3,
+      "required_hours_per_semester": 350,
+      "description": "A three-year undergraduate program focusing on the hospitality industry.",
+      "marking_scheme": null,
+      "subjects": [
+        2,
+        1
+      ]
+    }
+  },
+  {
+    "model": "academics.coursesubject",
+    "pk": 1,
+    "fields": {
+      "course": 2,
+      "subject": 1,
+      "required_hours": 40,
+      "semester": 1
+    }
+  },
+  {
+    "model": "academics.coursesubject",
+    "pk": 2,
+    "fields": {
+      "course": 2,
+      "subject": 2,
+      "required_hours": 40,
+      "semester": 1
+    }
+  },
+  {
+    "model": "academics.coursesubject",
+    "pk": 4,
+    "fields": {
+      "course": 2,
+      "subject": 3,
+      "required_hours": 40,
+      "semester": 1
+    }
+  },
+  {
+    "model": "academics.coursesubject",
+    "pk": 5,
+    "fields": {
+      "course": 1,
+      "subject": 3,
+      "required_hours": 40,
+      "semester": 1
+    }
+  },
+  {
+    "model": "academics.coursesubject",
+    "pk": 6,
+    "fields": {
+      "course": 1,
+      "subject": 2,
+      "required_hours": 40,
+      "semester": 3
+    }
+  },
+  {
+    "model": "academics.coursesubject",
+    "pk": 7,
+    "fields": {
+      "course": 1,
+      "subject": 1,
+      "required_hours": 40,
+      "semester": 3
+    }
+  },
+  {
+    "model": "academics.studentgroup",
+    "pk": 2,
+    "fields": {
+      "name": "Hospitality Batch 2024",
+      "course": 2,
+      "start_year": 2024,
+      "passout_year": 2027
+    }
+  },
+  {
+    "model": "academics.studentgroup",
+    "pk": 4,
+    "fields": {
+      "name": "BCA Section A",
+      "course": 1,
+      "start_year": 2025,
+      "passout_year": 2028
+    }
+  },
+  {
+    "model": "academics.timeslot",
+    "pk": 1,
+    "fields": {
+      "start_time": "10:00:00",
+      "end_time": "11:00:00",
+      "label": null,
+      "is_schedulable": true
+    }
+  },
+  {
+    "model": "academics.timeslot",
+    "pk": 2,
+    "fields": {
+      "start_time": "09:00:00",
+      "end_time": "10:00:00",
+      "label": null,
+      "is_schedulable": true
+    }
+  },
+  {
+    "model": "academics.timeslot",
+    "pk": 3,
+    "fields": {
+      "start_time": "13:00:00",
+      "end_time": "14:00:00",
+      "label": "LUNCH",
+      "is_schedulable": false
+    }
+  },
+  {
+    "model": "academics.timeslot",
+    "pk": 5,
+    "fields": {
+      "start_time": "14:00:00",
+      "end_time": "15:00:00",
+      "label": null,
+      "is_schedulable": true
+    }
+  },
+  {
+    "model": "academics.timetable",
+    "pk": 2,
+    "fields": {
+      "student_group": 2,
+      "subject": 2,
+      "faculty": 7,
+      "day_of_week": "Thursday",
+      "time_slot": 1,
+      "status": "scheduled"
+    }
+  },
+  {
+    "model": "academics.timetable",
+    "pk": 4,
+    "fields": {
+      "student_group": 2,
+      "subject": 4,
+      "faculty": 7,
+      "day_of_week": "Friday",
+      "time_slot": 1,
+      "status": "scheduled"
+    }
+  },
+  {
+    "model": "academics.timetable",
+    "pk": 6,
+    "fields": {
+      "student_group": 4,
+      "subject": 6,
+      "faculty": 7,
+      "day_of_week": "Monday",
+      "time_slot": 1,
+      "status": "scheduled"
+    }
+  },
+  {
+    "model": "academics.timetable",
+    "pk": 7,
+    "fields": {
+      "student_group": 4,
+      "subject": 4,
+      "faculty": 7,
+      "day_of_week": "Thursday",
+      "time_slot": 2,
+      "status": "scheduled"
+    }
+  },
+  {
+    "model": "academics.timetable",
+    "pk": 8,
+    "fields": {
+      "student_group": 4,
+      "subject": 6,
+      "faculty": 14,
+      "day_of_week": "Saturday",
+      "time_slot": 1,
+      "status": "scheduled"
+    }
+  },
+  {
+    "model": "academics.timetable",
+    "pk": 11,
+    "fields": {
+      "student_group": 4,
+      "subject": 6,
+      "faculty": 7,
+      "day_of_week": "Monday",
+      "time_slot": 2,
+      "status": "scheduled"
+    }
+  },
+  {
+    "model": "academics.timetable",
+    "pk": 12,
+    "fields": {
+      "student_group": 4,
+      "subject": 7,
+      "faculty": 7,
+      "day_of_week": "Tuesday",
+      "time_slot": 2,
+      "status": "scheduled"
+    }
+  },
+  {
+    "model": "academics.timetable",
+    "pk": 13,
+    "fields": {
+      "student_group": 4,
+      "subject": 6,
+      "faculty": 7,
+      "day_of_week": "Wednesday",
+      "time_slot": 2,
+      "status": "scheduled"
+    }
+  },
+  {
+    "model": "academics.timetable",
+    "pk": 21,
+    "fields": {
+      "student_group": 4,
+      "subject": 7,
+      "faculty": 14,
+      "day_of_week": "Friday",
+      "time_slot": 2,
+      "status": "scheduled"
+    }
+  },
+  {
+    "model": "academics.timetable",
+    "pk": 25,
+    "fields": {
+      "student_group": 2,
+      "subject": 1,
+      "faculty": 14,
+      "day_of_week": "Wednesday",
+      "time_slot": 1,
+      "status": "scheduled"
+    }
+  },
+  {
+    "model": "academics.attendancesettings",
+    "pk": 1,
+    "fields": {
+      "required_percentage": 75,
+      "mark_deadline_days": 1,
+      "edit_deadline_days": 6,
+      "passing_percentage": "65.00",
+      "cancellation_threshold_hours": 2,
+      "number_of_backups_to_retain": 7,
+      "session_timeout_seconds": 3600
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 30,
+    "fields": {
+      "student": 3,
+      "timetable": 6,
+      "extra_class": null,
+      "date": "2025-06-16",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-22T15:10:33.819Z",
+      "updated_at": "2025-06-22T15:10:33.819Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 34,
+    "fields": {
+      "student": 15,
+      "timetable": 6,
+      "extra_class": null,
+      "date": "2025-06-16",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-22T15:26:42.739Z",
+      "updated_at": "2025-06-22T15:26:42.739Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 35,
+    "fields": {
+      "student": 11,
+      "timetable": 6,
+      "extra_class": null,
+      "date": "2025-06-16",
+      "status": "Absent",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-22T15:26:42.742Z",
+      "updated_at": "2025-06-22T15:26:42.742Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 36,
+    "fields": {
+      "student": 10,
+      "timetable": 6,
+      "extra_class": null,
+      "date": "2025-06-16",
+      "status": "Absent",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-22T15:26:42.747Z",
+      "updated_at": "2025-06-22T15:26:42.747Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 37,
+    "fields": {
+      "student": 15,
+      "timetable": 6,
+      "extra_class": null,
+      "date": "2025-06-23",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-23T19:25:44.976Z",
+      "updated_at": "2025-06-23T19:25:44.976Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 38,
+    "fields": {
+      "student": 11,
+      "timetable": 6,
+      "extra_class": null,
+      "date": "2025-06-23",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-23T19:25:44.980Z",
+      "updated_at": "2025-06-23T19:25:44.980Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 39,
+    "fields": {
+      "student": 10,
+      "timetable": 6,
+      "extra_class": null,
+      "date": "2025-06-23",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-23T19:25:44.983Z",
+      "updated_at": "2025-06-23T19:25:44.983Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 41,
+    "fields": {
+      "student": 19,
+      "timetable": 8,
+      "extra_class": null,
+      "date": "2025-06-28",
+      "status": "Present",
+      "is_late": true,
+      "marked_by": 7,
+      "created_at": "2025-06-28T19:36:35.679Z",
+      "updated_at": "2025-06-28T20:05:33.740Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 42,
+    "fields": {
+      "student": 15,
+      "timetable": 8,
+      "extra_class": null,
+      "date": "2025-06-28",
+      "status": "Present",
+      "is_late": true,
+      "marked_by": 7,
+      "created_at": "2025-06-28T19:36:35.685Z",
+      "updated_at": "2025-06-28T20:05:33.746Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 43,
+    "fields": {
+      "student": 11,
+      "timetable": 8,
+      "extra_class": null,
+      "date": "2025-06-28",
+      "status": "Absent",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-28T19:36:35.689Z",
+      "updated_at": "2025-06-28T20:05:33.750Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 44,
+    "fields": {
+      "student": 10,
+      "timetable": 8,
+      "extra_class": null,
+      "date": "2025-06-28",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-28T19:36:35.693Z",
+      "updated_at": "2025-06-28T20:05:33.756Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 45,
+    "fields": {
+      "student": 17,
+      "timetable": 8,
+      "extra_class": null,
+      "date": "2025-06-28",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-28T19:36:35.697Z",
+      "updated_at": "2025-06-28T20:05:33.761Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 46,
+    "fields": {
+      "student": 16,
+      "timetable": 8,
+      "extra_class": null,
+      "date": "2025-06-28",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-28T19:36:35.700Z",
+      "updated_at": "2025-06-28T20:05:33.765Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 47,
+    "fields": {
+      "student": 3,
+      "timetable": 8,
+      "extra_class": null,
+      "date": "2025-06-28",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-28T19:36:35.704Z",
+      "updated_at": "2025-06-28T20:05:33.769Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 48,
+    "fields": {
+      "student": 3,
+      "timetable": 12,
+      "extra_class": null,
+      "date": "2025-06-10",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-06-29T09:51:04.538Z",
+      "updated_at": "2025-06-29T09:51:04.538Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 56,
+    "fields": {
+      "student": 19,
+      "timetable": 7,
+      "extra_class": null,
+      "date": "2025-07-03",
+      "status": "Absent",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-07-03T18:38:44.767Z",
+      "updated_at": "2025-07-03T18:38:44.767Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 57,
+    "fields": {
+      "student": 15,
+      "timetable": 7,
+      "extra_class": null,
+      "date": "2025-07-03",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-07-03T18:38:44.774Z",
+      "updated_at": "2025-07-03T18:38:44.774Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 58,
+    "fields": {
+      "student": 11,
+      "timetable": 7,
+      "extra_class": null,
+      "date": "2025-07-03",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-07-03T18:38:44.779Z",
+      "updated_at": "2025-07-03T18:38:44.779Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 59,
+    "fields": {
+      "student": 10,
+      "timetable": 7,
+      "extra_class": null,
+      "date": "2025-07-03",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-07-03T18:38:44.784Z",
+      "updated_at": "2025-07-03T18:38:44.784Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 60,
+    "fields": {
+      "student": 17,
+      "timetable": 7,
+      "extra_class": null,
+      "date": "2025-07-03",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-07-03T18:38:44.788Z",
+      "updated_at": "2025-07-03T18:38:44.788Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 61,
+    "fields": {
+      "student": 16,
+      "timetable": 7,
+      "extra_class": null,
+      "date": "2025-07-03",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-07-03T18:38:44.793Z",
+      "updated_at": "2025-07-03T18:38:44.793Z"
+    }
+  },
+  {
+    "model": "academics.attendancerecord",
+    "pk": 62,
+    "fields": {
+      "student": 3,
+      "timetable": 7,
+      "extra_class": null,
+      "date": "2025-07-03",
+      "status": "Present",
+      "is_late": false,
+      "marked_by": 7,
+      "created_at": "2025-07-03T18:38:44.796Z",
+      "updated_at": "2025-07-03T18:38:44.796Z"
+    }
+  },
+  {
+    "model": "academics.classcancellation",
+    "pk": 4,
+    "fields": {
+      "timetable": 4,
+      "date": "2025-06-27",
+      "cancelled_by": null
+    }
+  },
+  {
+    "model": "academics.dailysubstitution",
+    "pk": 2,
+    "fields": {
+      "timetable": 4,
+      "date": "2025-06-20",
+      "substituted_by": 14
+    }
+  },
+  {
+    "model": "academics.dailysubstitution",
+    "pk": 7,
+    "fields": {
+      "timetable": 8,
+      "date": "2025-06-28",
+      "substituted_by": 7
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 1,
+    "fields": {
+      "title": "Holiday",
+      "content": "Holiday on so and so days",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-28T11:52:38.090Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 2,
+    "fields": {
+      "title": "s",
+      "content": "aa",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-28T11:56:05.334Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 3,
+    "fields": {
+      "title": "sbbbbbbbb",
+      "content": "affffv",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-28T11:57:16.042Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 4,
+    "fields": {
+      "title": "sav",
+      "content": "avvvvvvvvvvvvvvv",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-28T11:58:01.352Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 5,
+    "fields": {
+      "title": "aaaaaaaaaa",
+      "content": "ffffffffffffff",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-28T12:01:20.749Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 6,
+    "fields": {
+      "title": "ddddddddd",
+      "content": "ddddddddddd",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-28T12:08:23.060Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 7,
+    "fields": {
+      "title": "aaaaaa",
+      "content": "ddddddd",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-28T12:08:50.017Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 8,
+    "fields": {
+      "title": "aaaaaa",
+      "content": "afvvavv",
+      "sender": 1,
+      "send_to_all_students": true,
+      "send_to_all_faculty": true,
+      "created_at": "2025-06-28T12:15:34.681Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 9,
+    "fields": {
+      "title": "aaaaaaaa",
+      "content": "aaaaaaa",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-28T12:19:27.791Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 10,
+    "fields": {
+      "title": "xxxxxxx",
+      "content": "aaaaa",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-28T12:23:47.217Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 11,
+    "fields": {
+      "title": "aaaaa",
+      "content": "aaaaa",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-28T12:25:21.401Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 12,
+    "fields": {
+      "title": "svdv",
+      "content": "avdwbsd",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": true,
+      "created_at": "2025-06-28T14:35:08.783Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 13,
+    "fields": {
+      "title": "Extra Class: Python",
+      "content": "An extra class for Python has been scheduled on 2025-07-01 from 09:00:00 to 10:00:00.",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-29T14:25:50.244Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 14,
+    "fields": {
+      "title": "Extra Class: Python",
+      "content": "An extra class for Python has been scheduled on 2025-07-07 from 10:00:00 to 11:00:00.",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-29T14:58:16.098Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 15,
+    "fields": {
+      "title": "Extra Class: Python",
+      "content": "An extra class for Python has been scheduled on 2025-06-29 from 10:00:00 to 11:00:00.",
+      "sender": 7,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-29T14:59:39.870Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 16,
+    "fields": {
+      "title": "CANCELLED: Extra Class for Python",
+      "content": "The extra class for Python scheduled on 2025-07-01 has been cancelled.",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-29T15:23:01.504Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 17,
+    "fields": {
+      "title": "CANCELLED: Extra Class for Python",
+      "content": "The extra class for Python scheduled on 2025-07-07 has been cancelled.",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-29T15:24:44.231Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 18,
+    "fields": {
+      "title": "CANCELLED: Extra Class for Python",
+      "content": "The extra class for Python scheduled on 2025-06-29 has been cancelled.",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-29T15:25:02.226Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 19,
+    "fields": {
+      "title": "Extra Class: Python",
+      "content": "An extra class for Python has been scheduled on 2025-06-29 during the 09:00 - 10:00 slot.",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-29T16:05:47.144Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 20,
+    "fields": {
+      "title": "sd",
+      "content": "sdbf",
+      "sender": 1,
+      "send_to_all_students": true,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-29T17:36:55.641Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 21,
+    "fields": {
+      "title": "aaaa",
+      "content": "aaaaaaaa",
+      "sender": 1,
+      "send_to_all_students": true,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-29T18:38:14.258Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 22,
+    "fields": {
+      "title": "aaaaaaaaaa",
+      "content": "aaaaaaa",
+      "sender": 1,
+      "send_to_all_students": true,
+      "send_to_all_faculty": true,
+      "created_at": "2025-06-29T18:41:12.001Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 23,
+    "fields": {
+      "title": "ssssss",
+      "content": "ssssss",
+      "sender": 1,
+      "send_to_all_students": true,
+      "send_to_all_faculty": true,
+      "created_at": "2025-06-29T18:44:23.869Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 24,
+    "fields": {
+      "title": "aa",
+      "content": "ssss",
+      "sender": 1,
+      "send_to_all_students": true,
+      "send_to_all_faculty": true,
+      "created_at": "2025-06-29T18:46:16.021Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 25,
+    "fields": {
+      "title": "CANCELLED: Extra Class for BCA - Python (40 hrs)",
+      "content": "The extra class for BCA - Python (40 hrs) scheduled on 2025-06-29 has been cancelled.",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-06-29T18:49:58.393Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 26,
+    "fields": {
+      "title": "Extra Class: Python",
+      "content": "An extra class for Python has been scheduled on 2025-07-19 during the 09:00 - 10:00 slot.",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-07-04T05:59:12.607Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 27,
+    "fields": {
+      "title": "CANCELLED: Extra Class for Python",
+      "content": "The extra class for Python scheduled on 2025-07-19 has been cancelled.",
+      "sender": 1,
+      "send_to_all_students": false,
+      "send_to_all_faculty": false,
+      "created_at": "2025-07-04T05:59:44.518Z",
+      "target_student_groups": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "academics.announcement",
+    "pk": 28,
+    "fields": {
+      "title": "Hello",
+      "content": "Test",
+      "sender": 1,
+      "send_to_all_students": true,
+      "send_to_all_faculty": true,
+      "created_at": "2025-07-04T06:17:08.430Z",
+      "target_student_groups": []
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 1,
+    "fields": {
+      "user": 7,
+      "announcement": 1,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 2,
+    "fields": {
+      "user": 7,
+      "announcement": 2,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 3,
+    "fields": {
+      "user": 14,
+      "announcement": 2,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 4,
+    "fields": {
+      "user": 14,
+      "announcement": 1,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 5,
+    "fields": {
+      "user": 14,
+      "announcement": 5,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 6,
+    "fields": {
+      "user": 14,
+      "announcement": 7,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 7,
+    "fields": {
+      "user": 1,
+      "announcement": 7,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 8,
+    "fields": {
+      "user": 1,
+      "announcement": 6,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 9,
+    "fields": {
+      "user": 1,
+      "announcement": 5,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 10,
+    "fields": {
+      "user": 1,
+      "announcement": 4,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 11,
+    "fields": {
+      "user": 1,
+      "announcement": 3,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 12,
+    "fields": {
+      "user": 1,
+      "announcement": 2,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 13,
+    "fields": {
+      "user": 1,
+      "announcement": 8,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 14,
+    "fields": {
+      "user": 14,
+      "announcement": 8,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 15,
+    "fields": {
+      "user": 1,
+      "announcement": 1,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 16,
+    "fields": {
+      "user": 19,
+      "announcement": 10,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 17,
+    "fields": {
+      "user": 19,
+      "announcement": 11,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 18,
+    "fields": {
+      "user": 19,
+      "announcement": 9,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 19,
+    "fields": {
+      "user": 19,
+      "announcement": 8,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 20,
+    "fields": {
+      "user": 7,
+      "announcement": 8,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 21,
+    "fields": {
+      "user": 7,
+      "announcement": 12,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 22,
+    "fields": {
+      "user": 14,
+      "announcement": 12,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 23,
+    "fields": {
+      "user": 3,
+      "announcement": 11,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 24,
+    "fields": {
+      "user": 3,
+      "announcement": 10,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 25,
+    "fields": {
+      "user": 3,
+      "announcement": 9,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 26,
+    "fields": {
+      "user": 3,
+      "announcement": 8,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 27,
+    "fields": {
+      "user": 3,
+      "announcement": 13,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 28,
+    "fields": {
+      "user": 3,
+      "announcement": 16,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 29,
+    "fields": {
+      "user": 3,
+      "announcement": 17,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 30,
+    "fields": {
+      "user": 3,
+      "announcement": 19,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 31,
+    "fields": {
+      "user": 3,
+      "announcement": 18,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 32,
+    "fields": {
+      "user": 3,
+      "announcement": 20,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 33,
+    "fields": {
+      "user": 3,
+      "announcement": 15,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 34,
+    "fields": {
+      "user": 3,
+      "announcement": 14,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 35,
+    "fields": {
+      "user": 3,
+      "announcement": 21,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 36,
+    "fields": {
+      "user": 3,
+      "announcement": 22,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 37,
+    "fields": {
+      "user": 7,
+      "announcement": 22,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 38,
+    "fields": {
+      "user": 7,
+      "announcement": 23,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 39,
+    "fields": {
+      "user": 3,
+      "announcement": 23,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 40,
+    "fields": {
+      "user": 7,
+      "announcement": 24,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 41,
+    "fields": {
+      "user": 3,
+      "announcement": 24,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 42,
+    "fields": {
+      "user": 3,
+      "announcement": 25,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 43,
+    "fields": {
+      "user": 3,
+      "announcement": 27,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 44,
+    "fields": {
+      "user": 3,
+      "announcement": 26,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 45,
+    "fields": {
+      "user": 3,
+      "announcement": 28,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.usernotificationstatus",
+    "pk": 46,
+    "fields": {
+      "user": 7,
+      "announcement": 28,
+      "is_seen": false
+    }
+  },
+  {
+    "model": "academics.markingscheme",
+    "pk": 1,
+    "fields": {
+      "name": "Schema 1"
+    }
+  },
+  {
+    "model": "academics.criterion",
+    "pk": 1,
+    "fields": {
+      "name": "Internal",
+      "scheme": 1,
+      "max_marks": 20
+    }
+  },
+  {
+    "model": "academics.criterion",
+    "pk": 2,
+    "fields": {
+      "name": "External",
+      "scheme": 1,
+      "max_marks": 50
+    }
+  },
+  {
+    "model": "academics.mark",
+    "pk": 1,
+    "fields": {
+      "student": 17,
+      "subject": 6,
+      "criterion": 2,
+      "marks_obtained": "35.00"
+    }
+  },
+  {
+    "model": "academics.mark",
+    "pk": 2,
+    "fields": {
+      "student": 17,
+      "subject": 6,
+      "criterion": 1,
+      "marks_obtained": "12.00"
+    }
+  },
+  {
+    "model": "academics.mark",
+    "pk": 3,
+    "fields": {
+      "student": 3,
+      "subject": 6,
+      "criterion": 2,
+      "marks_obtained": "35.00"
+    }
+  },
+  {
+    "model": "academics.mark",
+    "pk": 4,
+    "fields": {
+      "student": 3,
+      "subject": 5,
+      "criterion": 1,
+      "marks_obtained": "20.00"
+    }
+  },
+  {
+    "model": "academics.mark",
+    "pk": 5,
+    "fields": {
+      "student": 3,
+      "subject": 7,
+      "criterion": 2,
+      "marks_obtained": "25.00"
+    }
+  },
+  {
+    "model": "academics.mark",
+    "pk": 6,
+    "fields": {
+      "student": 3,
+      "subject": 7,
+      "criterion": 1,
+      "marks_obtained": "12.00"
+    }
+  }
+]
+[
+  0m
