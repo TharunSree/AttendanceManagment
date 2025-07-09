@@ -3,50 +3,49 @@
 {% block page_title %}{{ page_title }}{% endblock page_title %}
 
 {% block content %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <h1>{{ page_title }}</h1>
-                <div class="separator mb-5"></div>
-            </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>{{ page_title }}</h1>
+            <div class="separator mb-5"></div>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        {% if update_count > 0 %}
-                            <h5 class="card-title text-success">
-                                <i class="simple-icon-arrow-up-circle"></i> {{ update_count }} Update(s) Available
-                            </h5>
-                            <p>New changes are available for the application in the Git repository.</p>
-                        {% else %}
-                            <h5 class="card-title text-info">
-                                <i class="simple-icon-check"></i> Your Application is Up-to-Date
-                            </h5>
-                            <p>There are currently no new updates available.</p>
-                        {% endif %}
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2">
+            <div class="card">
+                <div class="card-body">
+                    {% if update_count > 0 %}
+                        <h5 class="card-title text-success">
+                            <i class="simple-icon-arrow-up-circle"></i> {{ update_count }} Update(s) Available
+                        </h5>
+                        <p>New changes are available for the application in the Git repository.</p>
+                    {% else %}
+                        <h5 class="card-title text-info">
+                            <i class="simple-icon-check"></i> Your Application is Up-to-Date
+                        </h5>
+                        <p>There are currently no new updates available.</p>
+                    {% endif %}
 
-                        <hr/>
+                    <hr/>
 
-                        <h5 class="mt-4">How to Update the Application</h5>
-                        <p>To apply the latest updates, the server administrator must perform the following steps:</p>
-                        <ol>
-                            <li>Log into the server using SSH.</li>
-                            <li>Navigate to the project's root directory: <br/><code>cd /path/to/your/project/</code>
-                            </li>
-                            <li>Run the update script using the following command: <br/><code>./update.sh</code></li>
-                        </ol>
+                    <h5 class="mt-4">How to Update the Application</h5>
+                    <p>To apply the latest updates, the server administrator must perform the following steps:</p>
+                    <ol>
+                        <li>Log into the server using SSH.</li>
+                        {# --- THIS PATH IS NOW CORRECT --- #}
+                        <li>Navigate to the project's root directory: <br/><code>cd /var/www/AttendanceManagment/</code></li>
+                        <li>Run the update script using the following command: <br/><code>./update.sh</code></li>
+                    </ol>
 
-                        <div class="alert alert-warning mt-4">
-                            <strong>Security Notice:</strong> The update process must be run manually on the server's
-                            command line. This is a deliberate security measure to prevent unauthorized updates and
-                            protect the server.
-                        </div>
-
+                    <div class="alert alert-warning mt-4">
+                        <strong>Security Notice:</strong> The update process must be run manually on the server's
+                        command line. This is a deliberate security measure to prevent unauthorized updates and
+                        protect the server.
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock content %}
