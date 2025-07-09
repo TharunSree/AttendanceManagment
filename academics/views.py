@@ -53,30 +53,29 @@ logger = logging.getLogger(__name__)
 @nav_item(title="Attendance Settings", icon="iconsminds-gears", url_name="academics:admin_settings",
           permission='academics.view_attendance_settings', group='application_settings', order=1)
 def admin_settings_view(request):
-    # Initialize all forms for the GET request
-    timeslot_form = TimeSlotForm()
+    # Load settings and current session initially for context
     settings_obj = AttendanceSettings.load()
-    settings_form = AttendanceSettingsForm(instance=settings_obj)
-    academic_session_create_form = AcademicSessionModelForm()
-
     try:
         current_session = AcademicSession.objects.get(is_current=True)
-        session_set_form = AcademicSessionForm(initial={'current_session': current_session})
     except AcademicSession.DoesNotExist:
-        session_set_form = AcademicSessionForm()
+        current_session = None
 
     if request.method == 'POST':
-        # Check which form was submitted based on the button's name attribute
+        # Check which form was submitted and handle it
         if 'submit_timeslot' in request.POST:
             timeslot_form = TimeSlotForm(request.POST)
             if timeslot_form.is_valid():
                 timeslot_form.save()
                 messages.success(request, "New time slot has been created.")
+                return redirect('academics:admin_settings')  # Redirect on success
+
         elif 'submit_settings' in request.POST:
             settings_form = AttendanceSettingsForm(request.POST, instance=settings_obj)
             if settings_form.is_valid():
                 settings_form.save()
                 messages.success(request, "General system settings have been updated.")
+                return redirect('academics:admin_settings')  # Redirect on success
+
         elif 'set_academic_session' in request.POST:
             session_set_form = AcademicSessionForm(request.POST)
             if session_set_form.is_valid():
@@ -85,14 +84,35 @@ def admin_settings_view(request):
                 new_current_session.is_current = True
                 new_current_session.save()
                 messages.success(request, f"'{new_current_session.name}' is now the current academic session.")
+                return redirect('academics:admin_settings')  # Redirect on success
+
         elif 'create_academic_session' in request.POST:
             academic_session_create_form = AcademicSessionModelForm(request.POST)
             if academic_session_create_form.is_valid():
                 academic_session_create_form.save()
                 messages.success(request, "New academic session has been created.")
+                return redirect('academics:admin_settings')  # Redirect on success
+    
+    # If it's a GET request or a POST with errors, initialize all forms
+    timeslot_form = TimeSlotForm()
+    settings_form = AttendanceSettingsForm(instance=settings_obj)
+    session_set_form = AcademicSessionForm(initial={'current_session': current_session})
+    academic_session_create_form = AcademicSessionModelForm()
+    
+    # If a specific form was submitted via POST and was invalid,
+    # that form instance (containing errors) will be used in the context.
+    # We must ensure the context gets the form that may have been created in the POST block.
+    # A simple way is to check the POST data again.
+    if request.method == 'POST':
+        if 'submit_timeslot' in request.POST:
+            timeslot_form = TimeSlotForm(request.POST)
+        elif 'submit_settings' in request.POST:
+            settings_form = AttendanceSettingsForm(request.POST, instance=settings_obj)
+        elif 'set_academic_session' in request.POST:
+            session_set_form = AcademicSessionForm(request.POST)
+        elif 'create_academic_session' in request.POST:
+            academic_session_create_form = AcademicSessionModelForm(request.POST)
 
-        # Redirect back to the same page after any POST action
-        return redirect('academics:admin_settings')
 
     all_timeslots = TimeSlot.objects.all()
     all_sessions = AcademicSession.objects.all().order_by('-start_year')
@@ -107,7 +127,6 @@ def admin_settings_view(request):
         'page_title': 'Application Settings'
     }
     return render(request, 'academics/admin_settings.html', context)
-
 
 @login_required
 @permission_required('academics.delete_academicsession', raise_exception=True)
