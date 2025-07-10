@@ -425,7 +425,7 @@ def admin_trigger_password_reset_view(request, user_id):
         opts = {
             'use_https': request.is_secure(),
             'request': request,
-            'subject_template_name': 'registration/password_reset_subject.txt.',
+            'subject_template_name': 'registration/password_reset_subject.txt',
             'email_template_name': 'registration/password_reset_email.txt',
             'html_email_template_name': 'registration/password_reset_email.html',
         }
