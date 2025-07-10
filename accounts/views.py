@@ -252,7 +252,6 @@ def group_permission_edit_view(request, group_id):
 
 
 @login_required
-@permission_required('auth.view_user')
 def admin_dashboard_view(request):
     today = timezone.now().date()
 
@@ -296,7 +295,6 @@ def admin_dashboard_view(request):
 
 
 @login_required
-@permission_required('academics.add_attendancerecord')  # Example permission for faculty
 def faculty_dashboard_view(request):
     today = timezone.now().date()
     current_day_str = today.strftime('%A')
@@ -331,7 +329,6 @@ def faculty_dashboard_view(request):
 
 
 @login_required
-@permission_required('academics.view_own_attendance')
 def student_dashboard_view(request):
     student_user = request.user
     today = timezone.now().date()
