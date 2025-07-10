@@ -22,7 +22,6 @@
             </svg>
         </a>
 
-
         <div class="search" data-search-path="{% url 'academics:global_search' %}?q=">
             <input placeholder="Search...">
             <span class="search-icon"><i class="simple-icon-magnifier"></i></span>
@@ -46,19 +45,22 @@
                 </div>
             </div>
 
+            {# --- THIS IS THE UPDATED BLOCK --- #}
             <div class="position-relative d-inline-block">
-                {% if is_admin %}
-{% if git_update_count > 0 %}
-                        <a href="{% url 'academics:update_status' %}" class="header-icon btn btn-empty"
-                           data-toggle="tooltip"
-                           title="Application Updates Available">
-                            <i class="simple-icon-refresh"></i>
-                            <span class="count bg-danger text-white">{{ git_update_count }}</span>
-                        </a>
-                    {% endif %}
+                {% if is_admin and update_count > 0 %}
+                    {# The parent link is now also a relative anchor for positioning #}
+                    <a href="{% url 'academics:update_status' %}" class="btn btn-empty header-icon"
+                       style="position: relative;"
+                       data-toggle="tooltip" data-placement="bottom" title="Check for Updates">
+                        <i class="simple-icon-refresh"></i>
+                        {# The badge now has precise positioning styles #}
+                        <span class="badge badge-danger position-absolute"
+                              style="top: -1px; right: -1px; font-size: 0.6rem; padding: 2px 5px;">{{ update_count }}</span>
+                    </a>
                 {% endif %}
-                <button class="header-icon btn btn-empty" type="button" id="notificationButton" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
+
+                <button class="header-icon btn btn-empty" type="button" id="notificationButton"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="simple-icon-bell"></i>
                     {% if unread_notification_count > 0 %}
                         <span class="count">{{ unread_notification_count }}</span>
@@ -74,36 +76,31 @@
                                 <div class="pl-3">
                                     <a href="{{ notification.url|default:'#' }}">
                                         <p class="font-weight-medium mb-1">{{ notification.message }}</p>
-                                        <p class="text-muted mb-0 text-small">{{ notification.timestamp|timesince }}
-                                            ago</p>
+                                        <p class="text-muted mb-0 text-small">{{ notification.timestamp|timesince }} ago</p>
                                     </a>
                                 </div>
                             </div>
                         {% empty %}
                             <div class="d-flex flex-row mb-3 pb-3 border-bottom">
-                                <div class="pl-3">
-                                    <p class="font-weight-medium mb-1">No unread notifications.</p>
-                                </div>
+                                <div class="pl-3"><p class="font-weight-medium mb-1">No unread notifications.</p></div>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
+            {# -------------------------------- #}
         </div>
 
         <div class="user d-inline-block">
-            <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
+            <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="name">{{ request.user.first_name }} {{ request.user.last_name }}</span>
                 <span>
-            {# --- UPDATE THIS IMG TAG --- #}
                     {% if request.user.profile.photo and request.user.profile.photo.url %}
                         <img alt="Profile Picture" src="{{ request.user.profile.photo.url }}"/>
                     {% else %}
                         <img alt="Profile Picture" src="{% static 'img/profiles/l-1.jpg' %}"/>
                     {% endif %}
-                    {# ------------------------- #}
-        </span>
+                </span>
             </button>
             <div class="dropdown-menu dropdown-menu-right mt-3">
                 <a class="dropdown-item" href="{% url 'accounts:account_view' %}">Account</a>
