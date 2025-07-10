@@ -503,9 +503,13 @@ def course_create_view(request):
         form = CourseForm()
         formset = CourseSubjectFormSet()
 
+    subjects_qs = Subject.objects.all().values('id', 'code', 'name')
+    subjects_json = json.dumps(list(subjects_qs))
+
     context = {
         'form': form,
         'formset': formset,
+        'subjects_json': subjects_json,
         'form_title': 'Create New Course'
     }
     return render(request, 'academics/course_form_with_subjects.html', context)
@@ -540,10 +544,14 @@ def course_update_view(request, pk):
         form = CourseForm(instance=course)
         formset = CourseSubjectFormSet(instance=course)
 
+   subjects_qs = Subject.objects.all().values('id', 'code', 'name')
+    subjects_json = json.dumps(list(subjects_qs))
+
     context = {
         'form': form,
         'formset': formset,
-        'form_title': f'Edit Course: {course.name}'
+        'subjects_json': subjects_json,
+        'form_title': 'Create New Course'
     }
     return render(request, 'academics/course_form_with_subjects.html', context)
 
