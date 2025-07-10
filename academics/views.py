@@ -2885,17 +2885,21 @@ def system_reports_view(request):
 def update_status_view(request):
     update_count = 0
     try:
-        # This is the same reliable logic used in the top navigation bar.
+        # This is the same reliable logic used in the context processor.
         # It directly checks the Git repository for available updates.
-        subprocess.run(['git', 'fetch'], check=True, cwd='/var/www/AttendanceManagment')
+        project_dir = '/var/www/AttendanceManagment'
+        
+        subprocess.run(['git', 'fetch'], check=True, cwd=project_dir)
+        
         result = subprocess.run(
             ['git', 'rev-list', '--count', 'HEAD..origin/website-server'],
-            capture_output=True, text=True, check=True, cwd='/var/www/AttendanceManagment'
+            capture_output=True, text=True, check=True, cwd=project_dir
         )
         update_count = int(result.stdout.strip())
+
     except Exception as e:
         logger.error(f"Failed to check for updates on status page: {e}")
-        messages.error(request, "Could not check for updates. There might be an issue with Git on the server.")
+        messages.error(request, "Could not check for updates. There might be an issue with Git permissions on the server.")
 
     context = {
         'page_title': 'Application Update Status',
