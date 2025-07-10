@@ -51,7 +51,7 @@ fi
 # You will need to replace 'gunicorn.service' with the actual name of your service file.
 
 echo "Restarting the application server..."
-# sudo systemctl restart gunicorn.service  # <--- UNCOMMENT AND EDIT THIS LINE ON YOUR SERVER
+sudo systemctl restart gunicorn.service  # <--- UNCOMMENT AND EDIT THIS LINE ON YOUR SERVER
 
 echo "-------------------------------------"
 echo "Application update completed successfully."
