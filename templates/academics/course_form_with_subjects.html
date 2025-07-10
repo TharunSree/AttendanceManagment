@@ -16,9 +16,8 @@
         <div class="col-12">
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-
-
-                            {% if message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show"
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {% if message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show"
                          role="alert">
                         {{ message }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -48,14 +47,16 @@
                             <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
                             {{ form.name }}
                             {% for error in form.name.errors %}
-                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>
+                            {% endfor %}
                         </div>
 
                         <div class="form-group">
                             <label for="{{ form.course_type.id_for_label }}">{{ form.course_type.label }}</label>
                             {{ form.course_type }}
                             {% for error in form.course_type.errors %}
-                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>
+                            {% endfor %}
                         </div>
 
                         <div class="form-row">
@@ -63,13 +64,15 @@
                                 <label for="{{ form.duration_years.id_for_label }}">{{ form.duration_years.label }}</label>
                                 {{ form.duration_years }}
                                 {% for error in form.duration_years.errors %}
-                                    <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                                    <div class="alert alert-danger mt-1 p-1">{{ error }}</div>
+                                {% endfor %}
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="{{ form.required_hours_per_semester.id_for_label }}">{{ form.required_hours_per_semester.label }}</label>
                                 {{ form.required_hours_per_semester }}
                                 {% for error in form.required_hours_per_semester.errors %}
-                                    <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                                    <div class="alert alert-danger mt-1 p-1">{{ error }}</div>
+                                {% endfor %}
                             </div>
                         </div>
 
@@ -77,7 +80,8 @@
                             <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
                             {{ form.description }}
                             {% for error in form.description.errors %}
-                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>{% endfor %}
+                                <div class="alert alert-danger mt-1 p-1">{{ error }}</div>
+                            {% endfor %}
                         </div>
                         <div class="form-group">
                             <label>Marking Scheme</label>
@@ -179,16 +183,10 @@
         </div>
     </div>
 
-    <!-- Template for new rows -->
     <script type="text/template" id="empty-form-template">
         <tr class="formset-row">
             <td>
-                <select name="form-__prefix__-subject" id="id_form-__prefix__-subject" class="form-control">
-                    <option value="">---------</option>
-                    {% for subject in subjects_json %}
-                        <option value="{{ subject.id }}">{{ subject.code }} - {{ subject.name }}</option>
-                    {% endfor %}
-                </select>
+                <select name="form-__prefix__-subject" class="form-control"></select>
                 <input type="hidden" name="form-__prefix__-id" id="id_form-__prefix__-id">
             </td>
             <td>
@@ -207,15 +205,47 @@
 {% block page_scripts %}
     <script>
         $(document).ready(function () {
+            // Check if the context variable was passed and is not empty
+            const subjectsData = '{{ subjects_json|escapejs|default:"" }}';
+            let subjects = [];
+
+            if (subjectsData) {
+                try {
+                    subjects = JSON.parse(subjectsData);
+                } catch (e) {
+                    console.error("Failed to parse subjects_json:", e);
+                    // Alert the user that something is wrong with the page data
+                    alert("Could not load subject list. Please contact support.");
+                }
+            } else {
+                console.warn("subjects_json not provided or is empty.");
+            }
+
             let formIndex = parseInt($('#id_form-TOTAL_FORMS').val());
 
             // Add new subject row
             $('#add-subject-btn').click(function () {
-                const template = $('#empty-form-template').html();
-                const newForm = template.replace(/__prefix__/g, formIndex);
-                $('#formset-container').append(newForm);
+                if (subjects.length === 0) {
+                    alert("Cannot add a subject because the subject list failed to load.");
+                    return; // Stop the function
+                }
 
-                // Update total forms count
+                const template = $('#empty-form-template').html();
+                const newFormHtml = template.replace(/__prefix__/g, formIndex);
+
+                const newForm = $(newFormHtml);
+                const selectElement = newForm.find('select');
+
+                selectElement.append($('<option>', {value: '', text: '---------'}));
+
+                subjects.forEach(function (subject) {
+                    selectElement.append($('<option>', {
+                        value: subject.id,
+                        text: `${subject.code} - ${subject.name}`
+                    }));
+                });
+
+                $('#formset-container').append(newForm);
                 $('#id_form-TOTAL_FORMS').val(formIndex + 1);
                 formIndex++;
             });
