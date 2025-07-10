@@ -544,7 +544,7 @@ def course_update_view(request, pk):
         form = CourseForm(instance=course)
         formset = CourseSubjectFormSet(instance=course)
 
-   subjects_qs = Subject.objects.all().values('id', 'code', 'name')
+    subjects_qs = Subject.objects.all().values('id', 'code', 'name')
     subjects_json = json.dumps(list(subjects_qs))
 
     context = {
