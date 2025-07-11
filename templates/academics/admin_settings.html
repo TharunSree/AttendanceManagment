@@ -170,7 +170,7 @@
                 <div class="card-body">
                     <h5 class="card-title">System Settings</h5>
 
-                    <form method="post" class="mb-4">
+                    <form method="post">
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="{{ session_form.current_session.id_for_label }}"><strong>Current Academic
@@ -185,16 +185,66 @@
                     <h5 class="card-title mt-4">General Configuration</h5>
                     <form method="post">
                         {% csrf_token %}
-                        <div class="form-group"><label for="{{ settings_form.required_percentage.id_for_label }}">Required
-                            Attendance Percentage</label>{{ settings_form.required_percentage }}</div>
-                        <div class="form-group"><label for="{{ settings_form.mark_deadline_days.id_for_label }}">Deadline
-                            to Mark Attendance (in days)</label>{{ settings_form.mark_deadline_days }}</div>
-                        <div class="form-group"><label>Passing Percentage</label>{{ settings_form.passing_percentage }}
+
+                        {# This will display any form-wide errors, e.g., validation errors on missing fields #}
+                        {% if settings_form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ settings_form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label for="{{ settings_form.required_percentage.id_for_label }}">Required Attendance
+                                Percentage</label>
+                            {{ settings_form.required_percentage }}
+                            {{ settings_form.required_percentage.errors }}
                         </div>
-                        <div class="form-group"><label>Session Timeout
-                            (Seconds)</label>{{ settings_form.session_timeout_seconds }}</div>
-                        <div class="form-group"><label>Notification Recipient
-                            Email</label>{{ settings_form.notification_recipient_email }}</div>
+
+                        <div class="form-group">
+                            <label for="{{ settings_form.mark_deadline_days.id_for_label }}">Deadline to Mark Attendance
+                                (in days)</label>
+                            {{ settings_form.mark_deadline_days }}
+                            {{ settings_form.mark_deadline_days.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ settings_form.edit_deadline_days.id_for_label }}">Deadline to Edit Attendance
+                                (in days)</label>
+                            {{ settings_form.edit_deadline_days }}
+                            {{ settings_form.edit_deadline_days.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label>Passing Percentage</label>
+                            {{ settings_form.passing_percentage }}
+                            {{ settings_form.passing_percentage.errors }}
+                        </div>
+
+                        {# ADDED THIS FIELD #}
+                        <div class="form-group">
+                            <label>Cancellation Threshold (Hours)</label>
+                            {{ settings_form.cancellation_threshold_hours }}
+                            {{ settings_form.cancellation_threshold_hours.errors }}
+                        </div>
+
+                        {# ADDED THIS FIELD #}
+                        <div class="form-group">
+                            <label>Number of Backups to Retain</label>
+                            {{ settings_form.number_of_backups_to_retain }}
+                            {{ settings_form.number_of_backups_to_retain.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label>Session Timeout (Seconds)</label>
+                            {{ settings_form.session_timeout_seconds }}
+                            {{ settings_form.session_timeout_seconds.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label>Notification Recipient Email</label>
+                            {{ settings_form.notification_recipient_email }}
+                            {{ settings_form.notification_recipient_email.errors }}
+                        </div>
 
                         <hr/>
                         <div class="d-flex justify-content-between align-items-center mb-2">
